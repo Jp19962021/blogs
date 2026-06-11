@@ -1,0 +1,51 @@
+name: Daily Blog Posts
+
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  petscript-pharmacy-vet-blog:
+    name: PetScript Pharmacy (Vet Audience)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./scripts
+      - name: Run vet blog script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SHOPIFY_PHARMACY_TOKEN: ${{ secrets.SHOPIFY_PHARMACY_TOKEN }}
+          SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          STORE_AUDIENCE: vet
+        run: node generate-blog.js
+        working-directory: ./scripts
+
+  petscript-direct-pet-owner-blog:
+    name: PetScript Direct (Pet Owner Audience)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./scripts
+      - name: Run pet owner blog script
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SHOPIFY_DIRECT_TOKEN: ${{ secrets.SHOPIFY_DIRECT_TOKEN }}
+          SHOPIFY_DIRECT_STORE: ${{ secrets.SHOPIFY_DIRECT_STORE }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          STORE_AUDIENCE: petowner
+        run: node generate-blog.js
+        working-directory: ./scripts
