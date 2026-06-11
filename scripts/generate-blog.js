@@ -49,7 +49,7 @@ async function researchTrend(keyword) {
     : `Search for recent pet owner concerns (2025-2026) about: "${keyword}". Return JSON: { "angle": "one relatable blog angle", "facts": ["fact1", "fact2"], "sources": ["source1"] }`;
   try {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 1000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{ role: 'user', content: searchPrompt }],
@@ -82,7 +82,7 @@ IMAGE_QUERY: [2-4 words for a real Unsplash photo e.g. "happy dog owner"]
 BODY: [full HTML blog body, h2/h3 subheadings, no html/body tags]`;
 
   const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 2000,
     system: CONFIG.systemPrompt,
     messages: [{ role: 'user', content: userPrompt }],
