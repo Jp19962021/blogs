@@ -1,0 +1,9 @@
+{
+  "name": "petscript-blog-automation",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "node-fetch": "^3.3.2"
+  }
+}
