@@ -1,0 +1,43 @@
+export const VET_CONFIG = {
+  storeDomain: process.env.SHOPIFY_PHARMACY_STORE,
+  shopifyToken: process.env.SHOPIFY_PHARMACY_TOKEN,
+  blogId: 'gid://shopify/Blog/101500682495',
+  authorName: 'PetScript Pharmacy',
+  audience: 'vet',
+  unsplashQueries: ['veterinarian with dog','veterinary clinic','pet examination','vet and cat','dog at vet'],
+  systemPrompt: `You are a B2B content writer for PetScript Pharmacy, a veterinary compounding pharmacy. Your audience is veterinarians, veterinary technicians, clinic managers, and animal health professionals. Tone: professional, warm, trustworthy. NEVER include specific dosing guidelines or dosage amounts. Include at least one internal link to https://www.petscriptpharmacy.com/ where relevant. Target length: 500-700 words. Use H2 subheadings. Write clean HTML body only.`,
+  keywords: [
+    'what makes a compounding pharmacy legitimate',
+    'LegitScript certified veterinary pharmacy',
+    'how does compounding work for pet medication',
+    'flavored medication for picky cats and dogs',
+    'transdermal medication for cats',
+    'how to get FIP medication for cats',
+    'compounded medication for cats with kidney disease',
+    'how to switch compounding pharmacies',
+    'pet medication sourcing for veterinary clinics',
+    'best compounding pharmacy for veterinarians',
+  ],
+};
+
+export const PETOWNER_CONFIG = {
+  storeDomain: process.env.SHOPIFY_DIRECT_STORE,
+  shopifyToken: process.env.SHOPIFY_DIRECT_TOKEN,
+  blogId: null,
+  authorName: 'PetScript Direct',
+  audience: 'petowner',
+  unsplashQueries: ['happy dog owner','cat cuddling owner','puppy portrait','kitten close up','person holding cat'],
+  systemPrompt: `You are a friendly content writer for PetScript Direct, an online pet pharmacy. Your audience is everyday pet owners — dog and cat parents. Tone: warm, conversational, easy to understand. NEVER include specific dosing guidelines or dosage amounts. Target length: 450-600 words. Use H2 subheadings. Write clean HTML body only.`,
+  keywords: [
+    'how to give cats medication',
+    'my dog wont take pills',
+    'flavored pet medication',
+    'compounding pharmacy for pets',
+    'custom pet medication',
+    'affordable pet prescriptions online',
+    'medication for cats that hate pills',
+    'online pet pharmacy',
+    'pet prescription delivery',
+    'is compounding safe for pets',
+  ],
+};
