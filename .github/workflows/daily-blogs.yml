@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./scripts
       - name: Run vet blog script
         env:
@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: npm ci
+        run: npm install
         working-directory: ./scripts
       - name: Run pet owner blog script
         env:
