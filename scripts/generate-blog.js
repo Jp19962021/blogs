@@ -1,5 +1,6 @@
 /**
- * PetScript Auto Blog Generator
+ * PetScript Auto Blog Generator v2
+ * Uses Shopify OAuth client credentials flow
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -40,6 +41,25 @@ function markKeywordUsed(keyword) {
   const updated = [...used.filter(k => k !== keyword), keyword].slice(-20);
   fs.mkdirSync(CONFIG_DIR, { recursive: true });
   fs.writeFileSync(usedKeywordsFile, JSON.stringify(updated, null, 2));
+}
+
+// ── Get Shopify access token via Client Credentials ──────────
+async function getShopifyToken(storeDomain, clientId, clientSecret) {
+  console.log('🔑 Getting Shopify access token...');
+  const url = `https://${storeDomain}/admin/oauth/access_token`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'client_credentials',
+    }),
+  });
+  const data = await res.json();
+  console.log('Shopify token response:', JSON.stringify(data));
+  if (!data.access_token) throw new Error(`Failed to get Shopify token: ${JSON.stringify(data)}`);
+  return data.access_token;
 }
 
 async function researchTrend(keyword) {
@@ -105,6 +125,15 @@ BODY: [full HTML blog body, h2/h3 subheadings, no html/body tags]`;
 
 async function fetchUnsplashImage(query, fallbackQueries) {
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+  if (!accessKey) {
+    console.warn('No Unsplash key, using fallback image');
+    return {
+      url: 'https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=1080&q=80',
+      altText: 'A happy dog',
+      credit: 'Photo on Unsplash',
+      photographerUrl: 'https://unsplash.com',
+    };
+  }
   const queriesToTry = [query, ...fallbackQueries].slice(0, 5);
   for (const q of queriesToTry) {
     try {
@@ -196,6 +225,12 @@ async function main() {
   console.log(`\n🚀 Starting blog generation for: ${audience === 'vet' ? 'PetScript Pharmacy (Vet)' : 'PetScript Direct (Pet Owner)'}`);
   console.log(`📅 Date: ${new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago' })}`);
 
+  // Get Shopify token via OAuth
+  const storeDomain = CONFIG.storeDomain;
+  const clientId = audience === 'vet' ? process.env.SHOPIFY_PHARMACY_CLIENT_ID : process.env.SHOPIFY_DIRECT_CLIENT_ID;
+  const clientSecret = audience === 'vet' ? process.env.SHOPIFY_PHARMACY_CLIENT_SECRET : process.env.SHOPIFY_DIRECT_CLIENT_SECRET;
+  const shopifyToken = await getShopifyToken(storeDomain, clientId, clientSecret);
+
   const keyword = pickNextKeyword();
   console.log(`\n🔑 Target keyword: "${keyword}"`);
 
@@ -214,12 +249,12 @@ async function main() {
 
   const bodyWithCredit = post.body + `\n<p><small><em>${image.credit} | <a href="${image.photographerUrl}" target="_blank" rel="noopener">View on Unsplash</a></em></small></p>`;
 
-  const blogId = await getShopifyBlogId(CONFIG.storeDomain, CONFIG.shopifyToken);
+  const blogId = await getShopifyBlogId(storeDomain, shopifyToken);
 
   console.log('📤 Creating Shopify draft...');
   const article = await createShopifyDraft({
-    storeDomain: CONFIG.storeDomain,
-    token: CONFIG.shopifyToken,
+    storeDomain,
+    token: shopifyToken,
     blogId,
     title: post.title,
     body: bodyWithCredit,
