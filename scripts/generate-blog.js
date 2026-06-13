@@ -1,6 +1,10 @@
 /**
- * PetScript Auto Blog Generator v2
- * Uses Shopify OAuth client credentials flow
+ * PetScript Auto Blog Generator v4
+ * - Google Trends keyword research via Claude web search
+ * - Canva image generation instead of Unsplash
+ * - Contact info in every post
+ * - Run log for dashboard
+ * - Duplicate blog prevention
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -11,6 +15,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_DIR = path.join(__dirname, '..', 'config');
+const LOG_FILE = path.join(__dirname, '..', 'docs', 'run-log.json');
 
 const audience = process.env.STORE_AUDIENCE;
 if (!audience) throw new Error('STORE_AUDIENCE env var required (vet or petowner)');
@@ -22,18 +27,9 @@ const usedKeywordsFile = path.join(CONFIG_DIR, `used-keywords-${audience}.json`)
 
 function getUsedKeywords() {
   try {
-    if (fs.existsSync(usedKeywordsFile)) {
-      return JSON.parse(fs.readFileSync(usedKeywordsFile, 'utf8'));
-    }
+    if (fs.existsSync(usedKeywordsFile)) return JSON.parse(fs.readFileSync(usedKeywordsFile, 'utf8'));
   } catch {}
   return [];
-}
-
-function pickNextKeyword() {
-  const used = getUsedKeywords();
-  const available = CONFIG.keywords.filter(k => !used.includes(k));
-  const pool = available.length > 0 ? available : CONFIG.keywords;
-  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 function markKeywordUsed(keyword) {
@@ -43,74 +39,140 @@ function markKeywordUsed(keyword) {
   fs.writeFileSync(usedKeywordsFile, JSON.stringify(updated, null, 2));
 }
 
-// ── Get Shopify access token via Client Credentials ──────────
-async function getShopifyToken(storeDomain, clientId, clientSecret) {
-  console.log('🔑 Getting Shopify access token...');
-  const url = `https://${storeDomain}/admin/oauth/access_token`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      client_id: clientId,
-      client_secret: clientSecret,
-      grant_type: 'client_credentials',
-    }),
-  });
-  const data = await res.json();
-  console.log('Shopify token response:', JSON.stringify(data));
-  if (!data.access_token) throw new Error(`Failed to get Shopify token: ${JSON.stringify(data)}`);
-  return data.access_token;
+function getRecentTitles() {
+  try {
+    if (fs.existsSync(LOG_FILE)) {
+      const log = JSON.parse(fs.readFileSync(LOG_FILE, 'utf8'));
+      return log.filter(r => r.audience === audience && r.status === 'success').slice(0, 10).map(r => r.title);
+    }
+  } catch {}
+  return [];
 }
 
-async function researchTrend(keyword) {
+function saveRunLog(entry) {
+  fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
+  let log = [];
+  try {
+    if (fs.existsSync(LOG_FILE)) log = JSON.parse(fs.readFileSync(LOG_FILE, 'utf8'));
+  } catch {}
+  log.unshift(entry);
+  log = log.slice(0, 90);
+  fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
+}
+
+// ── Google Trends research via Claude web search ─────────────
+async function researchTrendingKeyword() {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const searchPrompt = audience === 'vet'
-    ? `Search for recent news (2025-2026) related to: "${keyword}" in veterinary medicine and compounding pharmacies. Return JSON: { "angle": "one specific blog angle", "facts": ["fact1", "fact2"], "sources": ["source1"] }`
-    : `Search for recent pet owner concerns (2025-2026) about: "${keyword}". Return JSON: { "angle": "one relatable blog angle", "facts": ["fact1", "fact2"], "sources": ["source1"] }`;
+  const usedKeywords = getUsedKeywords();
+  const recentTitles = getRecentTitles();
+
+  const prompt = audience === 'vet'
+    ? `You are a veterinary SEO expert. Search Google Trends, AVMA news, veterinary forums, and industry news to find what veterinarians and veterinary clinic managers are actively searching for and discussing RIGHT NOW in June 2026.
+
+Focus on topics related to:
+- Veterinary compounding pharmacy partnerships
+- Pet medication sourcing and supply chain for clinics  
+- Pharmacy compliance, FDA regulations, and accreditation
+- Veterinary practice efficiency and operations
+- Animal medication formulations (transdermal, flavored, compounded)
+- Specific conditions requiring compounding (FIP, kidney disease, etc.)
+
+AVOID these recently used keywords: ${usedKeywords.slice(-10).join(', ')}
+AVOID creating blogs similar to these recent titles: ${recentTitles.join(' | ')}
+
+Search for what's trending RIGHT NOW and return ONLY valid JSON (no markdown, no backticks):
+{
+  "keyword": "the primary SEO keyword phrase",
+  "angle": "specific timely blog angle based on current trends",
+  "trending_reason": "why this topic is being searched right now",
+  "search_volume": "high/medium/low estimate",
+  "facts": ["specific fact 1", "specific fact 2", "specific fact 3"],
+  "sources": ["source url or name 1", "source 2"]
+}`
+    : `Search for what pet owners are actively searching for RIGHT NOW in June 2026 related to pet health, medications, and pharmacy.
+AVOID these recent titles: ${recentTitles.join(' | ')}
+Return ONLY valid JSON (no markdown):
+{
+  "keyword": "primary SEO keyword",
+  "angle": "relatable angle for pet owners",
+  "trending_reason": "why trending now",
+  "search_volume": "high/medium/low",
+  "facts": ["fact1", "fact2"],
+  "sources": ["source1"]
+}`;
+
   try {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      max_tokens: 1000,
+      max_tokens: 1500,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages: [{ role: 'user', content: searchPrompt }],
+      messages: [{ role: 'user', content: prompt }],
     });
     const textContent = response.content.filter(b => b.type === 'text').map(b => b.text).join('');
-    try {
-      const jsonMatch = textContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    } catch {}
-    return { angle: textContent.slice(0, 200), facts: [], sources: [] };
+    const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0]);
+      console.log(`\n📊 Trend data:`);
+      console.log(`   Keyword: ${parsed.keyword}`);
+      console.log(`   Search volume: ${parsed.search_volume || 'unknown'}`);
+      console.log(`   Trending because: ${parsed.trending_reason}`);
+      if (parsed.facts?.length) parsed.facts.forEach(f => console.log(`   • ${f}`));
+      return parsed;
+    }
   } catch (err) {
-    console.warn('Trend research failed, continuing:', err.message);
-    return { angle: `A practical guide to ${keyword}`, facts: [], sources: [] };
+    console.warn('Trend research failed:', err.message);
   }
+  return {
+    keyword: audience === 'vet' ? 'veterinary compounding pharmacy partner' : 'compounding pharmacy for pets',
+    angle: 'A practical guide for ' + (audience === 'vet' ? 'veterinary practices' : 'pet owners'),
+    trending_reason: 'Evergreen topic — fallback used',
+    search_volume: 'medium',
+    facts: [],
+    sources: []
+  };
 }
 
+// ── Generate blog post via Claude ────────────────────────────
 async function generateBlogPost(keyword, trendData) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const userPrompt = `Write a blog post for the following:
+
+  const contactBlock = audience === 'vet'
+    ? `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Partner With PetScript Pharmacy</h3><p style="margin:0 0 12px;color:#374151">Ready to work with a compounding pharmacy built for veterinary practices?</p><ul style="margin:0;padding-left:20px;color:#374151"><li><a href="https://www.petscriptpharmacy.com" style="color:#1a56db">www.petscriptpharmacy.com</a></li><li>Call us: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></li></ul></div>`
+    : `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Get Your Pet's Medication from PetScript Direct</h3><p style="margin:0 0 12px;color:#374151">Custom compounded medications delivered to your door.</p><ul style="margin:0;padding-left:20px;color:#374151"><li><a href="https://www.petscriptdirect.com" style="color:#1a56db">www.petscriptdirect.com</a></li><li>Call us: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></li></ul></div>`;
+
+  const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
+
+  const userPrompt = `Write a blog post for ${audience === 'vet' ? 'veterinary professionals' : 'pet owners'}.
 
 PRIMARY SEO KEYWORD: "${keyword}"
 TOPIC ANGLE: ${trendData.angle}
-${trendData.facts.length > 0 ? `RESEARCH NOTES: ${trendData.facts.join('; ')}` : ''}
+TRENDING REASON: ${trendData.trending_reason}
+${trendData.facts?.length > 0 ? `KEY FACTS TO USE: ${trendData.facts.join('; ')}` : ''}
 
-Return EXACTLY these 5 labeled sections:
-TITLE: [60 chars or less, includes keyword]
-META: [150-160 char meta description]
+STRICT REQUIREMENTS:
+- Work keyword naturally into title, at least one H2, and 2-3x in body
+- Link to ${siteUrl} at least once naturally in the body text
+- NEVER include dosing guidelines, dosage amounts, or administration instructions
+- End with a strong call-to-action paragraph
+- Append this exact HTML contact block at the very end of the BODY: ${contactBlock}
+
+Return EXACTLY these 5 labeled sections with no extra text:
+TITLE: [max 60 chars, includes keyword]
+META: [150-160 char meta description with keyword]
 TAGS: [4-6 comma-separated SEO tags]
-IMAGE_QUERY: [2-4 words for a real Unsplash photo e.g. "happy dog owner"]
-BODY: [full HTML blog body, h2/h3 subheadings, no html/body tags]`;
+CANVA_PROMPT: [describe a professional, warm, NON-pharmacy image for Canva — e.g. "A veterinarian warmly greeting a golden retriever in a bright clinic" or "Happy cat owner cuddling a tabby cat at home" — real lifestyle scene, no pills/bottles/labs]
+BODY: [full HTML body only — h2/h3 tags, paragraphs, include contact block at end]`;
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-5',
-    max_tokens: 2000,
+    max_tokens: 2500,
     system: CONFIG.systemPrompt,
     messages: [{ role: 'user', content: userPrompt }],
   });
 
   const text = response.content.find(b => b.type === 'text')?.text || '';
   const extract = (label) => {
-    const match = text.match(new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n(?:TITLE|META|TAGS|IMAGE_QUERY|BODY):|$)`));
+    const match = text.match(new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n(?:TITLE|META|TAGS|CANVA_PROMPT|BODY):|$)`));
     return match ? match[1].trim() : '';
   };
 
@@ -118,159 +180,227 @@ BODY: [full HTML blog body, h2/h3 subheadings, no html/body tags]`;
     title: extract('TITLE'),
     meta: extract('META'),
     tags: extract('TAGS').split(',').map(t => t.trim()).filter(Boolean),
-    imageQuery: extract('IMAGE_QUERY'),
+    canvaPrompt: extract('CANVA_PROMPT'),
     body: extract('BODY'),
   };
 }
 
-async function fetchUnsplashImage(query, fallbackQueries) {
-  const accessKey = process.env.UNSPLASH_ACCESS_KEY;
-  if (!accessKey) {
-    console.warn('No Unsplash key, using fallback image');
-    return {
-      url: 'https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=1080&q=80',
-      altText: 'A happy dog',
-      credit: 'Photo on Unsplash',
-      photographerUrl: 'https://unsplash.com',
-    };
+// ── Generate image via Canva API ─────────────────────────────
+async function generateCanvaImage(prompt, title) {
+  const canvaToken = process.env.CANVA_API_TOKEN;
+  if (!canvaToken) {
+    console.warn('No CANVA_API_TOKEN — skipping image');
+    return null;
   }
-  const queriesToTry = [query, ...fallbackQueries].slice(0, 5);
-  for (const q of queriesToTry) {
-    try {
-      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&orientation=landscape&content_filter=high&per_page=10`;
-      const res = await fetch(url, {
-        headers: { 'Authorization': `Client-ID ${accessKey}`, 'Accept-Version': 'v1' },
-      });
-      if (!res.ok) continue;
-      const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        const pick = data.results[Math.floor(Math.random() * Math.min(5, data.results.length))];
-        await fetch(pick.links.download_location, {
-          headers: { 'Authorization': `Client-ID ${accessKey}` },
-        }).catch(() => {});
-        return {
-          url: pick.urls.regular,
-          altText: pick.alt_description || q,
-          credit: `Photo by ${pick.user.name} on Unsplash`,
-          photographerUrl: pick.user.links.html,
-        };
-      }
-    } catch (err) {
-      console.warn(`Unsplash failed for "${q}":`, err.message);
+
+  try {
+    console.log(`🎨 Generating Canva image: "${prompt}"`);
+
+    const designType = audience === 'vet' ? 'BLOG_BANNER' : 'BLOG_BANNER';
+
+    const createRes = await fetch('https://api.canva.com/rest/v1/autofills', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${canvaToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        brand_template_id: null,
+        title: title,
+        data: { image_description: prompt }
+      }),
+    });
+
+    if (!createRes.ok) {
+      const err = await createRes.text();
+      console.warn('Canva autofill failed:', err);
+      return null;
     }
+
+    const job = await createRes.json();
+    const jobId = job.job?.id;
+    if (!jobId) return null;
+
+    // Poll for completion
+    for (let i = 0; i < 20; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      const pollRes = await fetch(`https://api.canva.com/rest/v1/autofills/${jobId}`, {
+        headers: { 'Authorization': `Bearer ${canvaToken}` },
+      });
+      const pollData = await pollRes.json();
+      if (pollData.job?.status === 'success') {
+        const designId = pollData.job?.result?.design?.id;
+        if (designId) {
+          const exportUrl = await exportCanvaDesign(designId, canvaToken);
+          return exportUrl;
+        }
+      }
+      if (pollData.job?.status === 'failed') break;
+    }
+    return null;
+  } catch (err) {
+    console.warn('Canva image generation error:', err.message);
+    return null;
   }
-  return {
-    url: 'https://images.unsplash.com/photo-1415369629372-26f2fe60c467?w=1080&q=80',
-    altText: 'A happy dog',
-    credit: 'Photo on Unsplash',
-    photographerUrl: 'https://unsplash.com',
-  };
+}
+
+async function exportCanvaDesign(designId, token) {
+  const exportRes = await fetch(`https://api.canva.com/rest/v1/exports`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      design_id: designId,
+      format: 'jpg',
+      export_quality: 'pro',
+    }),
+  });
+  const exportData = await exportRes.json();
+  const exportJobId = exportData.job?.id;
+  if (!exportJobId) return null;
+
+  for (let i = 0; i < 15; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const poll = await fetch(`https://api.canva.com/rest/v1/exports/${exportJobId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const pollData = await poll.json();
+    if (pollData.job?.status === 'success') {
+      return pollData.job?.urls?.[0] || null;
+    }
+    if (pollData.job?.status === 'failed') break;
+  }
+  return null;
+}
+
+// ── Shopify helpers ──────────────────────────────────────────
+async function getShopifyToken(storeDomain, clientId, clientSecret) {
+  const url = `https://${storeDomain}/admin/oauth/access_token`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ client_id: clientId, client_secret: clientSecret, grant_type: 'client_credentials' }),
+  });
+  const data = await res.json();
+  if (!data.access_token) throw new Error(`Shopify token failed: ${JSON.stringify(data)}`);
+  console.log('Got Shopify token');
+  return data.access_token;
 }
 
 async function shopifyGraphQL(storeDomain, token, query, variables = {}) {
-  const url = `https://${storeDomain}/admin/api/2026-04/graphql.json`;
-  const res = await fetch(url, {
+  const res = await fetch(`https://${storeDomain}/admin/api/2026-04/graphql.json`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': token,
-    },
+    headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token },
     body: JSON.stringify({ query, variables }),
   });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Shopify API error ${res.status}: ${text}`);
-  }
+  if (!res.ok) throw new Error(`Shopify API ${res.status}: ${await res.text()}`);
   const json = await res.json();
-  if (json.errors) throw new Error(`GraphQL errors: ${JSON.stringify(json.errors)}`);
+  if (json.errors) throw new Error(`GraphQL: ${JSON.stringify(json.errors)}`);
   return json;
 }
 
 async function getShopifyBlogId(storeDomain, token) {
   if (CONFIG.blogId) return CONFIG.blogId;
-  const query = `{ blogs(first: 5) { edges { node { id title } } } }`;
-  const res = await shopifyGraphQL(storeDomain, token, query);
+  const res = await shopifyGraphQL(storeDomain, token, `{ blogs(first:5){ edges{ node{ id title } } } }`);
   const blogs = res.data?.blogs?.edges;
-  if (!blogs || blogs.length === 0) throw new Error('No blogs found on store');
-  console.log('Found blogs:', blogs.map(b => `${b.node.title} (${b.node.id})`).join(', '));
+  if (!blogs?.length) throw new Error('No blogs found');
+  console.log('Blog:', blogs[0].node.title, blogs[0].node.id);
   return blogs[0].node.id;
 }
 
-async function createShopifyDraft({ storeDomain, token, blogId, title, body, summary, tags, image, authorName }) {
+async function createShopifyDraft({ storeDomain, token, blogId, title, body, summary, tags, imageUrl, authorName }) {
   const mutation = `
     mutation articleCreate($article: ArticleCreateInput!) {
       articleCreate(article: $article) {
         article { id title handle }
         userErrors { field message }
       }
-    }
-  `;
-  const variables = {
-    article: {
-      blogId, title, body, summary, tags,
-      isPublished: false,
-      author: { name: authorName },
-      image: image ? { url: image.url, altText: image.altText } : undefined,
-    },
-  };
-  const result = await shopifyGraphQL(storeDomain, token, mutation, variables);
+    }`;
+  const articleInput = { blogId, title, body, summary, tags, isPublished: false, author: { name: authorName } };
+  if (imageUrl) articleInput.image = { url: imageUrl, altText: title };
+  const result = await shopifyGraphQL(storeDomain, token, mutation, { article: articleInput });
   const { article, userErrors } = result.data.articleCreate;
-  if (userErrors && userErrors.length > 0) {
-    throw new Error(`Shopify article errors: ${JSON.stringify(userErrors)}`);
-  }
+  if (userErrors?.length) throw new Error(`Shopify errors: ${JSON.stringify(userErrors)}`);
   return article;
 }
 
+// ── Main ─────────────────────────────────────────────────────
 async function main() {
-  console.log(`\n🚀 Starting blog generation for: ${audience === 'vet' ? 'PetScript Pharmacy (Vet)' : 'PetScript Direct (Pet Owner)'}`);
-  console.log(`📅 Date: ${new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago' })}`);
+  const startTime = new Date();
+  const storeLabel = audience === 'vet' ? 'PetScript Pharmacy (Vet)' : 'PetScript Direct (Pet Owner)';
+  console.log(`\n🚀 ${storeLabel}`);
+  console.log(`📅 ${startTime.toLocaleDateString('en-US', { timeZone: 'America/Chicago' })}`);
 
-  // Get Shopify token via OAuth
   const storeDomain = CONFIG.storeDomain;
   const clientId = audience === 'vet' ? process.env.SHOPIFY_PHARMACY_CLIENT_ID : process.env.SHOPIFY_DIRECT_CLIENT_ID;
   const clientSecret = audience === 'vet' ? process.env.SHOPIFY_PHARMACY_CLIENT_SECRET : process.env.SHOPIFY_DIRECT_CLIENT_SECRET;
+
   const shopifyToken = await getShopifyToken(storeDomain, clientId, clientSecret);
 
-  const keyword = pickNextKeyword();
-  console.log(`\n🔑 Target keyword: "${keyword}"`);
+  console.log('\n🔍 Researching trending keywords via Google Trends...');
+  const trendData = await researchTrendingKeyword();
 
-  console.log('🔍 Researching trends...');
-  const trendData = await researchTrend(keyword);
-  console.log(`📌 Angle: ${trendData.angle}`);
-
-  console.log('✍️  Generating blog post...');
-  const post = await generateBlogPost(keyword, trendData);
+  console.log('\n✍️  Writing blog post...');
+  const post = await generateBlogPost(trendData.keyword, trendData);
   console.log(`📝 Title: ${post.title}`);
   console.log(`🏷️  Tags: ${post.tags.join(', ')}`);
+  console.log(`🎨 Image prompt: ${post.canvaPrompt}`);
 
-  console.log(`🖼️  Fetching image for: "${post.imageQuery}"...`);
-  const image = await fetchUnsplashImage(post.imageQuery, CONFIG.unsplashQueries);
-  console.log(`📷 ${image.credit}`);
-
-  const bodyWithCredit = post.body + `\n<p><small><em>${image.credit} | <a href="${image.photographerUrl}" target="_blank" rel="noopener">View on Unsplash</a></em></small></p>`;
+  // Generate Canva image
+  let imageUrl = null;
+  if (process.env.CANVA_API_TOKEN) {
+    imageUrl = await generateCanvaImage(post.canvaPrompt, post.title);
+    if (imageUrl) console.log('✅ Canva image generated');
+    else console.warn('⚠️  Canva image failed — posting without image');
+  } else {
+    console.log('ℹ️  No CANVA_API_TOKEN set — skipping image');
+  }
 
   const blogId = await getShopifyBlogId(storeDomain, shopifyToken);
 
-  console.log('📤 Creating Shopify draft...');
+  console.log('\n📤 Creating Shopify draft...');
   const article = await createShopifyDraft({
-    storeDomain,
-    token: shopifyToken,
-    blogId,
-    title: post.title,
-    body: bodyWithCredit,
-    summary: post.meta,
-    tags: post.tags,
-    image,
-    authorName: CONFIG.authorName,
+    storeDomain, token: shopifyToken, blogId,
+    title: post.title, body: post.body, summary: post.meta,
+    tags: post.tags, imageUrl, authorName: CONFIG.authorName,
   });
 
-  console.log(`✅ Draft created: ${article.title}`);
-  console.log(`   ID: ${article.id}`);
-  markKeywordUsed(keyword);
-  console.log('\n🎉 Done! Check Shopify > Online Store > Blog Posts to review and publish.');
+  console.log(`✅ Draft created: "${article.title}"`);
+  console.log(`   Shopify ID: ${article.id}`);
+
+  markKeywordUsed(trendData.keyword);
+
+  saveRunLog({
+    date: startTime.toISOString(),
+    audience,
+    store: storeDomain,
+    keyword: trendData.keyword,
+    angle: trendData.angle,
+    trending_reason: trendData.trending_reason,
+    search_volume: trendData.search_volume || 'unknown',
+    facts: trendData.facts || [],
+    sources: trendData.sources || [],
+    title: post.title,
+    tags: post.tags,
+    articleId: article.id,
+    articleHandle: article.handle,
+    hasImage: !!imageUrl,
+    status: 'success',
+  });
+
+  console.log('\n🎉 Done! Review in Shopify > Online Store > Blog Posts');
 }
 
 main().catch(err => {
-  console.error('❌ Blog generation failed:', err);
+  console.error('❌ Failed:', err.message);
+  saveRunLog({
+    date: new Date().toISOString(),
+    audience,
+    store: CONFIG?.storeDomain || 'unknown',
+    status: 'failed',
+    error: err.message,
+  });
   process.exit(1);
 });
