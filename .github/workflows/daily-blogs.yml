@@ -9,6 +9,8 @@ jobs:
   petscript-pharmacy-vet-blog:
     name: PetScript Pharmacy (Vet Audience)
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
