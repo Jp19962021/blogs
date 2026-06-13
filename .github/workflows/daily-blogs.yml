@@ -28,3 +28,10 @@ jobs:
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
+env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SHOPIFY_PHARMACY_CLIENT_ID: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_ID }}
+          SHOPIFY_PHARMACY_CLIENT_SECRET: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_SECRET }}
+          SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          STORE_AUDIENCE: vet
