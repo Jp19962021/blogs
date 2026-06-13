@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PetScript Blog Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a202c;min-height:100vh}
+header{background:#1a56db;color:#fff;padding:18px 28px;display:flex;align-items:center;gap:14px}
+header h1{font-size:1.3rem;font-weight:600}
+header p{font-size:.8rem;opacity:.75;margin-top:2px}
+.contact-bar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 28px;display:flex;gap:24px;flex-wrap:wrap;font-size:.82rem}
+.contact-bar a{color:#1a56db;text-decoration:none}
+.tabs{display:flex;padding:0 28px;background:#fff;border-bottom:1px solid #e2e8f0}
+.tab{padding:12px 20px;font-size:.85rem;font-weight:500;cursor:pointer;border-bottom:3px solid transparent;color:#718096;transition:all .15s}
+.tab.active{color:#1a56db;border-bottom-color:#1a56db}
+.tab:hover:not(.active){color:#4a5568}
+.container{max-width:960px;margin:0 auto;padding:24px 20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:#fff;border-radius:10px;padding:16px;border:1px solid #e2e8f0}
+.stat .num{font-size:1.8rem;font-weight:700;color:#1a56db}
+.stat .lbl{font-size:.75rem;color:#718096;margin-top:3px}
+.section-hd{font-size:.75rem;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px}
+.card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;padding:18px;margin-bottom:12px;border-left:4px solid #1a56db}
+.card.failed{border-left-color:#e53e3e}
+.card.petowner{border-left-color:#d97706}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.card-title{font-size:.95rem;font-weight:600;flex:1}
+.badges{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.badge{font-size:.68rem;padding:3px 9px;border-radius:20px;font-weight:600}
+.badge.vet{background:#dbeafe;color:#1e40af}
+.badge.petowner{background:#fef3c7;color:#92400e}
+.badge.success{background:#d1fae5;color:#065f46}
+.badge.failed{background:#fee2e2;color:#991b1b}
+.badge.vol-high{background:#d1fae5;color:#065f46}
+.badge.vol-medium{background:#fef3c7;color:#92400e}
+.badge.vol-low{background:#f3f4f6;color:#374151}
+.keyword-pill{display:inline-block;background:#eff6ff;color:#1d4ed8;font-size:.78rem;padding:4px 10px;border-radius:6px;margin:6px 0;font-weight:500}
+.trend-line{font-size:.78rem;color:#6b7280;margin-top:5px;font-style:italic}
+.facts{margin-top:8px}
+.fact{font-size:.76rem;color:#4b5563;padding:2px 0}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.tag{background:#f9fafb;border:1px solid #e5e7eb;color:#374151;font-size:.7rem;padding:2px 7px;border-radius:4px}
+.meta-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:.77rem;color:#6b7280}
+.shopify-link{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:.78rem;color:#1a56db;text-decoration:none;padding:5px 12px;border:1px solid #bfdbfe;border-radius:6px;background:#eff6ff}
+.trends-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.trend-card{background:#fff;border-radius:10px;border:1px solid #e2e8f0;padding:16px}
+.trend-card h3{font-size:.85rem;font-weight:600;margin-bottom:12px;color:#1a56db}
+.trend-kw{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f3f4f6;font-size:.82rem}
+.trend-kw:last-child{border-bottom:none}
+.trend-kw .kw{color:#111827;font-weight:500}
+.trend-kw .vol{font-size:.72rem;padding:2px 7px;border-radius:4px}
+.empty{text-align:center;padding:48px 20px;color:#9ca3af;font-size:.9rem}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.refresh-note{font-size:.72rem;color:#9ca3af;text-align:center;margin-top:24px;padding-bottom:32px}
+</style>
+</head>
+<body>
+<header>
+  <div style="font-size:1.8rem">🐾</div>
+  <div><h1>PetScript Blog Dashboard</h1><p>Daily automated blog generation — powered by Google Trends + Claude AI</p></div>
+</header>
+<div class="contact-bar">
+  <span>🌐 <a href="https://www.petscriptpharmacy.com" target="_blank">petscriptpharmacy.com</a></span>
+  <span>🌐 <a href="https://www.petscriptdirect.com" target="_blank">petscriptdirect.com</a></span>
+  <span>📞 <a href="tel:8667846915">866-784-6915</a></span>
+  <span>✉️ <a href="mailto:info@petscript.net">info@petscript.net</a></span>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('vet')">🏥 PetScript Pharmacy (Vet)</div>
+  <div class="tab" onclick="switchTab('petowner')">🐾 PetScript Direct (Pet Owner)</div>
+  <div class="tab" onclick="switchTab('trends')">📈 Google Trends</div>
+</div>
+<div class="container">
+  <div class="tab-content active" id="tab-vet">
+    <div class="stats" id="stats-vet"></div>
+    <div class="section-hd">Recent blog runs — vet audience</div>
+    <div id="runs-vet"></div>
+  </div>
+  <div class="tab-content" id="tab-petowner">
+    <div class="stats" id="stats-petowner"></div>
+    <div class="section-hd">Recent blog runs — pet owner audience</div>
+    <div id="runs-petowner"></div>
+  </div>
+  <div class="tab-content" id="tab-trends">
+    <div class="section-hd">Keywords picked by Google Trends research</div>
+    <div class="trends-grid" id="trends-grid"></div>
+  </div>
+  <div class="refresh-note">Auto-updates after each GitHub Actions run &nbsp;·&nbsp; Last loaded: <span id="loadtime"></span></div>
+</div>
+<script>
+document.getElementById('loadtime').textContent=new Date().toLocaleString();
+function switchTab(n){document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['vet','petowner','trends'][i]===n));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active')}
+function volClass(v){return v==='high'?'vol-high':v==='medium'?'vol-medium':'vol-low'}
+function renderStats(runs,id){const s=runs.filter(r=>r.status==='success').length,f=runs.filter(r=>r.status==='failed').length,l=runs[0]?new Date(runs[0].date).toLocaleDateString():'—';document.getElementById(id).innerHTML=`<div class="stat"><div class="num">${runs.length}</div><div class="lbl">Total runs</div></div><div class="stat"><div class="num" style="color:#059669">${s}</div><div class="lbl">Successful</div></div><div class="stat"><div class="num" style="color:#dc2626">${f}</div><div class="lbl">Failed</div></div><div class="stat"><div class="num" style="font-size:1.1rem;padding-top:6px">${l}</div><div class="lbl">Last run</div></div>`}
+function renderRuns(runs,id,aud){const el=document.getElementById(id);if(!runs.length){el.innerHTML='<div class="empty">No runs yet. Trigger GitHub Actions to generate the first post.</div>';return}el.innerHTML=runs.map(r=>`<div class="card ${r.status==='failed'?'failed':aud}"><div class="card-top"><div class="card-title">${r.title||'Run '+new Date(r.date).toLocaleDateString()}</div><div class="badges">${r.search_volume?`<span class="badge ${volClass(r.search_volume)}">${r.search_volume} volume</span>`:''}<span class="badge ${r.status}">${r.status==='success'?'✓ Draft posted':'✗ Failed'}</span></div></div>${r.keyword?`<div class="keyword-pill">🔑 ${r.keyword}</div>`:''} ${r.trending_reason?`<div class="trend-line">📈 ${r.trending_reason}</div>`:''} ${r.error?`<div class="trend-line" style="color:#dc2626">${r.error}</div>`:''} ${r.facts?.length?`<div class="facts">${r.facts.map(f=>`<div class="fact">• ${f}</div>`).join('')}</div>`:''}<div class="meta-row"><span>${new Date(r.date).toLocaleString()}</span>${r.hasImage!==undefined?`<span>${r.hasImage?'🖼 Image':'No image'}</span>`:''}</div>${r.tags?.length?`<div class="tags">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}<a class="shopify-link" href="https://admin.shopify.com/store/pet-script-texas/articles" target="_blank">→ View in Shopify</a></div>`).join('')}
+function renderTrends(log){const vk=[...new Map(log.filter(r=>r.audience==='vet'&&r.keyword).map(r=>[r.keyword,r])).values()].slice(0,8),pk=[...new Map(log.filter(r=>r.audience==='petowner'&&r.keyword).map(r=>[r.keyword,r])).values()].slice(0,8);const ml=(items,label)=>`<div class="trend-card"><h3>${label}</h3>${items.length?items.map(r=>`<div class="trend-kw"><span class="kw">${r.keyword}</span><span class="vol ${volClass(r.search_volume)}">${r.search_volume||'?'}</span></div>`).join(''):'<div style="color:#9ca3af;font-size:.8rem;padding:8px 0">No data yet</div>'}</div>`;document.getElementById('trends-grid').innerHTML=ml(vk,'🏥 Vet keywords')+ml(pk,'🐾 Pet owner keywords')}
+fetch('run-log.json?t='+Date.now()).then(r=>r.json()).then(log=>{const vr=log.filter(r=>r.audience==='vet'),pr=log.filter(r=>r.audience==='petowner');renderStats(vr,'stats-vet');renderStats(pr,'stats-petowner');renderRuns(vr,'runs-vet','vet');renderRuns(pr,'runs-petowner','petowner');renderTrends(log)}).catch(()=>{document.getElementById('runs-vet').innerHTML='<div class="empty">No run log yet. Run the GitHub Action first.</div>';document.getElementById('runs-petowner').innerHTML='<div class="empty">No run log yet.</div>'});
+</script>
+</body>
+</html>
