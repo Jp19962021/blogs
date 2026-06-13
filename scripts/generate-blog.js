@@ -204,17 +204,35 @@ BODY: [full HTML — h2/h3, paragraphs, contact block at end]`;
   });
 
   const text = response.content.find(b => b.type === 'text')?.text || '';
-  const extract = (label) => {
-    const match = text.match(new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n(?:TITLE|META|TAGS|PEXELS_QUERY|BODY):|$)`));
+  
+  console.log('\n--- RAW RESPONSE PREVIEW ---');
+  console.log(text.slice(0, 400));
+  console.log('--- END PREVIEW ---\n');
+
+  const extractSection = (label, nextLabels) => {
+    const pattern = new RegExp(`(?:^|\n)${label}:\s*([\s\S]*?)(?=\n(?:${nextLabels.join('|')}):|$)`, 'i');
+    const match = text.match(pattern);
     return match ? match[1].trim() : '';
   };
 
+  const title = extractSection('TITLE', ['META','TAGS','PEXELS_QUERY','BODY']);
+  const meta = extractSection('META', ['TAGS','PEXELS_QUERY','BODY']);
+  const tagsRaw = extractSection('TAGS', ['PEXELS_QUERY','BODY']);
+  const pexelsQuery = extractSection('PEXELS_QUERY', ['BODY']);
+  const body = extractSection('BODY', []);
+
+  if (!title) {
+    console.error('Failed to parse title from response. Full response:');
+    console.error(text.slice(0, 1000));
+    throw new Error('Could not parse blog post title from Claude response');
+  }
+
   return {
-    title: extract('TITLE'),
-    meta: extract('META'),
-    tags: extract('TAGS').split(',').map(t => t.trim()).filter(Boolean),
-    pexelsQuery: extract('PEXELS_QUERY'),
-    body: extract('BODY'),
+    title,
+    meta,
+    tags: tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
+    pexelsQuery,
+    body,
   };
 }
 
