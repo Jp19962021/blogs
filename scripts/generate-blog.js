@@ -46,7 +46,25 @@ function saveRunLog(entry) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(log.slice(0, 90), null, 2));
 }
 
-// Contact block appended AFTER Claude writes the post
+function sanitizeFacts(facts) {
+  if (!facts || !Array.isArray(facts)) return [];
+  const dosingPatterns = [
+    /\d+\.?\d*\s*mg\/kg/i,
+    /\d+\.?\d*\s*mg\/lb/i,
+    /dose[sd]?\s+of\s+\d/i,
+    /dosing\s+of\s+\d/i,
+    /\d+\s*mg\s+per\s+kg/i,
+    /administer\s+\d/i,
+    /\d+\s*ml\s+per/i,
+    /q\d+h/i,
+  ];
+  return facts.filter(fact => {
+    const hasDosing = dosingPatterns.some(p => p.test(fact));
+    if (hasDosing) console.log(`Filtered dosing fact: ${fact.slice(0, 60)}...`);
+    return !hasDosing;
+  });
+}
+
 function getContactBlock() {
   return audience === 'vet'
     ? `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Partner With PetScript Pharmacy</h3><p style="margin:0 0 12px;color:#374151">Ready to work with a compounding pharmacy built for veterinary practices?</p><ul style="margin:0;padding-left:20px;color:#374151"><li>Website: <a href="https://www.petscriptpharmacy.com" style="color:#1a56db">www.petscriptpharmacy.com</a></li><li>Phone: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></li></ul></div>`
@@ -57,16 +75,12 @@ async function researchTrendingKeyword() {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const usedKeywords = getUsedKeywords();
   const recentTitles = getRecentTitles();
-  const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
-
   const prompt = audience === 'vet'
     ? `Search for what veterinarians are searching for RIGHT NOW in June 2026 related to: veterinary compounding pharmacy, pet medication sourcing, FDA regulations, animal medication formulations, conditions requiring compounding.
-
 AVOID these recently used keywords: ${usedKeywords.slice(-10).join(', ')}
 AVOID blogs similar to: ${recentTitles.join(' | ')}
-
 Return ONLY valid JSON with no extra text:
-{"keyword":"primary SEO phrase","angle":"specific blog angle","trending_reason":"why trending now","search_volume":"high/medium/low","facts":["fact1","fact2","fact3"],"pexels_query":"3 words for warm vet lifestyle photo"}`
+{"keyword":"primary SEO phrase","angle":"specific blog angle","trending_reason":"why trending now","search_volume":"high/medium/low","facts":["fact about topic NO dosing amounts","fact2","fact3"],"pexels_query":"3 words for warm vet lifestyle photo"}`
     : `Search for what pet owners are searching RIGHT NOW in June 2026 about pet health and medications.
 AVOID: ${recentTitles.join(' | ')}
 Return ONLY valid JSON:
@@ -98,8 +112,8 @@ Return ONLY valid JSON:
 async function generateBlogPost(trendData) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
-
   const cleanFacts = sanitizeFacts(trendData.facts);
+
   const prompt = `Write a blog post for ${audience === 'vet' ? 'veterinary professionals' : 'pet owners'}.
 
 KEYWORD: "${trendData.keyword}"
@@ -110,9 +124,9 @@ FACTS: ${cleanFacts.join('; ') || 'none'}
 Rules:
 - Use keyword in title and at least one H2
 - Link to ${siteUrl} naturally in body
-- NEVER include dosing amounts or administration instructions
+- NEVER include dosing amounts, mg/kg, or administration instructions under any circumstances
 - End body with a call-to-action paragraph
-- Write clean HTML for body (h2, h3, p tags only — no html/body/head tags)
+- Write clean HTML for body (h2, h3, p tags only)
 
 Respond with EXACTLY this format — labels must be at the START of a line:
 TITLE: your title here
@@ -136,12 +150,10 @@ BODY: your full HTML body here`;
 
   console.log('Stop reason:', response.stop_reason);
   console.log('Content blocks:', response.content.length);
-  response.content.forEach((b, i) => console.log(`  Block ${i}: type=${b.type}, length=${b.type === 'text' ? b.text.length : 'n/a'}`));
 
   const text = response.content.find(b => b.type === 'text')?.text || '';
   console.log('Response length:', text.length);
 
-  // Line-by-line parser
   const sections = {};
   let currentLabel = null;
   let currentLines = [];
@@ -158,7 +170,6 @@ BODY: your full HTML body here`;
     }
   }
   if (currentLabel) sections[currentLabel] = currentLines.join('\n').trim();
-
   console.log('Sections parsed:', Object.keys(sections).join(', '));
 
   if (!sections['TITLE']) {
@@ -178,7 +189,7 @@ BODY: your full HTML body here`;
 async function fetchPexelsImage(query) {
   const apiKey = process.env.PEXELS_API_KEY;
   if (!apiKey) return null;
-  const fallbacks = CONFIG.unsplashQueries || ['veterinarian dog', 'happy pet owner', 'cat owner smiling'];
+  const fallbacks = CONFIG.unsplashQueries || ['veterinarian dog', 'happy pet owner'];
   const queries = [query, ...fallbacks].slice(0, 5);
   for (const q of queries) {
     try {
@@ -263,7 +274,6 @@ async function main() {
   console.log(`\n🖼  Fetching Pexels image: "${post.pexelsQuery}"`);
   const image = await fetchPexelsImage(post.pexelsQuery);
 
-  // Append contact block + photo credit AFTER Claude's content
   let finalBody = post.body + '\n' + getContactBlock();
   if (image) finalBody += `\n<p><small><em>${image.credit} | <a href="${image.creditUrl}" target="_blank" rel="noopener">View on Pexels</a></em></small></p>`;
 
@@ -281,7 +291,7 @@ async function main() {
     date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
     keyword: trendData.keyword, angle: trendData.angle,
     trending_reason: trendData.trending_reason, search_volume: trendData.search_volume,
-    facts: trendData.facts || [], title: post.title, tags: post.tags,
+    facts: sanitizeFacts(trendData.facts), title: post.title, tags: post.tags,
     articleId: article.id, articleHandle: article.handle, hasImage: !!image, status: 'success',
   });
 
