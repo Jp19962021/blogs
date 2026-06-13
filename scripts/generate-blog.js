@@ -46,113 +46,141 @@ function saveRunLog(entry) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(log.slice(0, 90), null, 2));
 }
 
-function sanitizeFacts(facts) {
-  if (!facts || !Array.isArray(facts)) return [];
-  const dosingPatterns = [
-    /\d+\.?\d*\s*mg\/kg/i,
-    /\d+\.?\d*\s*mg\/lb/i,
-    /dose[sd]?\s+of\s+\d/i,
-    /dosing\s+of\s+\d/i,
-    /\d+\s*mg\s+per\s+kg/i,
-    /administer\s+\d/i,
-    /\d+\s*ml\s+per/i,
-    /q\d+h/i,
-  ];
-  return facts.filter(fact => {
-    const hasDosing = dosingPatterns.some(p => p.test(fact));
-    if (hasDosing) console.log(`Filtered dosing fact: ${fact.slice(0, 60)}...`);
-    return !hasDosing;
-  });
-}
-
 function getContactBlock() {
   return audience === 'vet'
     ? `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Partner With PetScript Pharmacy</h3><p style="margin:0 0 12px;color:#374151">Ready to work with a compounding pharmacy built for veterinary practices?</p><ul style="margin:0;padding-left:20px;color:#374151"><li>Website: <a href="https://www.petscriptpharmacy.com" style="color:#1a56db">www.petscriptpharmacy.com</a></li><li>Phone: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></li></ul></div>`
     : `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Get Your Pet's Medication from PetScript Direct</h3><p style="margin:0 0 12px;color:#374151">Custom compounded medications delivered to your door.</p><ul style="margin:0;padding-left:20px;color:#374151"><li>Website: <a href="https://www.petscriptdirect.com" style="color:#1a56db">www.petscriptdirect.com</a></li><li>Phone: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></li></ul></div>`;
 }
 
-async function researchTrendingKeyword() {
+// ── STEP 1: Find a trending topic and real source articles ───
+async function researchTopicAndArticles() {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const usedKeywords = getUsedKeywords();
   const recentTitles = getRecentTitles();
-  const prompt = audience === 'vet'
-    ? `Search for what veterinarians are searching for RIGHT NOW in June 2026 related to: veterinary compounding pharmacy, pet medication sourcing, FDA regulations, animal medication formulations, conditions requiring compounding.
-AVOID these recently used keywords: ${usedKeywords.slice(-10).join(', ')}
-AVOID blogs similar to: ${recentTitles.join(' | ')}
-Return ONLY valid JSON with no extra text:
-{"keyword":"primary SEO phrase","angle":"specific blog angle","trending_reason":"why trending now","search_volume":"high/medium/low","facts":["fact about topic NO dosing amounts","fact2","fact3"],"pexels_query":"3 words for warm vet lifestyle photo"}`
-    : `Search for what pet owners are searching RIGHT NOW in June 2026 about pet health and medications.
-AVOID: ${recentTitles.join(' | ')}
-Return ONLY valid JSON:
-{"keyword":"primary SEO phrase","angle":"relatable angle","trending_reason":"why trending","search_volume":"high/medium/low","facts":["fact1","fact2"],"pexels_query":"3 words warm pet lifestyle photo"}`;
+  const siteUrl = audience === 'vet' ? 'petscriptpharmacy.com' : 'petscriptdirect.com';
 
-  try {
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 800,
-      tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages: [{ role: 'user', content: prompt }],
-    });
-    const text = response.content.filter(b => b.type === 'text').map(b => b.text).join('');
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-      const parsed = JSON.parse(match[0]);
-      console.log(`Keyword: ${parsed.keyword}`);
-      console.log(`Trending: ${parsed.trending_reason}`);
-      console.log(`Volume: ${parsed.search_volume}`);
-      parsed.facts?.forEach(f => console.log(`  • ${f}`));
-      return parsed;
-    }
-  } catch (err) {
-    console.warn('Trend research failed:', err.message);
+  const sources = audience === 'vet'
+    ? 'avma.org, wedgewoodpharmacy.com, mixlab.com, covetrus.com, veterinarypracticenews.com, dvm360.com'
+    : 'akc.org, petmd.com, catvills.com, preventivevet.com, thesprucepets.com';
+
+  const prompt = audience === 'vet'
+    ? `You are a veterinary content researcher. Search these sources for trending topics relevant to veterinary compounding pharmacy: ${sources}
+
+Find ONE trending topic from the past 30 days that veterinarians are searching for. 
+
+AVOID these recently covered topics: ${usedKeywords.slice(-10).join(', ')}
+AVOID topics similar to these recent titles: ${recentTitles.join(' | ')}
+AVOID any topic that requires medication dosing, treatment protocols, or drug administration details.
+
+Good topic types: pharmacy partnerships, medication availability, regulatory updates, practice efficiency, specific conditions that benefit from compounding (described informatively, not clinically), client communication, industry trends.
+
+Search for 2-3 real articles on the chosen topic from the sources above. Read their key points.
+
+Return ONLY valid JSON:
+{
+  "keyword": "primary SEO keyword phrase",
+  "topic": "specific topic angle",
+  "search_volume": "high/medium/low",
+  "sources": [
+    {"url": "actual url", "title": "article title", "key_points": ["point 1", "point 2", "point 3"]}
+  ],
+  "pexels_query": "3 words for warm real photo e.g. veterinarian with dog"
+}`
+    : `Search these pet owner sources for trending pet health topics related to pet medications: ${sources}
+
+Find ONE topic pet owners are searching for right now.
+AVOID: ${recentTitles.join(' | ')}
+AVOID any dosing or treatment protocol details.
+
+Search for 2-3 real articles. Return ONLY valid JSON:
+{
+  "keyword": "primary SEO keyword phrase",
+  "topic": "specific angle for pet owners",
+  "search_volume": "high/medium/low",
+  "sources": [
+    {"url": "actual url", "title": "article title", "key_points": ["point 1", "point 2", "point 3"]}
+  ],
+  "pexels_query": "3 words warm pet lifestyle photo"
+}`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-5',
+    max_tokens: 1500,
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  const text = response.content.filter(b => b.type === 'text').map(b => b.text).join('');
+  const match = text.match(/\{[\s\S]*\}/);
+  if (match) {
+    const parsed = JSON.parse(match[0]);
+    console.log(`Keyword: ${parsed.keyword}`);
+    console.log(`Topic: ${parsed.topic}`);
+    console.log(`Volume: ${parsed.search_volume}`);
+    console.log(`Sources found: ${parsed.sources?.length || 0}`);
+    parsed.sources?.forEach(s => console.log(`  • ${s.title}`));
+    return parsed;
   }
-  return { keyword: 'veterinary compounding pharmacy', angle: 'Practical guide', trending_reason: 'Evergreen fallback', search_volume: 'medium', facts: [], pexels_query: 'veterinarian dog' };
+  throw new Error('Could not parse topic research response');
 }
 
-async function generateBlogPost(trendData) {
+// ── STEP 2: Write blog post based on real source material ────
+async function generateBlogPost(researchData) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
-  const cleanFacts = sanitizeFacts(trendData.facts);
+  const storeName = audience === 'vet' ? 'PetScript Pharmacy' : 'PetScript Direct';
 
-  const prompt = `Write a blog post for ${audience === 'vet' ? 'veterinary professionals' : 'pet owners'}.
+  // Build source material summary
+  const sourceMaterial = researchData.sources?.map(s =>
+    `SOURCE: ${s.title} (${s.url})\nKEY POINTS:\n${s.key_points?.map(p => `- ${p}`).join('\n')}`
+  ).join('\n\n') || 'No sources found — write from general knowledge on the topic.';
 
-KEYWORD: "${trendData.keyword}"
-ANGLE: ${trendData.angle}
-CONTEXT: ${trendData.trending_reason}
-FACTS: ${cleanFacts.join('; ') || 'none'}
+  const prompt = `You are a professional copywriter writing for ${storeName}, a veterinary compounding pharmacy.
 
-Rules:
-- Use keyword in title and at least one H2
-- Link to ${siteUrl} naturally in body
-- NEVER include dosing amounts, mg/kg, or administration instructions under any circumstances
-- End body with a call-to-action paragraph
-- Write clean HTML for body (h2, h3, p tags only)
+TASK: Write a blog post based on the source material below. 
+- Use the key points from the sources as your factual foundation
+- Rewrite everything in fresh, original language — never copy phrases directly
+- Write clearly and specifically (avoid vague marketing speak)
+- Use benefits over features — tell the reader what this means for THEM
+- Audience: ${audience === 'vet' ? 'veterinarians, vet techs, clinic managers' : 'pet owners who love their animals'}
+- Tone: ${audience === 'vet' ? 'professional, warm, knowledgeable peer' : 'friendly, caring, easy to understand'}
 
-Respond with EXACTLY this format — labels must be at the START of a line:
+PRIMARY KEYWORD: "${researchData.keyword}"
+TOPIC ANGLE: ${researchData.topic}
+
+SOURCE MATERIAL TO BASE THE POST ON:
+${sourceMaterial}
+
+REQUIREMENTS:
+- Use keyword naturally in title, at least one H2, and 2-3x in body
+- Link to ${siteUrl} at least once naturally
+- NEVER include dosing amounts, mg/kg values, or administration instructions
+- End with a strong call-to-action
+- 500-700 words
+- Clean HTML body only (h2, h3, p, ul, li tags)
+
+Respond with EXACTLY this format — each label at the START of a line:
 TITLE: your title here
-META: your meta description here
+META: 150-160 char meta description
 TAGS: tag1, tag2, tag3, tag4
-PEXELS: 3 words for warm lifestyle photo
-BODY: your full HTML body here`;
+PEXELS: 3 words for real lifestyle photo
+BODY: full HTML blog body here`;
 
-  let response;
-  try {
-    response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 2000,
-      system: CONFIG.systemPrompt,
-      messages: [{ role: 'user', content: prompt }],
-    });
-  } catch (apiErr) {
-    console.error('Anthropic API error:', apiErr.status, apiErr.message);
-    throw apiErr;
-  }
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-5',
+    max_tokens: 2000,
+    messages: [{ role: 'user', content: prompt }],
+  });
 
   console.log('Stop reason:', response.stop_reason);
   console.log('Content blocks:', response.content.length);
 
   const text = response.content.find(b => b.type === 'text')?.text || '';
   console.log('Response length:', text.length);
+
+  if (!text) {
+    throw new Error(`Claude refused or returned empty response. Stop reason: ${response.stop_reason}`);
+  }
 
   const sections = {};
   let currentLabel = null;
@@ -173,15 +201,15 @@ BODY: your full HTML body here`;
   console.log('Sections parsed:', Object.keys(sections).join(', '));
 
   if (!sections['TITLE']) {
-    console.error('Raw response:\n', text.slice(0, 500));
-    throw new Error('Could not parse TITLE from Claude response');
+    console.error('Raw response preview:\n', text.slice(0, 300));
+    throw new Error('Could not parse TITLE from response');
   }
 
   return {
     title: sections['TITLE'],
     meta: sections['META'] || '',
     tags: (sections['TAGS'] || '').split(',').map(t => t.trim()).filter(Boolean),
-    pexelsQuery: sections['PEXELS'] || trendData.pexels_query || 'veterinarian dog',
+    pexelsQuery: sections['PEXELS'] || researchData.pexels_query || 'veterinarian dog',
     body: sections['BODY'] || '',
   };
 }
@@ -263,11 +291,11 @@ async function main() {
   const shopifyToken = await getShopifyToken(CONFIG.storeDomain, clientId, clientSecret);
   console.log('Got Shopify token');
 
-  console.log('\n🔍 Researching Google Trends...');
-  const trendData = await researchTrendingKeyword();
+  console.log('\n🔍 Finding trending topic and real source articles...');
+  const researchData = await researchTopicAndArticles();
 
-  console.log('\n✍️  Writing blog post...');
-  const post = await generateBlogPost(trendData);
+  console.log('\n✍️  Writing blog post from source material...');
+  const post = await generateBlogPost(researchData);
   console.log(`📝 Title: ${post.title}`);
   console.log(`🏷️  Tags: ${post.tags.join(', ')}`);
 
@@ -280,19 +308,26 @@ async function main() {
   const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
 
   console.log('\n📤 Creating Shopify draft...');
-  const article = await createDraft({ domain: CONFIG.storeDomain, token: shopifyToken, blogId, title: post.title, body: finalBody, summary: post.meta, tags: post.tags, image });
+  const article = await createDraft({
+    domain: CONFIG.storeDomain, token: shopifyToken, blogId,
+    title: post.title, body: finalBody, summary: post.meta,
+    tags: post.tags, image,
+  });
 
   console.log(`✅ Draft created: "${article.title}"`);
   console.log(`   ID: ${article.id}`);
 
-  markKeywordUsed(trendData.keyword);
+  markKeywordUsed(researchData.keyword);
 
   saveRunLog({
     date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
-    keyword: trendData.keyword, angle: trendData.angle,
-    trending_reason: trendData.trending_reason, search_volume: trendData.search_volume,
-    facts: sanitizeFacts(trendData.facts), title: post.title, tags: post.tags,
-    articleId: article.id, articleHandle: article.handle, hasImage: !!image, status: 'success',
+    keyword: researchData.keyword, angle: researchData.topic,
+    trending_reason: `Based on sources: ${researchData.sources?.map(s => s.title).join(', ')}`,
+    search_volume: researchData.search_volume,
+    sources: researchData.sources?.map(s => s.url) || [],
+    title: post.title, tags: post.tags,
+    articleId: article.id, articleHandle: article.handle,
+    hasImage: !!image, status: 'success',
   });
 
   console.log('\n🎉 Done! Review in Shopify > Online Store > Blog Posts');
