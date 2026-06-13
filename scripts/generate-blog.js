@@ -99,12 +99,13 @@ async function generateBlogPost(trendData) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
 
+  const cleanFacts = sanitizeFacts(trendData.facts);
   const prompt = `Write a blog post for ${audience === 'vet' ? 'veterinary professionals' : 'pet owners'}.
 
 KEYWORD: "${trendData.keyword}"
 ANGLE: ${trendData.angle}
 CONTEXT: ${trendData.trending_reason}
-FACTS: ${trendData.facts?.join('; ') || 'none'}
+FACTS: ${cleanFacts.join('; ') || 'none'}
 
 Rules:
 - Use keyword in title and at least one H2
