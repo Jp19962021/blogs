@@ -120,12 +120,22 @@ TAGS: tag1, tag2, tag3, tag4
 PEXELS: 3 words for warm lifestyle photo
 BODY: your full HTML body here`;
 
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5',
-    max_tokens: 2000,
-    system: CONFIG.systemPrompt,
-    messages: [{ role: 'user', content: prompt }],
-  });
+  let response;
+  try {
+    response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 2000,
+      system: CONFIG.systemPrompt,
+      messages: [{ role: 'user', content: prompt }],
+    });
+  } catch (apiErr) {
+    console.error('Anthropic API error:', apiErr.status, apiErr.message);
+    throw apiErr;
+  }
+
+  console.log('Stop reason:', response.stop_reason);
+  console.log('Content blocks:', response.content.length);
+  response.content.forEach((b, i) => console.log(`  Block ${i}: type=${b.type}, length=${b.type === 'text' ? b.text.length : 'n/a'}`));
 
   const text = response.content.find(b => b.type === 'text')?.text || '';
   console.log('Response length:', text.length);
