@@ -38,8 +38,15 @@ jobs:
         run: |
           git config --global user.name "PetScript Bot"
           git config --global user.email "bot@petscriptpharmacy.com"
+          git config pull.rebase false
           git add docs/run-log.json
-          git diff --staged --quiet || (git commit -m "Update blog run log $(date +'%Y-%m-%d') vet" && git pull --rebase && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update blog run log $(date +'%Y-%m-%d') vet"
+            git pull --strategy-option=ours origin main
+            git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -51,6 +58,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -76,7 +85,14 @@ jobs:
         run: |
           git config --global user.name "PetScript Bot"
           git config --global user.email "bot@petscriptpharmacy.com"
+          git config pull.rebase false
+          git pull --strategy-option=ours origin main
           git add docs/run-log.json
-          git diff --staged --quiet || (git commit -m "Update blog run log $(date +'%Y-%m-%d') petowner" && git pull --rebase && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update blog run log $(date +'%Y-%m-%d') petowner"
+            git push
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
