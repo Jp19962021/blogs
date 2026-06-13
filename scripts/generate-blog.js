@@ -209,21 +209,35 @@ BODY: [full HTML — h2/h3, paragraphs, contact block at end]`;
   console.log(text.slice(0, 400));
   console.log('--- END PREVIEW ---\n');
 
-  const extractSection = (label, nextLabels) => {
-    const pattern = new RegExp(`(?:^|\n)${label}:\s*([\s\S]*?)(?=\n(?:${nextLabels.join('|')}):|$)`, 'i');
-    const match = text.match(pattern);
-    return match ? match[1].trim() : '';
-  };
+  // Split on labeled section headers
+  const sections = {};
+  const lines = text.split('\n');
+  let currentLabel = null;
+  let currentLines = [];
+  const LABELS = ['TITLE', 'META', 'TAGS', 'PEXELS_QUERY', 'BODY'];
 
-  const title = extractSection('TITLE', ['META','TAGS','PEXELS_QUERY','BODY']);
-  const meta = extractSection('META', ['TAGS','PEXELS_QUERY','BODY']);
-  const tagsRaw = extractSection('TAGS', ['PEXELS_QUERY','BODY']);
-  const pexelsQuery = extractSection('PEXELS_QUERY', ['BODY']);
-  const body = extractSection('BODY', []);
+  for (const line of lines) {
+    const headerMatch = line.match(/^(TITLE|META|TAGS|PEXELS_QUERY|BODY):\s*(.*)/);
+    if (headerMatch) {
+      if (currentLabel) sections[currentLabel] = currentLines.join('\n').trim();
+      currentLabel = headerMatch[1];
+      currentLines = headerMatch[2] ? [headerMatch[2]] : [];
+    } else if (currentLabel) {
+      currentLines.push(line);
+    }
+  }
+  if (currentLabel) sections[currentLabel] = currentLines.join('\n').trim();
+
+  const title = sections['TITLE'] || '';
+  const meta = sections['META'] || '';
+  const tagsRaw = sections['TAGS'] || '';
+  const pexelsQuery = sections['PEXELS_QUERY'] || '';
+  const body = sections['BODY'] || '';
+
+  console.log('Parsed sections:', Object.keys(sections));
 
   if (!title) {
-    console.error('Failed to parse title from response. Full response:');
-    console.error(text.slice(0, 1000));
+    console.error('Could not parse title. Sections found:', JSON.stringify(sections).slice(0, 500));
     throw new Error('Could not parse blog post title from Claude response');
   }
 
