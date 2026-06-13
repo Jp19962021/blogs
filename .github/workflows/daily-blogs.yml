@@ -11,27 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         run: npm install
         working-directory: ./scripts
+
       - name: Run vet blog script
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SHOPIFY_PHARMACY_CLIENT_ID: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_ID }}
           SHOPIFY_PHARMACY_CLIENT_SECRET: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_SECRET }}
           SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
-env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          SHOPIFY_PHARMACY_CLIENT_ID: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_ID }}
-          SHOPIFY_PHARMACY_CLIENT_SECRET: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_SECRET }}
-          SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          STORE_AUDIENCE: vet
+
+      - name: Commit run log
+        run: |
+          git config --global user.name "PetScript Bot"
+          git config --global user.email "bot@petscriptpharmacy.com"
+          git add docs/run-log.json
+          git diff --staged --quiet || git commit -m "Update blog run log $(date +'%Y-%m-%d')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
