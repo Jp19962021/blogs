@@ -4,8 +4,11 @@ export const VET_CONFIG = {
   blogId: 'gid://shopify/Blog/101500682495',
   authorName: 'PetScript Pharmacy',
   audience: 'vet',
-  unsplashQueries: ['veterinarian with dog','veterinary clinic','pet examination','vet and cat','dog at vet'],
-  systemPrompt: `You are a B2B content writer for PetScript Pharmacy, a veterinary compounding pharmacy. Your audience is veterinarians, veterinary technicians, clinic managers, and animal health professionals. Tone: professional, warm, trustworthy. NEVER include specific dosing guidelines or dosage amounts. Include at least one internal link to https://www.petscriptpharmacy.com/ where relevant. Target length: 500-700 words. Use H2 subheadings. Write clean HTML body only.`,
+  unsplashQueries: [
+    'veterinarian with dog', 'veterinary clinic', 'vet and cat',
+    'veterinarian smiling', 'dog at vet', 'cat at vet', 'animal hospital',
+  ],
+  systemPrompt: `You are a B2B content writer for PetScript Pharmacy, a veterinary compounding pharmacy. Your audience is veterinarians, veterinary technicians, clinic managers, and animal health professionals. Tone: professional, warm, trustworthy. NEVER include specific dosing guidelines or dosage amounts. Link to https://www.petscriptpharmacy.com at least once in body. Target length: 500-700 words. Use H2 subheadings. Write clean HTML body only.`,
   keywords: [
     'what makes a compounding pharmacy legitimate',
     'LegitScript certified veterinary pharmacy',
@@ -17,6 +20,10 @@ export const VET_CONFIG = {
     'how to switch compounding pharmacies',
     'pet medication sourcing for veterinary clinics',
     'best compounding pharmacy for veterinarians',
+    'veterinary compounding pharmacy near me',
+    'pet medication shipping time veterinary pharmacy',
+    'compounded medication formulary for veterinary clinics',
+    'veterinary pharmacy 24/7 customer support',
   ],
 };
 
@@ -26,8 +33,12 @@ export const PETOWNER_CONFIG = {
   blogId: null,
   authorName: 'PetScript Direct',
   audience: 'petowner',
-  unsplashQueries: ['happy dog owner','cat cuddling owner','puppy portrait','kitten close up','person holding cat'],
-  systemPrompt: `You are a friendly content writer for PetScript Direct, an online pet pharmacy. Your audience is everyday pet owners — dog and cat parents. Tone: warm, conversational, easy to understand. NEVER include specific dosing guidelines or dosage amounts. Target length: 450-600 words. Use H2 subheadings. Write clean HTML body only.`,
+  unsplashQueries: [
+    'happy dog owner', 'cat cuddling owner', 'puppy portrait',
+    'kitten close up', 'person holding cat', 'dog playing outside',
+    'pet and family',
+  ],
+  systemPrompt: `You are a friendly content writer for PetScript Direct, an online pet pharmacy. Your audience is everyday pet owners — dog and cat parents. Tone: warm, conversational, easy to understand. NEVER include specific dosing guidelines or dosage amounts. Link to https://www.petscriptdirect.com at least once. Target length: 450-600 words. Use H2 subheadings. Write clean HTML body only.`,
   keywords: [
     'how to give cats medication',
     'my dog wont take pills',
@@ -39,5 +50,9 @@ export const PETOWNER_CONFIG = {
     'online pet pharmacy',
     'pet prescription delivery',
     'is compounding safe for pets',
+    'how long does pet medication take to arrive',
+    'transdermal medication for cats at home',
+    'kidney disease medication for cats',
+    'FIP treatment for cats',
   ],
 };
