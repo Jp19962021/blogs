@@ -36,39 +36,154 @@ export async function fetchProducts(domain, token) {
   return json.data?.products?.edges?.map(e => e.node) || [];
 }
 
-// ── Match products to blog topic using Claude ────────────────
-export async function matchProductsToBlog(products, blogTitle, blogKeyword, blogBody) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// ── Veterinary keyword map for smarter product matching ──────
+const VET_KEYWORD_MAP = {
+  // FIP
+  'fip': ['gs-441524', 'gs441524', 'molnupiravir', 'remdesivir', 'antiviral', 'fip'],
+  'feline infectious peritonitis': ['gs-441524', 'gs441524', 'molnupiravir', 'fip'],
+  'gs-441524': ['gs-441524', 'gs441524', 'fip'],
+  'antiviral': ['gs-441524', 'molnupiravir', 'antiviral', 'fip'],
 
-  const productList = products.map(p =>
-    `ID: ${p.id}\nTitle: ${p.title}\nHandle: ${p.handle}\nDescription: ${p.description?.slice(0, 100)}`
+  // Anxiety / behavioral
+  'anxiety': ['trazodone', 'gabapentin', 'clomipramine', 'fluoxetine', 'paroxetine', 'melatonin', 'alprazolam', 'anxiety', 'behavioral'],
+  'separation anxiety': ['trazodone', 'clomipramine', 'fluoxetine', 'paroxetine', 'anxiety'],
+  'noise anxiety': ['trazodone', 'gabapentin', 'alprazolam', 'melatonin', 'anxiety'],
+  'behavioral': ['trazodone', 'fluoxetine', 'clomipramine', 'paroxetine', 'behavioral'],
+
+  // Pain / neurological
+  'pain': ['gabapentin', 'tramadol', 'meloxicam', 'pain', 'analgesic'],
+  'arthritis': ['meloxicam', 'gabapentin', 'tramadol', 'arthritis'],
+  'seizure': ['phenobarbital', 'potassium bromide', 'levetiracetam', 'seizure', 'epilepsy'],
+  'epilepsy': ['phenobarbital', 'potassium bromide', 'levetiracetam', 'epilepsy'],
+
+  // Kidney / urinary
+  'kidney': ['amlodipine', 'benazepril', 'enalapril', 'spironolactone', 'furosemide', 'potassium citrate', 'kidney', 'renal'],
+  'renal': ['amlodipine', 'benazepril', 'enalapril', 'spironolactone', 'kidney', 'renal'],
+  'urinary': ['prazosin', 'phenoxybenzamine', 'potassium citrate', 'urinary'],
+  'hypertension': ['amlodipine', 'atenolol', 'benazepril', 'hypertension', 'blood pressure'],
+
+  // Thyroid / hormonal
+  'thyroid': ['methimazole', 'thyroid', 'hyperthyroid'],
+  'hyperthyroid': ['methimazole', 'hyperthyroid', 'thyroid'],
+  'diabetes': ['insulin', 'glipizide', 'diabetes'],
+  'cushings': ['trilostane', 'mitotane', 'cushings', 'adrenal'],
+  'addisons': ['fludrocortisone', 'desoxycorticosterone', 'addisons', 'adrenal'],
+  'hormone': ['methimazole', 'trilostane', 'fludrocortisone', 'hormone'],
+
+  // Skin / dermatology
+  'dermatology': ['cyclosporine', 'prednisolone', 'dexamethasone', 'skin', 'dermatitis'],
+  'skin': ['cyclosporine', 'prednisolone', 'mupirocin', 'skin', 'dermatitis'],
+  'allergy': ['cyclosporine', 'prednisolone', 'cetirizine', 'allergy'],
+  'itch': ['cyclosporine', 'prednisolone', 'itch', 'pruritus'],
+
+  // Cardiac
+  'cardiac': ['atenolol', 'digoxin', 'furosemide', 'spironolactone', 'cardiac', 'heart'],
+  'heart': ['atenolol', 'digoxin', 'furosemide', 'amlodipine', 'cardiac', 'heart'],
+
+  // GI
+  'gastrointestinal': ['metronidazole', 'sucralfate', 'omeprazole', 'ondansetron', 'gi', 'gastrointestinal'],
+  'nausea': ['ondansetron', 'metoclopramide', 'maropitant', 'nausea'],
+  'vomiting': ['ondansetron', 'metoclopramide', 'maropitant', 'vomiting'],
+
+  // Compounding general
+  'compounding': ['compounded', 'suspension', 'transdermal', 'flavored', 'chewable'],
+  'transdermal': ['transdermal', 'gel', 'topical'],
+  'flavored': ['flavored', 'suspension', 'chewable', 'oral'],
+};
+
+function getRelevantKeywords(blogTitle, blogKeyword, blogExcerpt) {
+  const text = `${blogTitle} ${blogKeyword} ${blogExcerpt}`.toLowerCase();
+  const relevantTerms = new Set();
+  
+  for (const [trigger, terms] of Object.entries(VET_KEYWORD_MAP)) {
+    if (text.includes(trigger.toLowerCase())) {
+      terms.forEach(t => relevantTerms.add(t.toLowerCase()));
+    }
+  }
+  
+  return Array.from(relevantTerms);
+}
+
+// ── Match products to blog topic ─────────────────────────────
+export async function matchProductsToBlog(products, blogTitle, blogKeyword, blogBody) {
+  const blogExcerpt = blogBody.replace(/<[^>]*>/g, '').slice(0, 500);
+  const relevantTerms = getRelevantKeywords(blogTitle, blogKeyword, blogExcerpt);
+  
+  console.log(`Matching terms: ${relevantTerms.slice(0, 8).join(', ')}`);
+
+  // First pass — keyword matching against product titles/descriptions
+  const keywordMatched = products.filter(p => {
+    const productText = `${p.title} ${p.description || ''} ${p.tags?.join(' ') || ''}`.toLowerCase();
+    return relevantTerms.some(term => productText.includes(term));
+  });
+
+  console.log(`Keyword matched ${keywordMatched.length} products`);
+
+  // If we found matches via keywords, use Claude to pick the best 2-3
+  if (keywordMatched.length > 0) {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const productList = keywordMatched.map(p =>
+      `ID: ${p.id}\nTitle: ${p.title}\nHandle: ${p.handle}`
+    ).join('\n---\n');
+
+    const response = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 400,
+      messages: [{
+        role: 'user',
+        content: `Blog topic: "${blogTitle}" (keyword: "${blogKeyword}")
+
+These products were pre-filtered as potentially relevant. Pick the best 2-3 for a veterinarian reading this blog. Be inclusive — if it could be relevant, include it.
+
+PRODUCTS:
+${productList}
+
+Return ONLY valid JSON array (use exact IDs from above):
+[{"id": "gid://shopify/Product/...", "title": "product name", "handle": "product-handle"}]`
+      }],
+    });
+
+    const text = response.content.find(b => b.type === 'text')?.text || '[]';
+    try {
+      const match = text.match(/\[\s*\]/);
+      if (match) return []; // empty array
+      const arrMatch = text.match(/\[[\s\S]*\]/);
+      return arrMatch ? JSON.parse(arrMatch[0]) : keywordMatched.slice(0, 3).map(p => ({ id: p.id, title: p.title, handle: p.handle }));
+    } catch {
+      // Fallback to first 3 keyword matches if Claude parsing fails
+      return keywordMatched.slice(0, 3).map(p => ({ id: p.id, title: p.title, handle: p.handle }));
+    }
+  }
+
+  // No keyword matches — fall back to Claude with full product list
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const productList = products.slice(0, 30).map(p =>
+    `ID: ${p.id}\nTitle: ${p.title}\nHandle: ${p.handle}`
   ).join('\n---\n');
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-5',
-    max_tokens: 500,
+    max_tokens: 400,
     messages: [{
       role: 'user',
-      content: `Blog post title: "${blogTitle}"
-Blog keyword: "${blogKeyword}"
-Blog excerpt: "${blogBody.replace(/<[^>]*>/g, '').slice(0, 300)}"
+      content: `Blog topic: "${blogTitle}" (keyword: "${blogKeyword}")
+Blog excerpt: "${blogExcerpt.slice(0, 200)}"
 
-From this product list, pick the 2-3 most relevant products that a veterinarian reading this blog post might want to order. Only pick products genuinely relevant to the topic.
+Pick 1-3 relevant compounded medications from this list for a vet reading this blog. These are all veterinary compounded medications.
 
 PRODUCTS:
 ${productList}
 
 Return ONLY valid JSON array:
-[{"id": "gid://shopify/Product/...", "title": "product name", "handle": "product-handle", "reason": "why relevant in 5 words"}]
-
-If no products are genuinely relevant, return an empty array: []`
+[{"id": "gid://shopify/Product/...", "title": "product name", "handle": "product-handle"}]
+Return [] if truly nothing is relevant.`
     }],
   });
 
   const text = response.content.find(b => b.type === 'text')?.text || '[]';
   try {
-    const match = text.match(/\[[\s\S]*\]/);
-    return match ? JSON.parse(match[0]) : [];
+    const arrMatch = text.match(/\[[\s\S]*\]/);
+    return arrMatch ? JSON.parse(arrMatch[0]) : [];
   } catch {
     return [];
   }
