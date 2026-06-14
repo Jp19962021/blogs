@@ -281,7 +281,6 @@ async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
         n: 1,
         size: '1792x1024',
         quality: 'hd',
-        style: 'natural',
       }),
     });
 
