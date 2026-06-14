@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { fetchProducts, matchProductsToBlog, buildProductBlock, updateProductDescriptions } from './product-integration.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -299,10 +300,18 @@ async function main() {
   console.log(`📝 Title: ${post.title}`);
   console.log(`🏷️  Tags: ${post.tags.join(', ')}`);
 
+  // ── Product integration ─────────────────────────────────────
+  console.log('\n🛍  Matching products to blog topic...');
+  const products = await fetchProducts(CONFIG.storeDomain, shopifyToken);
+  const matchedProducts = await matchProductsToBlog(products, post.title, researchData.keyword, post.body);
+  console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
+
+  const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain);
+
   console.log(`\n🖼  Fetching Pexels image: "${post.pexelsQuery}"`);
   const image = await fetchPexelsImage(post.pexelsQuery);
 
-  let finalBody = post.body + '\n' + getContactBlock();
+  let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
   if (image) finalBody += `\n<p><small><em>${image.credit} | <a href="${image.creditUrl}" target="_blank" rel="noopener">View on Pexels</a></em></small></p>`;
 
   const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
@@ -315,6 +324,12 @@ async function main() {
   });
 
   console.log(`✅ Draft created: "${article.title}"`);
+
+  // Update product descriptions with blog keywords
+  if (matchedProducts.length > 0) {
+    console.log('\n🏷  Updating product descriptions with SEO keywords...');
+    await updateProductDescriptions(matchedProducts, researchData.keyword, post.title, CONFIG.storeDomain, shopifyToken);
+  };
   console.log(`   ID: ${article.id}`);
 
   markKeywordUsed(researchData.keyword);
