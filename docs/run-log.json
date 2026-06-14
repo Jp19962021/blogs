@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-14T03:11:37.648Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "AI veterinary pharmacy assistant",
+    "angle": "How AI Pharmacy Assistants Are Supporting Veterinarians and Pet Owners Through the Medication Journey",
+    "trending_reason": "Based on sources: Mixlab Unveils Maisy, an AI Health Partner, VetPawer adds prescription refill functionality to its AI virtual assistant, Integrating AI as a team 'member'",
+    "search_volume": "medium",
+    "sources": [
+      "https://mixlab.com/blog/mixlab-unveils-maisy-ai-health-partner-following-year-of-rapid-growth",
+      "https://www.dvm360.com/view/vetpawer-adds-prescription-refill-functionality-to-its-ai-virtual-assistant",
+      "https://www.veterinarypracticenews.com/integrating-ai-as-team-member-2/"
+    ],
+    "title": "How AI Veterinary Pharmacy Assistants Are Transforming Medication Management",
+    "tags": [
+      "AI veterinary pharmacy assistant",
+      "veterinary technology",
+      "pharmacy automation",
+      "veterinary practice management"
+    ],
+    "articleId": "gid://shopify/Article/596817281279",
+    "articleHandle": "how-ai-veterinary-pharmacy-assistants-are-transforming-medication-management",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-14T03:04:52.318Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
