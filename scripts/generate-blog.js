@@ -237,6 +237,77 @@ async function fetchPexelsImage(query) {
   return null;
 }
 
+// ── Generate image via DALL-E 3 ─────────────────────────────
+async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) return null;
+
+  // Build a specific, on-brand prompt based on the blog topic
+  const topicLower = `${blogTitle} ${blogKeyword}`.toLowerCase();
+  
+  let scenePrompt;
+  if (topicLower.includes('fip') || topicLower.includes('cat')) {
+    scenePrompt = 'A veterinarian gently examining a healthy orange tabby cat on a clinic table, warm natural lighting, the vet is smiling, bright modern clinic background';
+  } else if (topicLower.includes('anxiety') || topicLower.includes('behavioral')) {
+    scenePrompt = 'A happy calm golden retriever sitting next to its smiling owner on a couch at home, warm indoor lighting, cozy living room setting';
+  } else if (topicLower.includes('kidney') || topicLower.includes('renal')) {
+    scenePrompt = 'A caring veterinarian consulting with a pet owner about their senior cat, soft clinic lighting, both looking at the cat warmly';
+  } else if (topicLower.includes('pain') || topicLower.includes('arthritis')) {
+    scenePrompt = 'A senior Labrador retriever being gently examined by a kind veterinarian, warm clinic lighting, the dog looks relaxed and calm';
+  } else if (topicLower.includes('dog') || topicLower.includes('canine')) {
+    scenePrompt = 'A happy healthy dog being examined by a smiling veterinarian in a bright modern clinic, warm natural lighting';
+  } else if (topicLower.includes('compounding') || topicLower.includes('pharmacy') || topicLower.includes('medication')) {
+    scenePrompt = 'A veterinarian and a pharmacist having a friendly professional conversation in a bright modern veterinary clinic, both smiling';
+  } else if (topicLower.includes('kitten') || topicLower.includes('feline')) {
+    scenePrompt = 'A happy cat owner cuddling a fluffy kitten at home, warm soft lighting, cozy and loving atmosphere';
+  } else {
+    // Generic warm vet scene
+    scenePrompt = `A warm friendly veterinary scene: ${pexelsQuery}, photorealistic, natural lighting, happy pets and caring professionals`;
+  }
+
+  const fullPrompt = `${scenePrompt}. Style: photorealistic, warm and professional, bright natural lighting, no text or overlays, no pills or medicine bottles visible. Shot like a professional lifestyle photograph.`;
+
+  try {
+    console.log(`🎨 Generating DALL-E 3 image...`);
+    const res = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt: fullPrompt,
+        n: 1,
+        size: '1792x1024',
+        quality: 'hd',
+        style: 'natural',
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.warn('DALL-E error:', err.slice(0, 200));
+      return null;
+    }
+
+    const data = await res.json();
+    const imageUrl = data.data?.[0]?.url;
+    if (!imageUrl) return null;
+
+    console.log('✅ DALL-E 3 image generated');
+    return {
+      url: imageUrl,
+      altText: `${blogTitle} - PetScript Pharmacy`,
+      credit: 'Image generated for PetScript Pharmacy',
+      creditUrl: 'https://www.petscriptpharmacy.com',
+    };
+  } catch (err) {
+    console.warn('DALL-E generation failed:', err.message);
+    return null;
+  }
+}
+
 async function getShopifyToken(domain, clientId, clientSecret) {
   const res = await fetch(`https://${domain}/admin/oauth/access_token`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -306,10 +377,17 @@ async function main() {
   const matchedProducts = await matchProductsToBlog(products, post.title, researchData.keyword, post.body);
   console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
 
-  const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain);
+  const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain, post.title, researchData.keyword);
 
-  console.log(`\n🖼  Fetching Pexels image: "${post.pexelsQuery}"`);
-  const image = await fetchPexelsImage(post.pexelsQuery);
+  // Try DALL-E 3 first, fall back to Pexels
+  let image = null;
+  if (process.env.OPENAI_API_KEY) {
+    image = await generateDalleImage(post.title, researchData.keyword, post.pexelsQuery);
+  }
+  if (!image) {
+    console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
+    image = await fetchPexelsImage(post.pexelsQuery);
+  }
 
   let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
   if (image) finalBody += `\n<p><small><em>${image.credit} | <a href="${image.creditUrl}" target="_blank" rel="noopener">View on Pexels</a></em></small></p>`;
