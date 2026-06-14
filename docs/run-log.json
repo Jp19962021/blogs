@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-14T03:13:16.596Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "antibiotic resistance in pets",
+    "angle": "how pet antibiotics contribute to drug-resistant superbugs and what owners should know",
+    "trending_reason": "Based on sources: Cefpodoxime for Dogs: Uses, Side Effects, and Alternatives, AKC Collaborates with AVMA on Antimicrobial Awareness, Antibiotic Resistance in Animals: What It Is, Why It Matters, and What Science Is Doing About It",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/health/cefpodoxime-for-dogs/",
+      "https://www.akc.org/expert-advice/news/antimicrobial-awareness/",
+      "https://www.morrisanimalfoundation.org/article/antibiotic-resistance-animals"
+    ],
+    "title": "Antibiotic Resistance in Pets: What Every Pet Owner Needs to Know About Superbugs",
+    "tags": [
+      "antibiotic resistance",
+      "pet antibiotics",
+      "pet health",
+      "veterinary medicine"
+    ],
+    "articleId": "gid://shopify/Article/581468979262",
+    "articleHandle": "antibiotic-resistance-in-pets-what-every-pet-owner-needs-to-know-about-superbugs",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-14T03:11:37.648Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
