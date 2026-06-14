@@ -89,6 +89,14 @@ const VET_KEYWORD_MAP = {
   'compounding': ['compounded', 'suspension', 'transdermal', 'flavored', 'chewable'],
   'transdermal': ['transdermal', 'gel', 'topical'],
   'flavored': ['flavored', 'suspension', 'chewable', 'oral'],
+
+  // Pet owner pill-giving blogs — show easy-to-give formats
+  'give a dog a pill': ['flavored', 'chewable', 'oral suspension', 'treat'],
+  'give a cat a pill': ['flavored', 'chewable', 'oral suspension', 'transdermal'],
+  'wont take pills': ['flavored', 'chewable', 'oral suspension', 'treat'],
+  'pill pockets': ['flavored', 'chewable', 'oral suspension', 'treat'],
+  'medication compliance': ['flavored', 'chewable', 'oral suspension', 'transdermal'],
+  'picky': ['flavored', 'chewable', 'oral suspension', 'treat'],
 };
 
 function getRelevantKeywords(blogTitle, blogKeyword, blogExcerpt) {
@@ -189,6 +197,23 @@ Return [] if truly nothing is relevant.`
   }
 }
 
+// ── Topics that are informational — show formulary link instead ──
+const INFORMATIONAL_TOPICS = [
+  'e-prescribing', 'eprescribing', 'ncpdp', 'fax', 'workflow', 'compliance',
+  'legitimate', 'legitscript', 'accreditation', 'regulation', 'fda guidance',
+  'gfi', 'bulk drug', 'switching pharmacy', 'compounding pharmacy partner',
+  'practice management', 'telehealth', 'veterinary pharmacy', 'sourcing',
+  'supply chain', 'formulary', 'office stock', 'client communication',
+  'industry trend', 'screwworm', 'emergency authorization', 'eua',
+  'give a dog a pill', 'give a cat a pill', 'wont take pills', 'hiding medication',
+  'pill pocket', 'how to medicate'
+];
+
+function isInformationalTopic(blogTitle, blogKeyword) {
+  const text = `${blogTitle} ${blogKeyword}`.toLowerCase();
+  return INFORMATIONAL_TOPICS.some(t => text.includes(t));
+}
+
 // ── Store URL map ────────────────────────────────────────────
 const STORE_URLS = {
   'pet-script-texas.myshopify.com': 'https://www.petscriptpharmacy.com',
@@ -196,15 +221,31 @@ const STORE_URLS = {
 };
 
 // ── Build product block HTML to inject into blog ─────────────
-export function buildProductBlock(matchedProducts, storeDomain) {
-  if (!matchedProducts || matchedProducts.length === 0) return '';
-
+export function buildProductBlock(matchedProducts, storeDomain, blogTitle = '', blogKeyword = '') {
   const storeUrl = STORE_URLS[storeDomain] || `https://${storeDomain.replace('.myshopify.com', '')}.com`;
+
+  // For informational topics or no matches — show formulary browse link
+  const isPetOwner = storeDomain.includes('d5gnxm');
+  const contactEmail = isPetOwner ? 'info@petscriptdirect.com' : 'info@petscript.net';
+  const storeName = isPetOwner ? 'PetScript Direct' : 'PetScript Pharmacy';
+  const browseLabel = isPetOwner ? 'Browse Pet Medications →' : 'Browse Our Formulary →';
+
+  if (!matchedProducts || matchedProducts.length === 0 || isInformationalTopic(blogTitle, blogKeyword)) {
+    return `
+<div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:20px 24px;margin:32px 0">
+  <h3 style="margin:0 0 10px;color:#1a56db;font-size:16px">🐾 ${storeName} Compounded Medications</h3>
+  <p style="margin:0 0 16px;color:#374151;font-size:14px">We compound hundreds of medications in flavored, chewable, transdermal, and liquid formulations — made specifically for your pet. Browse or contact us for a specific medication.</p>
+  <a href="${storeUrl}/collections/all" style="display:inline-block;background:#1a56db;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;margin-right:10px">${browseLabel}</a>
+  <a href="tel:8667846915" style="display:inline-block;border:1px solid #1a56db;color:#1a56db;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600">Call 866-784-6915</a>
+</div>`;
+  }
+
+  const storeUrl2 = storeUrl;
 
   const productLinks = matchedProducts.map(p => {
     // Use search URL format for reliable product linking
     const searchTerm = encodeURIComponent(p.title.split(' ').slice(0, 3).join(' '));
-    const productUrl = `${storeUrl}/search?type=product&q=${searchTerm}`;
+    const productUrl = `${storeUrl2}/search?type=product&q=${searchTerm}`;
     return `<li style="margin-bottom:6px"><a href="${productUrl}" style="color:#1a56db;text-decoration:none;font-weight:500" target="_blank">${p.title}</a></li>`;
   }).join('\n');
 
