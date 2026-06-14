@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-14T02:50:47.485Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "compounded pet medications",
+    "angle": "Custom medication solutions when standard pills won't work for your pet",
+    "trending_reason": "Based on sources: What Is a Veterinary Compounding Pharmacy?, Doxycycline for Dogs: Uses, Side Effects, and Alternatives, Maropitant (Cerenia) for Dogs",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/what-veterinary-compounding-pharmacy",
+      "https://www.akc.org/expert-advice/health/doxycycline-for-dogs/",
+      "https://www.petmd.com/pet-medication/cerenia-maropitant-for-dogs"
+    ],
+    "title": "When Standard Pills Won't Work: Compounded Pet Medications to the Rescue",
+    "tags": [
+      "compounded pet medications",
+      "veterinary compounding",
+      "pet pharmacy",
+      "custom pet medicine"
+    ],
+    "articleId": "gid://shopify/Article/581468880958",
+    "articleHandle": "when-standard-pills-wont-work-compounded-pet-medications-to-the-rescue",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-14T02:49:00.961Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
