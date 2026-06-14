@@ -189,24 +189,33 @@ Return [] if truly nothing is relevant.`
   }
 }
 
+// ── Store URL map ────────────────────────────────────────────
+const STORE_URLS = {
+  'pet-script-texas.myshopify.com': 'https://www.petscriptpharmacy.com',
+  'd5gnxm-7v.myshopify.com': 'https://www.petscriptdirect.com',
+};
+
 // ── Build product block HTML to inject into blog ─────────────
 export function buildProductBlock(matchedProducts, storeDomain) {
   if (!matchedProducts || matchedProducts.length === 0) return '';
 
-  const storeUrl = `https://${storeDomain.replace('.myshopify.com', '')}.com`;
+  const storeUrl = STORE_URLS[storeDomain] || `https://${storeDomain.replace('.myshopify.com', '')}.com`;
 
-  const productLinks = matchedProducts.map(p =>
-    `<li><a href="${storeUrl}/products/${p.handle}" style="color:#1a56db;text-decoration:none;font-weight:500">${p.title}</a></li>`
-  ).join('\n');
+  const productLinks = matchedProducts.map(p => {
+    // Use search URL format for reliable product linking
+    const searchTerm = encodeURIComponent(p.title.split(' ').slice(0, 3).join(' '));
+    const productUrl = `${storeUrl}/search?type=product&q=${searchTerm}`;
+    return `<li style="margin-bottom:6px"><a href="${productUrl}" style="color:#1a56db;text-decoration:none;font-weight:500" target="_blank">${p.title}</a></li>`;
+  }).join('\n');
 
   return `
 <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:20px 24px;margin:32px 0">
-  <h3 style="margin:0 0 10px;color:#1a56db;font-size:16px">Related Compounded Medications</h3>
-  <p style="margin:0 0 12px;color:#374151;font-size:14px">PetScript Pharmacy compounds these medications for veterinary practices. Available for clinic ordering:</p>
-  <ul style="margin:0;padding-left:20px;color:#374151;font-size:14px;line-height:1.8">
+  <h3 style="margin:0 0 10px;color:#1a56db;font-size:16px">🐾 Related Compounded Medications</h3>
+  <p style="margin:0 0 12px;color:#374151;font-size:14px">PetScript Pharmacy compounds these medications for veterinary practices. Click to order or learn more:</p>
+  <ul style="margin:0;padding-left:20px;color:#374151;font-size:14px;line-height:2">
 ${productLinks}
   </ul>
-  <p style="margin:12px 0 0;font-size:13px;color:#6b7280">Questions about formulations or ordering? Call <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a> or email <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></p>
+  <p style="margin:16px 0 0;font-size:13px;color:#6b7280">Need a custom formulation or have questions? Call <a href="tel:8667846915" style="color:#1a56db;font-weight:500">866-784-6915</a> or email <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></p>
 </div>`;
 }
 
