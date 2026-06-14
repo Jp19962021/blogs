@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-14T03:04:52.318Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "3D printed compounded veterinary medications",
+    "angle": "How 3D-printed compounded medications are revolutionizing patient compliance and dosing accuracy in veterinary pharmacy",
+    "trending_reason": "Based on sources: A new technology brings 3D-printed compounded medications to the veterinary space, Q&A: Are 3D-printed compounded medications the future of veterinary prescribing?, CurifyLabs unveils a veterinary excipient system for 3D-printed, personalized pet medicines",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.dvm360.com/view/a-new-technology-brings-3d-printed-compounded-medications-to-the-veterinary-space",
+      "https://www.dvm360.com/view/q-a-are-3d-printed-compounded-medications-the-future-of-veterinary-prescribing-",
+      "https://3dadept.com/curifylabs-unveils-a-veterinary-excipient-system-for-3d-printed-personalized-pet-medicines/"
+    ],
+    "title": "How 3D Printed Compounded Veterinary Medications Are Solving Your Biggest Compliance Headaches",
+    "tags": [
+      "veterinary compounding",
+      "medication compliance",
+      "3D printing technology",
+      "veterinary pharmacy"
+    ],
+    "articleId": "gid://shopify/Article/596817248511",
+    "articleHandle": "how-3d-printed-compounded-veterinary-medications-are-solving-your-biggest-compliance-headaches",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-14T02:59:33.421Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
