@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-14T02:14:30.450Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "pet medication interactions",
+    "angle": "dangerous drug combinations pet owners should avoid",
+    "trending_reason": "Based on sources: Dangerous Pet Medication Mixes to Avoid | PetMD, Managing Dog Anxiety: Treatments, Medication & Supplements, NSAIDs for Dogs: Uses, Side Effects, and Alternatives",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/dangerous-pet-medication-mixes-avoid",
+      "https://www.preventivevet.com/dogs/dog-anxiety-medication-and-treatment",
+      "https://www.akc.org/expert-advice/health/nsaids-for-dogs/"
+    ],
+    "title": "Pet Medication Interactions: Dangerous Drug Combinations That Could Harm Your Animal",
+    "tags": [
+      "pet medication safety",
+      "drug interactions in pets",
+      "pet health",
+      "veterinary medications"
+    ],
+    "articleId": "gid://shopify/Article/581468815422",
+    "articleHandle": "pet-medication-interactions-dangerous-drug-combinations-that-could-harm-your-animal",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-14T02:12:59.896Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
