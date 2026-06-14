@@ -30,6 +30,7 @@ jobs:
           SHOPIFY_PHARMACY_CLIENT_SECRET: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_SECRET }}
           SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
@@ -77,6 +78,7 @@ jobs:
           SHOPIFY_DIRECT_CLIENT_SECRET: ${{ secrets.SHOPIFY_DIRECT_CLIENT_SECRET }}
           SHOPIFY_DIRECT_STORE: ${{ secrets.SHOPIFY_DIRECT_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           STORE_AUDIENCE: petowner
         run: node generate-blog.js
         working-directory: ./scripts
