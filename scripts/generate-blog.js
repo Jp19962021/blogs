@@ -276,11 +276,11 @@ async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'dall-e-3',
+        model: 'gpt-image-1',
         prompt: fullPrompt,
         n: 1,
-        size: '1792x1024',
-        quality: 'hd',
+        size: '1536x1024',
+        quality: 'high',
       }),
     });
 
@@ -291,12 +291,16 @@ async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
     }
 
     const data = await res.json();
+    // gpt-image-1 returns base64, convert to data URL
+    const b64 = data.data?.[0]?.b64_json;
     const imageUrl = data.data?.[0]?.url;
-    if (!imageUrl) return null;
+    
+    if (!b64 && !imageUrl) return null;
 
-    console.log('✅ DALL-E 3 image generated');
+    const finalUrl = imageUrl || `data:image/png;base64,${b64}`;
+    console.log('✅ AI image generated');
     return {
-      url: imageUrl,
+      url: finalUrl,
       altText: `${blogTitle} - PetScript Pharmacy`,
       credit: 'Image generated for PetScript Pharmacy',
       creditUrl: 'https://www.petscriptpharmacy.com',
