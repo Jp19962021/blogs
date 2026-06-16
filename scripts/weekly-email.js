@@ -48,7 +48,6 @@ async function getRecentBlogPosts(domain, token, blogId) {
             handle
             publishedAt
             image { url altText }
-            isPublished
           }
         }
       }
@@ -56,8 +55,7 @@ async function getRecentBlogPosts(domain, token, blogId) {
   }`;
   const res = await shopifyGQL(domain, token, query);
   const articles = res.data?.blog?.articles?.edges?.map(e => e.node) || [];
-  // Filter to only published and return last 2
-  return articles.filter(a => a.isPublished).slice(0, 2);
+  return articles.slice(0, 2);
 }
 
 // ── Klaviyo best sellers feed ID ─────────────────────────────
@@ -274,7 +272,7 @@ async function main() {
   const subjectLine = blogPosts.length > 0
     ? `This week from PetScript: ${blogPosts[0].title.slice(0, 50)}...`
     : `PetScript Pharmacy Weekly Update — ${weekLabel}`;
-  const previewText = `${topProducts.length} top compounds + ${newProducts.length > 0 ? newProducts.length + ' new products + ' : ''}your weekly reads`;
+  const previewText = `Top compounds + ${newProducts.length > 0 ? newProducts.length + ' new products + ' : ''}your weekly reads from PetScript`;
 
   // Create Klaviyo template
   console.log('\n📤 Creating Klaviyo template...');
