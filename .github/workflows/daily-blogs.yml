@@ -31,6 +31,7 @@ jobs:
           SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
@@ -79,6 +80,7 @@ jobs:
           SHOPIFY_DIRECT_STORE: ${{ secrets.SHOPIFY_DIRECT_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
           STORE_AUDIENCE: petowner
         run: node generate-blog.js
         working-directory: ./scripts
@@ -98,4 +100,3 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
