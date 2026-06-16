@@ -53,12 +53,10 @@ function getContactBlock() {
     : `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Get Your Pet's Medication from PetScript Direct</h3><p style="margin:0 0 12px;color:#374151">Custom compounded medications delivered to your door.</p><ul style="margin:0;padding-left:20px;color:#374151"><li>Website: <a href="https://www.petscriptdirect.com" style="color:#1a56db">www.petscriptdirect.com</a></li><li>Phone: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscriptdirect.com" style="color:#1a56db">info@petscriptdirect.com</a></li></ul></div>`;
 }
 
-// ── STEP 1: Find a trending topic and real source articles ───
 async function researchTopicAndArticles() {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const usedKeywords = getUsedKeywords();
   const recentTitles = getRecentTitles();
-  const siteUrl = audience === 'vet' ? 'petscriptpharmacy.com' : 'petscriptdirect.com';
 
   const sources = audience === 'vet'
     ? 'avma.org, wedgewoodpharmacy.com, mixlab.com, covetrus.com, veterinarypracticenews.com, dvm360.com'
@@ -67,15 +65,15 @@ async function researchTopicAndArticles() {
   const prompt = audience === 'vet'
     ? `You are a veterinary content researcher. Search these sources for trending topics relevant to veterinary compounding pharmacy: ${sources}
 
-Find ONE trending topic from the past 30 days that veterinarians are searching for. 
+Find ONE trending topic from the past 30 days that veterinarians are searching for.
 
 AVOID these recently covered topics: ${usedKeywords.slice(-10).join(', ')}
 AVOID topics similar to these recent titles: ${recentTitles.join(' | ')}
 AVOID any topic that requires medication dosing, treatment protocols, or drug administration details.
 
-Good topic types: pharmacy partnerships, medication availability, regulatory updates, practice efficiency, specific conditions that benefit from compounding (described informatively, not clinically), client communication, industry trends.
+Good topic types: pharmacy partnerships, medication availability, regulatory updates, practice efficiency, specific conditions that benefit from compounding (described informatively), client communication, industry trends.
 
-Search for 2-3 real articles on the chosen topic from the sources above. Read their key points.
+Search for 2-3 real articles on the chosen topic. Read their key points.
 
 Return ONLY valid JSON:
 {
@@ -125,20 +123,18 @@ Search for 2-3 real articles. Return ONLY valid JSON:
   throw new Error('Could not parse topic research response');
 }
 
-// ── STEP 2: Write blog post based on real source material ────
 async function generateBlogPost(researchData) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const siteUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
   const storeName = audience === 'vet' ? 'PetScript Pharmacy' : 'PetScript Direct';
 
-  // Build source material summary
   const sourceMaterial = researchData.sources?.map(s =>
     `SOURCE: ${s.title} (${s.url})\nKEY POINTS:\n${s.key_points?.map(p => `- ${p}`).join('\n')}`
   ).join('\n\n') || 'No sources found — write from general knowledge on the topic.';
 
   const prompt = `You are a professional copywriter writing for ${storeName}, a veterinary compounding pharmacy.
 
-TASK: Write a blog post based on the source material below. 
+TASK: Write a blog post based on the source material below.
 - Use the key points from the sources as your factual foundation
 - Rewrite everything in fresh, original language — never copy phrases directly
 - Write clearly and specifically (avoid vague marketing speak)
@@ -149,7 +145,7 @@ TASK: Write a blog post based on the source material below.
 PRIMARY KEYWORD: "${researchData.keyword}"
 TOPIC ANGLE: ${researchData.topic}
 
-SOURCE MATERIAL TO BASE THE POST ON:
+SOURCE MATERIAL:
 ${sourceMaterial}
 
 REQUIREMENTS:
@@ -179,9 +175,7 @@ BODY: full HTML blog body here`;
   const text = response.content.find(b => b.type === 'text')?.text || '';
   console.log('Response length:', text.length);
 
-  if (!text) {
-    throw new Error(`Claude refused or returned empty response. Stop reason: ${response.stop_reason}`);
-  }
+  if (!text) throw new Error(`Claude returned empty response. Stop reason: ${response.stop_reason}`);
 
   const sections = {};
   let currentLabel = null;
@@ -215,6 +209,134 @@ BODY: full HTML blog body here`;
   };
 }
 
+// ── Upload base64 image to imgbb for permanent hosting ────────
+async function uploadToImgbb(b64) {
+  const imgbbKey = process.env.IMGBB_API_KEY;
+  if (!imgbbKey) {
+    console.warn('No IMGBB_API_KEY set — skipping image upload');
+    return null;
+  }
+  try {
+    console.log('Uploading to imgbb...');
+    const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `image=${encodeURIComponent(b64)}`,
+    });
+    const uploadData = await uploadRes.json();
+    console.log('imgbb status:', uploadRes.status, '| success:', uploadData?.success);
+    if (uploadData?.success) {
+      const url = uploadData.data?.url;
+      console.log('✅ imgbb URL:', url?.slice(0, 60));
+      return url;
+    }
+    console.warn('imgbb failed:', JSON.stringify(uploadData).slice(0, 200));
+    return null;
+  } catch (err) {
+    console.warn('imgbb error:', err.message);
+    return null;
+  }
+}
+
+// ── Generate image via OpenAI gpt-image-1 ────────────────────
+async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) return null;
+
+  const topicLower = `${blogTitle} ${blogKeyword}`.toLowerCase();
+  let scenePrompt;
+
+  if (topicLower.includes('fip') || topicLower.includes('feline infectious')) {
+    scenePrompt = 'A veterinarian gently examining a healthy orange tabby cat on a clinic table, warm natural lighting, the vet is smiling, bright modern clinic';
+  } else if (topicLower.includes('anxiety') || topicLower.includes('behavioral') || topicLower.includes('separation')) {
+    scenePrompt = 'A happy calm golden retriever sitting next to its smiling owner on a couch at home, warm indoor lighting, cozy living room';
+  } else if (topicLower.includes('kidney') || topicLower.includes('renal')) {
+    scenePrompt = 'A caring veterinarian consulting with a pet owner about their senior cat, soft clinic lighting, both looking at the cat warmly';
+  } else if (topicLower.includes('pain') || topicLower.includes('arthritis')) {
+    scenePrompt = 'A senior Labrador retriever being gently examined by a kind veterinarian, warm clinic lighting, the dog looks relaxed';
+  } else if (topicLower.includes('dog') || topicLower.includes('canine')) {
+    scenePrompt = 'A happy healthy dog being examined by a smiling veterinarian in a bright modern clinic, warm natural lighting';
+  } else if (topicLower.includes('merger') || topicLower.includes('consolidation') || topicLower.includes('industry')) {
+    scenePrompt = 'A professional veterinarian reviewing documents at a modern desk in a bright veterinary office, confident and focused';
+  } else if (topicLower.includes('compounding') || topicLower.includes('pharmacy') || topicLower.includes('medication')) {
+    scenePrompt = 'A veterinarian and pharmacist having a friendly professional conversation in a bright modern veterinary clinic, both smiling';
+  } else if (topicLower.includes('cat') || topicLower.includes('feline') || topicLower.includes('kitten')) {
+    scenePrompt = 'A happy cat owner cuddling a fluffy kitten at home, warm soft lighting, cozy and loving atmosphere';
+  } else {
+    scenePrompt = 'A warm friendly veterinary clinic scene with a happy dog and smiling veterinarian, professional and inviting atmosphere';
+  }
+
+  const fullPrompt = `${scenePrompt}. Photorealistic style, warm professional lighting, no text overlays, no pills or medicine bottles visible. Shot like a professional lifestyle photograph for a healthcare brand.`;
+
+  try {
+    console.log('🎨 Generating AI image...');
+    const res = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt: fullPrompt,
+        n: 1,
+        size: '1536x1024',
+        quality: 'high',
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn('OpenAI image error:', res.status, (await res.text()).slice(0, 200));
+      return null;
+    }
+
+    const data = await res.json();
+    const b64 = data.data?.[0]?.b64_json;
+    const tempUrl = data.data?.[0]?.url;
+
+    console.log('OpenAI response — has b64:', !!b64, '| has url:', !!tempUrl);
+
+    let finalB64 = b64;
+
+    // If we got a URL instead of b64, download it
+    if (!finalB64 && tempUrl) {
+      console.log('Downloading from temp URL...');
+      try {
+        const imgRes = await fetch(tempUrl);
+        if (imgRes.ok) {
+          const buf = await imgRes.arrayBuffer();
+          finalB64 = Buffer.from(buf).toString('base64');
+          console.log('Downloaded successfully, size:', finalB64.length);
+        } else {
+          console.warn('Download failed:', imgRes.status);
+        }
+      } catch (e) {
+        console.warn('Download error:', e.message);
+      }
+    }
+
+    if (!finalB64) {
+      console.warn('No image data from OpenAI');
+      return null;
+    }
+
+    // Upload to imgbb for permanent hosting
+    const hostedUrl = await uploadToImgbb(finalB64);
+    if (!hostedUrl) return null;
+
+    return {
+      url: hostedUrl,
+      altText: `${blogTitle} - PetScript`,
+      credit: 'AI generated image for PetScript',
+      creditUrl: audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com',
+    };
+  } catch (err) {
+    console.warn('AI image generation failed:', err.message);
+    return null;
+  }
+}
+
+// ── Pexels fallback image ─────────────────────────────────────
 async function fetchPexelsImage(query) {
   const apiKey = process.env.PEXELS_API_KEY;
   if (!apiKey) return null;
@@ -235,105 +357,6 @@ async function fetchPexelsImage(query) {
     } catch (err) { console.warn(`Pexels "${q}" failed:`, err.message); }
   }
   return null;
-}
-
-// ── Upload image buffer to imgbb ─────────────────────────────
-async function uploadToImgbb(b64) {
-  const imgbbKey = process.env.IMGBB_API_KEY;
-  if (!imgbbKey) { console.warn('No IMGBB_API_KEY'); return null; }
-  try {
-    const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `image=${encodeURIComponent(b64)}`,
-    });
-    const uploadData = await uploadRes.json();
-    console.log('imgbb status:', uploadRes.status, '| success:', uploadData?.success);
-    if (uploadData?.success) {
-      const url = uploadData.data?.url;
-      console.log('✅ imgbb URL:', url?.slice(0, 60));
-      return url;
-    }
-    console.warn('imgbb error:', JSON.stringify(uploadData).slice(0, 200));
-    return null;
-  } catch (err) {
-    console.warn('imgbb exception:', err.message);
-    return null;
-  }
-}
-
-// ── Generate image via DALL-E 3 ─────────────────────────────
-async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (!openaiKey) return null;
-
-  // Build a specific, on-brand prompt based on the blog topic
-  const topicLower = `${blogTitle} ${blogKeyword}`.toLowerCase();
-  
-  let scenePrompt;
-  if (topicLower.includes('fip') || topicLower.includes('cat')) {
-    scenePrompt = 'A veterinarian gently examining a healthy orange tabby cat on a clinic table, warm natural lighting, the vet is smiling, bright modern clinic background';
-  } else if (topicLower.includes('anxiety') || topicLower.includes('behavioral')) {
-    scenePrompt = 'A happy calm golden retriever sitting next to its smiling owner on a couch at home, warm indoor lighting, cozy living room setting';
-  } else if (topicLower.includes('kidney') || topicLower.includes('renal')) {
-    scenePrompt = 'A caring veterinarian consulting with a pet owner about their senior cat, soft clinic lighting, both looking at the cat warmly';
-  } else if (topicLower.includes('pain') || topicLower.includes('arthritis')) {
-    scenePrompt = 'A senior Labrador retriever being gently examined by a kind veterinarian, warm clinic lighting, the dog looks relaxed and calm';
-  } else if (topicLower.includes('dog') || topicLower.includes('canine')) {
-    scenePrompt = 'A happy healthy dog being examined by a smiling veterinarian in a bright modern clinic, warm natural lighting';
-  } else if (topicLower.includes('compounding') || topicLower.includes('pharmacy') || topicLower.includes('medication')) {
-    scenePrompt = 'A veterinarian and a pharmacist having a friendly professional conversation in a bright modern veterinary clinic, both smiling';
-  } else if (topicLower.includes('kitten') || topicLower.includes('feline')) {
-    scenePrompt = 'A happy cat owner cuddling a fluffy kitten at home, warm soft lighting, cozy and loving atmosphere';
-  } else {
-    // Generic warm vet scene
-    scenePrompt = `A warm friendly veterinary scene: ${pexelsQuery}, photorealistic, natural lighting, happy pets and caring professionals`;
-  }
-
-  const fullPrompt = `${scenePrompt}. Style: photorealistic, warm and professional, bright natural lighting, no text or overlays, no pills or medicine bottles visible. Shot like a professional lifestyle photograph.`;
-
-  try {
-    console.log(`🎨 Generating DALL-E 3 image...`);
-    const res = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt: fullPrompt,
-        n: 1,
-        size: '1536x1024',
-        quality: 'high',
-      }),
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      console.warn('DALL-E error:', err.slice(0, 200));
-      return null;
-    }
-
-    const data = await res.json();
-    // gpt-image-1 returns base64, convert to data URL
-    const b64 = data.data?.[0]?.b64_json;
-    const imageUrl = data.data?.[0]?.url;
-    
-    if (!b64 && !imageUrl) return null;
-
-    const finalUrl = imageUrl || `data:image/png;base64,${b64}`;
-    console.log('✅ AI image generated');
-    return {
-      url: finalUrl,
-      altText: `${blogTitle} - PetScript Pharmacy`,
-      credit: 'Image generated for PetScript Pharmacy',
-      creditUrl: 'https://www.petscriptpharmacy.com',
-    };
-  } catch (err) {
-    console.warn('DALL-E generation failed:', err.message);
-    return null;
-  }
 }
 
 async function getShopifyToken(domain, clientId, clientSecret) {
@@ -374,7 +397,7 @@ async function createDraft({ domain, token, blogId, title, body, summary, tags, 
     }
   }`;
   const articleInput = { blogId, title, body, summary, tags, isPublished: false, author: { name: CONFIG.authorName } };
-  if (image) articleInput.image = { url: image.url, altText: image.altText };
+  if (image?.url) articleInput.image = { url: image.url, altText: image.altText };
   const result = await shopifyGQL(domain, token, mutation, { article: articleInput });
   const { article, userErrors } = result.data.articleCreate;
   if (userErrors?.length) throw new Error(`Shopify: ${JSON.stringify(userErrors)}`);
@@ -399,26 +422,27 @@ async function main() {
   console.log(`📝 Title: ${post.title}`);
   console.log(`🏷️  Tags: ${post.tags.join(', ')}`);
 
-  // ── Product integration ─────────────────────────────────────
   console.log('\n🛍  Matching products to blog topic...');
   const products = await fetchProducts(CONFIG.storeDomain, shopifyToken);
   const matchedProducts = await matchProductsToBlog(products, post.title, researchData.keyword, post.body);
   console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
-
   const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain, post.title, researchData.keyword);
 
-  // Try DALL-E 3 first, fall back to Pexels
+  // Try AI image first, fall back to Pexels, then no image
   let image = null;
-  if (process.env.OPENAI_API_KEY) {
-    image = await generateDalleImage(post.title, researchData.keyword, post.pexelsQuery);
+  try {
+    image = await generateAIImage(post.title, researchData.keyword, post.pexelsQuery);
+  } catch (err) {
+    console.warn('AI image failed:', err.message);
   }
   if (!image) {
     console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
-    image = await fetchPexelsImage(post.pexelsQuery);
+    try { image = await fetchPexelsImage(post.pexelsQuery); } catch (err) { console.warn('Pexels failed:', err.message); }
   }
+  if (!image) console.log('⚠️  Posting without image');
 
   let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
-  if (image) finalBody += `\n<p><small><em>${image.credit} | <a href="${image.creditUrl}" target="_blank" rel="noopener">View on Pexels</a></em></small></p>`;
+  if (image?.credit) finalBody += `\n<p><small><em>${image.credit}</em></small></p>`;
 
   const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
 
@@ -430,13 +454,12 @@ async function main() {
   });
 
   console.log(`✅ Draft created: "${article.title}"`);
-
-  // Update product descriptions with blog keywords
-  if (matchedProducts.length > 0) {
-    console.log('\n🏷  Updating product descriptions with SEO keywords...');
-    await updateProductDescriptions(matchedProducts, researchData.keyword, post.title, CONFIG.storeDomain, shopifyToken);
-  };
   console.log(`   ID: ${article.id}`);
+
+  if (matchedProducts.length > 0) {
+    console.log('\n🏷  Updating product descriptions...');
+    await updateProductDescriptions(matchedProducts, researchData.keyword, post.title, CONFIG.storeDomain, shopifyToken);
+  }
 
   markKeywordUsed(researchData.keyword);
 
