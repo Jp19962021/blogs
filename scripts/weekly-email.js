@@ -47,7 +47,6 @@ async function getRecentBlogPosts(domain, token, blogId) {
             title
             handle
             publishedAt
-            excerptHtml
             image { url altText }
             isPublished
           }
@@ -104,7 +103,7 @@ async function generateEmailHTML(blogPosts, newProducts, storeDomain) {
   const blogSection = blogPosts.map(b => `
 BLOG: ${b.title}
 URL: ${storeUrl}/blogs/all-about-pets/${b.handle}
-EXCERPT: ${b.excerptHtml?.replace(/<[^>]*>/g, '').slice(0, 100) || 'Click to read the full post'}
+EXCERPT: Click to read the full post
 `).join('\n');
 
   const newProductSection = newProducts.length > 0 ? newProducts.map(p => `
