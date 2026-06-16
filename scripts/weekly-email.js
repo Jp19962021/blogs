@@ -152,7 +152,7 @@ NEW PRODUCTS ADDED THIS WEEK:
 ${newProductSection}
 
 Write a complete HTML email (table-based, inline styles, max-width 620px) with:
-1. Dark blue header (#1a56db) with "${storeName} — Weekly Update" and the week date
+1. Dark blue header (#003767) with "${storeName} — Weekly Update" and the week date
 2. Warm greeting: "Hi {{ first_name|default:'${isVet ? 'Doctor' : 'Friend'}' }},"
 3. Brief 1-sentence intro
 4. FEATURED POSTS section — 2 blog post cards side by side, each with title, 1-line excerpt, blue "Read More →" button linking to the blog URL
