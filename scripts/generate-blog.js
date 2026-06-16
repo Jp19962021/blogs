@@ -244,29 +244,55 @@ async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
   if (!openaiKey) return null;
 
   const topicLower = `${blogTitle} ${blogKeyword}`.toLowerCase();
+
+  // Unique seed per blog title to ensure different image every time
+  const seed = blogTitle.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const rand = (arr) => arr[seed % arr.length];
+
+  // Pet breeds for variety
+  const dogs = ['golden retriever', 'Labrador retriever', 'Border Collie', 'French Bulldog', 'Beagle', 'Australian Shepherd', 'Corgi', 'German Shepherd'];
+  const cats = ['orange tabby cat', 'black and white cat', 'fluffy Persian cat', 'grey striped cat', 'Siamese cat', 'Maine Coon cat'];
+  const vetDescriptions = ['smiling female veterinarian', 'friendly male veterinarian', 'caring veterinarian with brown hair', 'young professional veterinarian'];
+
+  const dog = rand(dogs);
+  const cat = rand(cats);
+  const vet = rand(vetDescriptions);
+
   let scenePrompt;
 
   if (topicLower.includes('fip') || topicLower.includes('feline infectious')) {
-    scenePrompt = 'A veterinarian gently examining a healthy orange tabby cat on a clinic table, warm natural lighting, the vet is smiling, bright modern clinic';
+    scenePrompt = `A ${vet} gently holding a ${cat} on a clinic table, both looking comfortable and relaxed, bright warm clinic background, the cat looks healthy and content`;
   } else if (topicLower.includes('anxiety') || topicLower.includes('behavioral') || topicLower.includes('separation')) {
-    scenePrompt = 'A happy calm golden retriever sitting next to its smiling owner on a couch at home, warm indoor lighting, cozy living room';
-  } else if (topicLower.includes('kidney') || topicLower.includes('renal')) {
-    scenePrompt = 'A caring veterinarian consulting with a pet owner about their senior cat, soft clinic lighting, both looking at the cat warmly';
-  } else if (topicLower.includes('pain') || topicLower.includes('arthritis')) {
-    scenePrompt = 'A senior Labrador retriever being gently examined by a kind veterinarian, warm clinic lighting, the dog looks relaxed';
-  } else if (topicLower.includes('dog') || topicLower.includes('canine')) {
-    scenePrompt = 'A happy healthy dog being examined by a smiling veterinarian in a bright modern clinic, warm natural lighting';
-  } else if (topicLower.includes('merger') || topicLower.includes('consolidation') || topicLower.includes('industry')) {
-    scenePrompt = 'A professional veterinarian reviewing documents at a modern desk in a bright veterinary office, confident and focused';
-  } else if (topicLower.includes('compounding') || topicLower.includes('pharmacy') || topicLower.includes('medication')) {
-    scenePrompt = 'A veterinarian and pharmacist having a friendly professional conversation in a bright modern veterinary clinic, both smiling';
+    scenePrompt = `A happy ${dog} sitting close to its smiling owner on a sunny park bench outdoors, tail wagging, warm afternoon sunlight`;
+  } else if (topicLower.includes('kidney') || topicLower.includes('renal') || topicLower.includes('senior')) {
+    scenePrompt = `An elderly pet owner lovingly stroking a senior ${cat} on their lap at home, warm indoor lighting, peaceful and tender moment`;
+  } else if (topicLower.includes('pain') || topicLower.includes('arthritis') || topicLower.includes('mobility')) {
+    scenePrompt = `A ${vet} gently examining the leg of a senior ${dog} on a clinic table, the dog looks relaxed and trusting, warm clinic lighting`;
+  } else if (topicLower.includes('merger') || topicLower.includes('consolidation') || topicLower.includes('industry') || topicLower.includes('distribution')) {
+    scenePrompt = `A ${vet} and a smiling pet owner shaking hands in a bright veterinary clinic reception area, a ${dog} sitting happily beside them`;
+  } else if (topicLower.includes('compounding') || topicLower.includes('pharmacy') || topicLower.includes('medication') || topicLower.includes('prescription')) {
+    scenePrompt = `A ${vet} kneeling down and smiling at a happy ${dog} in a bright modern clinic waiting room, the dog is sitting and looking up adoringly`;
   } else if (topicLower.includes('cat') || topicLower.includes('feline') || topicLower.includes('kitten')) {
-    scenePrompt = 'A happy cat owner cuddling a fluffy kitten at home, warm soft lighting, cozy and loving atmosphere';
+    scenePrompt = `A young woman laughing while a playful ${cat} climbs on her shoulder at home, warm natural window light, joyful candid moment`;
+  } else if (topicLower.includes('dog') || topicLower.includes('canine') || topicLower.includes('puppy')) {
+    scenePrompt = `A ${dog} running joyfully through a sunny park, tongue out, motion blur on legs showing energy and happiness, golden hour lighting`;
+  } else if (topicLower.includes('integration') || topicLower.includes('workflow') || topicLower.includes('pims') || topicLower.includes('software')) {
+    scenePrompt = `A ${vet} at a modern computer in a bright clinic, smiling while looking at the screen, a ${cat} sitting on the desk beside them`;
+  } else if (topicLower.includes('regulation') || topicLower.includes('compliance') || topicLower.includes('fda') || topicLower.includes('accreditation')) {
+    scenePrompt = `A confident ${vet} in a white coat standing in a bright modern clinic hallway, smiling professionally, a ${dog} walking beside them on a leash`;
   } else {
-    scenePrompt = 'A warm friendly veterinary clinic scene with a happy dog and smiling veterinarian, professional and inviting atmosphere';
+    // Generic warm lifestyle — always pets, never medications
+    const scenes = [
+      `A ${vet} giving a treat to a happy ${dog} after a checkup, both looking delighted, bright clinic background`,
+      `A pet owner cuddling their ${cat} on a comfortable clinic chair while waiting, the cat is purring and relaxed`,
+      `A ${dog} and ${cat} sitting together looking at the camera in a sunny living room, natural light, cozy home setting`,
+      `A child hugging a ${dog} in a backyard, warm sunshine, pure joy and happiness`,
+      `A ${vet} listening to the heartbeat of a calm ${dog} with a stethoscope, the dog is sitting patiently, warm clinic light`,
+    ];
+    scenePrompt = scenes[seed % scenes.length];
   }
 
-  const fullPrompt = `${scenePrompt}. Photorealistic style, warm professional lighting, no text overlays, no pills or medicine bottles visible. Shot like a professional lifestyle photograph for a healthcare brand.`;
+  const fullPrompt = `${scenePrompt}. Photorealistic lifestyle photography style, warm inviting lighting, no text overlays, no medication bottles or pills visible, no syringes or clinical equipment in focus. Shot like a professional pet lifestyle photograph. High quality, emotionally warm.`;
 
   try {
     console.log('🎨 Generating AI image...');
