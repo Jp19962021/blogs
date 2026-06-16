@@ -237,6 +237,31 @@ async function fetchPexelsImage(query) {
   return null;
 }
 
+// ── Upload image buffer to imgbb ─────────────────────────────
+async function uploadToImgbb(b64) {
+  const imgbbKey = process.env.IMGBB_API_KEY;
+  if (!imgbbKey) { console.warn('No IMGBB_API_KEY'); return null; }
+  try {
+    const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `image=${encodeURIComponent(b64)}`,
+    });
+    const uploadData = await uploadRes.json();
+    console.log('imgbb status:', uploadRes.status, '| success:', uploadData?.success);
+    if (uploadData?.success) {
+      const url = uploadData.data?.url;
+      console.log('✅ imgbb URL:', url?.slice(0, 60));
+      return url;
+    }
+    console.warn('imgbb error:', JSON.stringify(uploadData).slice(0, 200));
+    return null;
+  } catch (err) {
+    console.warn('imgbb exception:', err.message);
+    return null;
+  }
+}
+
 // ── Generate image via DALL-E 3 ─────────────────────────────
 async function generateDalleImage(blogTitle, blogKeyword, pexelsQuery) {
   const openaiKey = process.env.OPENAI_API_KEY;
