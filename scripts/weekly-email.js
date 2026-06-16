@@ -178,7 +178,6 @@ async function createEmailTemplate(name, html) {
 }
 
 async function createCampaignDraft(name, subjectLine, previewText, templateId, listId) {
-  // Create campaign with message inline
   const result = await klaviyoRequest('campaigns/', 'POST', {
     data: {
       type: 'campaign',
@@ -195,6 +194,20 @@ async function createCampaignDraft(name, subjectLine, previewText, templateId, l
           is_tracking_opens: true,
           is_tracking_clicks: true,
         },
+        'campaign-messages': {
+          data: [{
+            type: 'campaign-message',
+            attributes: {
+              channel: 'email',
+              content: {
+                subject: subjectLine,
+                preview_text: previewText,
+                from_email: 'info@petscript.net',
+                from_label: 'PetScript Pharmacy',
+              },
+            },
+          }],
+        },
       },
     },
   });
@@ -204,30 +217,15 @@ async function createCampaignDraft(name, subjectLine, previewText, templateId, l
   console.log(`Campaign ID: ${campaignId}`);
   console.log(`Message ID: ${messageId}`);
 
-  // Update message with subject, preview, from details
-  if (messageId) {
-    await klaviyoRequest(`campaign-messages/${messageId}/`, 'PATCH', {
-      data: {
-        type: 'campaign-message',
-        id: messageId,
-        attributes: {
-          content: {
-            subject: subjectLine,
-            preview_text: previewText,
-            from_email: 'info@petscript.net',
-            from_label: 'PetScript Pharmacy',
-          },
-        },
-      },
-    });
-    console.log('Message updated with subject and sender');
-
-    // Assign template to message
-    if (templateId) {
+  // Assign template to message
+  if (messageId && templateId) {
+    try {
       await klaviyoRequest(`campaign-messages/${messageId}/relationships/template/`, 'POST', {
         data: { type: 'template', id: templateId },
       });
-      console.log('Template assigned to message');
+      console.log('Template assigned');
+    } catch (e) {
+      console.warn('Template assign failed:', e.message);
     }
   }
 
