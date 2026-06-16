@@ -27,5 +27,8 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           KLAVIYO_PRIVATE_KEY: ${{ secrets.KLAVIYO_PRIVATE_KEY }}
+          SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
+          SHOPIFY_PHARMACY_CLIENT_ID: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_ID }}
+          SHOPIFY_PHARMACY_CLIENT_SECRET: ${{ secrets.SHOPIFY_PHARMACY_CLIENT_SECRET }}
         run: node weekly-email.js
         working-directory: ./scripts
