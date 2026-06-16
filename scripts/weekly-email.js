@@ -61,28 +61,8 @@ async function getRecentBlogPosts(domain, token, blogId) {
   return articles.filter(a => a.isPublished).slice(0, 2);
 }
 
-// ── Get top selling products this week ───────────────────────
-async function getTopSellingProducts(domain, token) {
-  // Get products sorted by best selling
-  const query = `{
-    products(first: 5, sortKey: BEST_SELLING, query: "status:active") {
-      edges {
-        node {
-          id
-          title
-          handle
-          description
-          featuredImage { url altText }
-          priceRangeV2 {
-            minVariantPrice { amount currencyCode }
-          }
-        }
-      }
-    }
-  }`;
-  const res = await shopifyGQL(domain, token, query);
-  return res.data?.products?.edges?.map(e => e.node) || [];
-}
+// ── Klaviyo best sellers feed ID ─────────────────────────────
+const KLAVIYO_BESTSELLERS_FEED_ID = '8660674';
 
 // ── Get new products added this week ─────────────────────────
 async function getNewProducts(domain, token) {
@@ -109,7 +89,7 @@ async function getNewProducts(domain, token) {
 }
 
 // ── Generate email HTML via Claude ───────────────────────────
-async function generateEmailHTML(blogPosts, topProducts, newProducts, storeDomain) {
+async function generateEmailHTML(blogPosts, newProducts, storeDomain) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const isVet = storeDomain.includes('pet-script-texas');
   const storeUrl = isVet ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
@@ -127,12 +107,6 @@ URL: ${storeUrl}/blogs/all-about-pets/${b.handle}
 EXCERPT: ${b.excerptHtml?.replace(/<[^>]*>/g, '').slice(0, 100) || 'Click to read the full post'}
 `).join('\n');
 
-  const topProductSection = topProducts.map(p => `
-PRODUCT: ${p.title}
-URL: ${storeUrl}/products/${p.handle}
-DESCRIPTION: ${p.description?.slice(0, 100) || ''}
-`).join('\n');
-
   const newProductSection = newProducts.length > 0 ? newProducts.map(p => `
 NEW PRODUCT: ${p.title}
 URL: ${storeUrl}/products/${p.handle}
@@ -148,21 +122,25 @@ PHONE: 866-784-6915
 THIS WEEK'S BLOG POSTS (feature these prominently — just 2):
 ${blogSection}
 
-TOP SELLING COMPOUNDED MEDICATIONS THIS WEEK:
-${topProductSection}
-
 NEW PRODUCTS ADDED THIS WEEK:
 ${newProductSection}
 
 Write a complete HTML email (table-based, inline styles, max-width 620px) with:
-1. Dark blue header (#003767) with "${storeName} — Weekly Update" and the week date
+1. Header: background #003767, centered text, "${storeName} — Weekly Update" in white 20px, week date below in small white text
 2. Warm greeting: "Hi {{ first_name|default:'${isVet ? 'Doctor' : 'Friend'}' }},"
 3. Brief 1-sentence intro
-4. FEATURED POSTS section — 2 blog post cards side by side, each with title, 1-line excerpt, blue "Read More →" button linking to the blog URL
-5. TOP COMPOUNDS THIS WEEK section — list the top 5 selling products with name and link
-6. NEW THIS WEEK section — only show if new products exist, list them with links
-7. CTA block: "Questions? Call 866-784-6915 or email ${contactEmail}" with buttons
-8. Dark footer with unsubscribe: {{ unsubscribe_url }}
+4. FEATURED POSTS section — 2 blog post cards side by side, each with category label, title, 1-line excerpt, "#003767 Read More →" link
+5. TOP COMPOUNDS THIS WEEK section — insert this EXACT Klaviyo liquid block as-is (do not modify):
+{% catalog 'bestselling' limit=5 feed_id='8660674' %}
+<tr>
+  <td style="padding:8px 0;border-bottom:1px solid #f0f0f0">
+    <a href="{{ item.url }}" style="font-size:13px;color:#003767;text-decoration:none;font-weight:500">{{ item.title }}</a>
+  </td>
+</tr>
+{% endcatalog %}
+6. NEW THIS WEEK section — only include if new products exist, list with "New" badge and links
+7. CTA block with background #E0E8F2: "Questions? Call 866-784-6915 or email ${contactEmail}" — two buttons: solid #003767 "Visit ${storeUrl}" and outlined "Call 866-784-6915"
+8. Dark (#1f2937) footer with unsubscribe: {{ unsubscribe_url }}
 
 Keep it concise and scannable. ${isVet ? 'Professional B2B tone.' : 'Friendly pet owner tone.'}
 Return ONLY the HTML — no explanation, no markdown.`;
@@ -275,22 +253,19 @@ async function main() {
 
   // Fetch data in parallel
   console.log('Fetching blog posts, top products, and new products...');
-  const [blogPosts, topProducts, newProducts] = await Promise.all([
+  const [blogPosts, newProducts] = await Promise.all([
     getRecentBlogPosts(domain, token, blogId),
-    getTopSellingProducts(domain, token),
     getNewProducts(domain, token),
   ]);
 
   console.log(`✅ Blog posts: ${blogPosts.length}`);
   blogPosts.forEach(b => console.log(`  • ${b.title}`));
-  console.log(`✅ Top products: ${topProducts.length}`);
-  topProducts.forEach(p => console.log(`  • ${p.title}`));
   console.log(`✅ New products: ${newProducts.length}`);
   newProducts.forEach(p => console.log(`  • ${p.title}`));
 
   // Generate email
   console.log('\n✍️  Generating email...');
-  const emailHTML = await generateEmailHTML(blogPosts, topProducts, newProducts, domain);
+  const emailHTML = await generateEmailHTML(blogPosts, newProducts, domain);
   console.log(`Email HTML: ${emailHTML.length} chars`);
 
   // Build subject line from blog titles
