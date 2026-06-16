@@ -40,22 +40,25 @@ async function shopifyGQL(domain, token, query, variables = {}) {
 async function getRecentBlogPosts(domain, token, blogId) {
   const query = `{
     blog(id: "${blogId}") {
-      articles(first: 2, sortKey: PUBLISHED_AT, reverse: true, query: "published_status:published") {
+      articles(first: 10, reverse: true) {
         edges {
           node {
             id
             title
             handle
             publishedAt
-            excerpt
+            excerptHtml
             image { url altText }
+            isPublished
           }
         }
       }
     }
   }`;
   const res = await shopifyGQL(domain, token, query);
-  return res.data?.blog?.articles?.edges?.map(e => e.node) || [];
+  const articles = res.data?.blog?.articles?.edges?.map(e => e.node) || [];
+  // Filter to only published and return last 2
+  return articles.filter(a => a.isPublished).slice(0, 2);
 }
 
 // ── Get top selling products this week ───────────────────────
@@ -121,7 +124,7 @@ async function generateEmailHTML(blogPosts, topProducts, newProducts, storeDomai
   const blogSection = blogPosts.map(b => `
 BLOG: ${b.title}
 URL: ${storeUrl}/blogs/all-about-pets/${b.handle}
-EXCERPT: ${b.excerpt || 'Click to read the full post'}
+EXCERPT: ${b.excerptHtml?.replace(/<[^>]*>/g, '').slice(0, 100) || 'Click to read the full post'}
 `).join('\n');
 
   const topProductSection = topProducts.map(p => `
