@@ -98,4 +98,4 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+
