@@ -249,14 +249,19 @@ export function buildProductBlock(matchedProducts, storeDomain, blogTitle = '', 
     return `<li style="margin-bottom:6px"><a href="${productUrl}" style="color:#1a56db;text-decoration:none;font-weight:500" target="_blank">${p.title}</a></li>`;
   }).join('\n');
 
+  const blockTitle = isPetOwner ? '🐾 Related Pet Medications' : '🐾 Related Compounded Medications';
+  const blockDesc = isPetOwner
+    ? 'PetScript Direct offers these compounded medications for pets. Click to learn more or order:'
+    : 'PetScript Pharmacy compounds these medications for veterinary practices. Click to order or learn more:';
+
   return `
 <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:20px 24px;margin:32px 0">
-  <h3 style="margin:0 0 10px;color:#1a56db;font-size:16px">🐾 Related Compounded Medications</h3>
-  <p style="margin:0 0 12px;color:#374151;font-size:14px">PetScript Pharmacy compounds these medications for veterinary practices. Click to order or learn more:</p>
+  <h3 style="margin:0 0 10px;color:#1a56db;font-size:16px">${blockTitle}</h3>
+  <p style="margin:0 0 12px;color:#374151;font-size:14px">${blockDesc}</p>
   <ul style="margin:0;padding-left:20px;color:#374151;font-size:14px;line-height:2">
 ${productLinks}
   </ul>
-  <p style="margin:16px 0 0;font-size:13px;color:#6b7280">Need a custom formulation or have questions? Call <a href="tel:8667846915" style="color:#1a56db;font-weight:500">866-784-6915</a> or email <a href="mailto:info@petscript.net" style="color:#1a56db">info@petscript.net</a></p>
+  <p style="margin:16px 0 0;font-size:13px;color:#6b7280">Need a custom formulation or have questions? Call <a href="tel:8667846915" style="color:#1a56db;font-weight:500">866-784-6915</a> or email <a href="mailto:${contactEmail}" style="color:#1a56db">${contactEmail}</a></p>
 </div>`;
 }
 
