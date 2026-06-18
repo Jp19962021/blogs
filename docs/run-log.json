@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-18T16:38:24.952Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "MDR1 gene mutation in dogs and cats",
+    "angle": "Does Your Herding Dog Need Genetic Testing Before Taking Common Medications?",
+    "trending_reason": "Based on sources: OTC vs Prescription Flea & Tick Treatments: Which Is Best?, White feet don't treat: Considerations for dogs with MDR1 mutations, Safe Cat Flea Treatments",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.preventivevet.com/pets/flea-and-tick-preventatives-prescription-or-otc",
+      "https://www.aaha.org/newstat/publications/white-feet-dont-treat-considerations-for-dogs-with-mdr1-mutations/",
+      "https://www.preventivevet.com/cats/safe-cat-flea-treatments-the-danger-of-pyrethrin-and-pyrethroid-toxicity"
+    ],
+    "title": "Does Your Herding Dog Need Genetic Testing Before Taking Common Medications?",
+    "tags": [
+      "MDR1 gene mutation",
+      "herding dog health",
+      "genetic testing for dogs",
+      "dog medication safety"
+    ],
+    "articleId": "gid://shopify/Article/581603459134",
+    "articleHandle": "does-your-herding-dog-need-genetic-testing-before-taking-common-medications",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-18T16:35:25.527Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
