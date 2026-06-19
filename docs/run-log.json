@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-19T16:05:03.182Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "dog flea medicine poisoning cats",
+    "angle": "Why using your dog's flea treatment on your cat can be deadly",
+    "trending_reason": "Based on sources: Fleas: Pyrethrin & Pyrethroid Toxicity to Cats, Dangers of using your dog's flea & tick medication on your cat, Pyrethrin/Pyrethroid Poisoning in Cats",
+    "search_volume": "high",
+    "sources": [
+      "https://www.preventivevet.com/cats/flea-preventative-danger-pyrethrin-pyrethroid-toxicity-to-cats",
+      "https://spca.bc.ca/news/flea-medication-toxicity-cats/",
+      "https://vcahospitals.com/know-your-pet/pyrethrinpyrethroid-poisoning-in-cats"
+    ],
+    "title": "Dog Flea Medicine Poisoning Cats: Why Your Dog's Treatment Could Kill Your Cat",
+    "tags": [
+      "cat safety",
+      "flea treatment toxicity",
+      "pet medication safety",
+      "pyrethroid poisoning"
+    ],
+    "articleId": "gid://shopify/Article/581637242942",
+    "articleHandle": "dog-flea-medicine-poisoning-cats-why-your-dogs-treatment-could-kill-your-cat",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-19T16:02:27.024Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
