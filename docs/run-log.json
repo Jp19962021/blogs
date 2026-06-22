@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-22T17:47:02.191Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "antibiotic resistance in pets",
+    "angle": "Why Pet Owners Must Finish Their Pet's Entire Antibiotic Prescription",
+    "trending_reason": "Based on sources: Antibiotic Resistance in Animals: What It Is, Why It Matters, and What Science Is Doing About It, Finish Your Meds: Antibiotic Resistance in Pets, Medications for Your Pet ... Questions for Your Vet",
+    "search_volume": "high",
+    "sources": [
+      "https://www.morrisanimalfoundation.org/article/antibiotic-resistance-animals",
+      "https://thepethospitals.com/finish-your-meds-antibiotic-resistance-in-pets/",
+      "https://www.fda.gov/animal-veterinary/animal-health-literacy/medications-your-pet-questions-your-vet"
+    ],
+    "title": "Why You Must Finish Your Pet's Entire Antibiotic Prescription",
+    "tags": [
+      "antibiotic resistance in pets",
+      "pet antibiotics",
+      "pet medication safety",
+      "veterinary antibiotics"
+    ],
+    "articleId": "gid://shopify/Article/581696258110",
+    "articleHandle": "why-you-must-finish-your-pets-entire-antibiotic-prescription",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-22T17:44:25.600Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
