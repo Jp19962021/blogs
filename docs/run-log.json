@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-22T17:44:25.600Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "veterinary compounding pharmacy partnerships",
+    "angle": "How Community Pharmacy Partnerships Are Expanding Access to Compounded Medications for Veterinary Patients",
+    "trending_reason": "Based on sources: Assessing pet owner and veterinarian perceptions of need for veterinary compounding services in a community pharmacy setting, Working with pharmacies - Veterinary Practice News, CA's Bay Area Premier Veterinary Compounding Pharmacy",
+    "search_volume": "medium",
+    "sources": [
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC6207356/",
+      "https://www.veterinarypracticenews.com/community-pharma-partnership/",
+      "https://scriptworksrx.com/blog/scriptworks-bay-area-veterinary-compounding-pharmacy/"
+    ],
+    "title": "How Veterinary Compounding Pharmacy Partnerships Expand Access to Patient Care",
+    "tags": [
+      "veterinary compounding",
+      "pharmacy partnerships",
+      "veterinary practice management",
+      "medication compliance"
+    ],
+    "articleId": "gid://shopify/Article/597058617599",
+    "articleHandle": "how-veterinary-compounding-pharmacy-partnerships-expand-access-to-patient-care",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-20T15:06:36.320Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
