@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-24T15:36:37.349Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "compounded pet medications",
+    "angle": "customized medications making it easier for pet owners to give medicine to picky pets",
+    "trending_reason": "Based on sources: What Is a Veterinary Compounding Pharmacy?, How to Give a Dog a Pill: 6 Tips for Pet Owners to Try, Gabapentin for Dogs: Uses, Side Effects, and Alternatives",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/what-veterinary-compounding-pharmacy",
+      "https://www.akc.org/expert-advice/health/how-to-give-a-dog-a-pill/",
+      "https://www.akc.org/expert-advice/health/gabapentin-for-dogs/"
+    ],
+    "title": "Is Your Pet a Picky Patient? Compounded Pet Medications Can Help",
+    "tags": [
+      "compounded medications",
+      "pet medication tips",
+      "veterinary compounding",
+      "giving pets medicine"
+    ],
+    "articleId": "gid://shopify/Article/581749833790",
+    "articleHandle": "is-your-pet-a-picky-patient-compounded-pet-medications-can-help",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-24T15:33:52.159Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
