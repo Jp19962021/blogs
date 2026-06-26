@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-26T15:24:30.495Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "veterinary e-prescribing",
+    "angle": "How E-Prescribing Is Revolutionizing Veterinary Prescription Workflows and Compounding Pharmacy Integration",
+    "trending_reason": "Based on sources: A turning point for onsite pharmacies arrives: e-prescribing for veterinarians, Surescripts, DAW Systems Expands E-Prescribing to Veterinary Medicine, Veterinary ePrescribing Explained | What It Means for Animal Health",
+    "search_volume": "high",
+    "sources": [
+      "https://www.dvm360.com/view/a-turning-point-for-onsite-pharmacies-arrives-e-prescribing-for-veterinarians",
+      "https://www.drugtopics.com/view/surescripts-daw-systems-expands-e-prescribing-to-veterinary-medicine",
+      "https://www.vetway.com/blog/evolution-of-eprescribing-animal-health"
+    ],
+    "title": "How Veterinary E-Prescribing Is Transforming Prescription Workflows and Client Care",
+    "tags": [
+      "veterinary e-prescribing",
+      "veterinary pharmacy integration",
+      "veterinary practice management",
+      "compounding pharmacy"
+    ],
+    "articleId": "gid://shopify/Article/597172781311",
+    "articleHandle": "how-veterinary-e-prescribing-is-transforming-prescription-workflows-and-client-care",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-25T15:42:50.214Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
