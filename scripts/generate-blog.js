@@ -127,16 +127,35 @@ Search for 2-3 real articles. Return ONLY valid JSON:
   });
 
   const text = response.content.filter(b => b.type === 'text').map(b => b.text).join('');
-  const match = text.match(/\{[\s\S]*\}/);
-  if (match) {
-    const parsed = JSON.parse(match[0]);
-    console.log(`Keyword: ${parsed.keyword}`);
-    console.log(`Topic: ${parsed.topic}`);
-    console.log(`Volume: ${parsed.search_volume}`);
-    console.log(`Sources found: ${parsed.sources?.length || 0}`);
-    parsed.sources?.forEach(s => console.log(`  • ${s.title}`));
-    return parsed;
+  
+  // Try to parse JSON from response
+  try {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+      const parsed = JSON.parse(match[0]);
+      console.log(`Keyword: ${parsed.keyword}`);
+      console.log(`Topic: ${parsed.topic}`);
+      console.log(`Volume: ${parsed.search_volume}`);
+      console.log(`Sources found: ${parsed.sources?.length || 0}`);
+      parsed.sources?.forEach(s => console.log(`  • ${s.title}`));
+      return parsed;
+    }
+  } catch (parseErr) {
+    console.warn('JSON parse failed, using fallback');
   }
+
+  // Fallback — use the topic override directly with no sources
+  if (topicOverride) {
+    console.log('Using topic override as fallback research data');
+    return {
+      keyword: topicOverride,
+      topic: topicOverride,
+      search_volume: 'medium',
+      sources: [],
+      pexels_query: audience === 'vet' ? 'veterinarian dog clinic' : 'happy pet owner dog',
+    };
+  }
+
   throw new Error('Could not parse topic research response');
 }
 
