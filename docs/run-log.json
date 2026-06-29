@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-29T14:11:03.343Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "GS-441524 — Why Every Veterinarian Needs This in the Clinic",
+    "angle": "GS-441524 — Why Every Veterinarian Needs This in the Clinic",
+    "trending_reason": "Based on sources: From fatal to curable to complicated: An update on treating feline infectious peritonitis, Feline Infectious Peritonitis (FIP) Medication - GS-441524, Introducing Compounded GS-441524 for FIP - Wedgewood Pharmacy",
+    "search_volume": "high",
+    "sources": [
+      "https://www.dvm360.com/view/from-fatal-to-curable-to-complicated-an-update-on-treating-feline-infectious-peritonitis",
+      "https://www.mixlab.com/pet-pharmacy/fip-medication",
+      "https://www.wedgewood.com/gs-441524/"
+    ],
+    "title": "GS-441524 — Why Every Veterinarian Needs This in the Clinic",
+    "tags": [
+      "GS-441524",
+      "feline infectious peritonitis",
+      "FIP treatment",
+      "veterinary compounding"
+    ],
+    "articleId": "gid://shopify/Article/597240611071",
+    "articleHandle": "gs-441524-why-every-veterinarian-needs-this-in-the-clinic",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-29T01:24:25.403Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
