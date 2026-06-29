@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { fetchProducts, matchProductsToBlog, buildProductBlock, updateProductDescriptions } from './product-integration.js';
+import { postToWordPress } from './wordpress-integration.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -363,24 +364,53 @@ async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
 }
 
 // ── Pexels fallback image ─────────────────────────────────────
-async function fetchPexelsImage(query) {
+// ── Topic-matched Pexels queries ────────────────────────────
+function getPexelsQueries(blogTitle, blogKeyword, suggestedQuery) {
+  const text = `${blogTitle} ${blogKeyword}`.toLowerCase();
+
+  if (text.includes('fip') || text.includes('feline infectious')) return ['orange tabby cat veterinarian', 'cat clinic', 'cat exam vet'];
+  if (text.includes('anxiety') || text.includes('separation') || text.includes('stress')) return ['happy dog owner home', 'calm dog couch', 'dog cuddle owner'];
+  if (text.includes('poison') || text.includes('toxic') || text.includes('safety')) return ['pet owner dog home safe', 'dog family living room', 'cat owner home'];
+  if (text.includes('kidney') || text.includes('renal')) return ['senior cat owner lap', 'old cat pet', 'cat senior cuddle'];
+  if (text.includes('pain') || text.includes('arthritis')) return ['dog vet exam happy', 'senior dog owner', 'labrador vet'];
+  if (text.includes('cat') || text.includes('feline') || text.includes('kitten')) return ['cat owner happy', 'kitten playing', 'cat cuddle'];
+  if (text.includes('dog') || text.includes('canine') || text.includes('puppy')) return ['happy dog park', 'puppy owner', 'golden retriever family'];
+  if (text.includes('compounding') || text.includes('pharmacy') || text.includes('medication')) return ['veterinarian dog clinic', 'vet exam happy dog', 'dog vet smiling'];
+  if (text.includes('3d print') || text.includes('technology') || text.includes('innovation')) return ['veterinarian technology clinic', 'vet modern clinic', 'dog vet happy'];
+  if (text.includes('merger') || text.includes('industry') || text.includes('consolidation')) return ['veterinarian professional', 'vet clinic team', 'dog vet exam'];
+
+  // Always fall back to warm pet lifestyle — never clinical
+  return [suggestedQuery || 'happy dog owner', 'pet owner smile', 'dog family outdoor'];
+}
+
+async function fetchPexelsImage(query, blogTitle = '', blogKeyword = '') {
   const apiKey = process.env.PEXELS_API_KEY;
   if (!apiKey) return null;
-  const fallbacks = CONFIG.unsplashQueries || ['veterinarian dog', 'happy pet owner'];
-  const queries = [query, ...fallbacks].slice(0, 5);
+
+  const queries = getPexelsQueries(blogTitle, blogKeyword, query);
+
   for (const q of queries) {
     try {
-      const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&orientation=landscape&size=large&per_page=15`, {
+      console.log(`Trying Pexels: "${q}"`);
+      const res = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&orientation=landscape&size=large&per_page=20`, {
         headers: { Authorization: apiKey }
       });
       if (!res.ok) continue;
       const data = await res.json();
       if (data.photos?.length) {
-        const pick = data.photos[Math.floor(Math.random() * Math.min(8, data.photos.length))];
-        console.log(`Photo by ${pick.photographer} on Pexels`);
-        return { url: pick.src.large2x || pick.src.large, altText: pick.alt || q, credit: `Photo by ${pick.photographer} on Pexels`, creditUrl: pick.photographer_url };
+        // Pick randomly from top results for variety
+        const pick = data.photos[Math.floor(Math.random() * Math.min(10, data.photos.length))];
+        console.log(`📷 Photo by ${pick.photographer} on Pexels`);
+        return {
+          url: pick.src.large2x || pick.src.large,
+          altText: pick.alt || q,
+          credit: `Photo by ${pick.photographer} on Pexels`,
+          creditUrl: pick.photographer_url
+        };
       }
-    } catch (err) { console.warn(`Pexels "${q}" failed:`, err.message); }
+    } catch (err) {
+      console.warn(`Pexels "${q}" failed:`, err.message);
+    }
   }
   return null;
 }
@@ -454,17 +484,10 @@ async function main() {
   console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
   const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain, post.title, researchData.keyword);
 
-  // Try AI image first, fall back to Pexels, then no image
+  // Use Pexels for reliable, high quality pet lifestyle photos
   let image = null;
-  try {
-    image = await generateAIImage(post.title, researchData.keyword, post.pexelsQuery);
-  } catch (err) {
-    console.warn('AI image failed:', err.message);
-  }
-  if (!image) {
-    console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
-    try { image = await fetchPexelsImage(post.pexelsQuery); } catch (err) { console.warn('Pexels failed:', err.message); }
-  }
+  console.log(`\n🖼  Fetching Pexels image: "${post.pexelsQuery}"`);
+  try { image = await fetchPexelsImage(post.pexelsQuery, post.title, researchData.keyword); } catch (err) { console.warn('Pexels failed:', err.message); }
   if (!image) console.log('⚠️  Posting without image');
 
   let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
@@ -485,6 +508,41 @@ async function main() {
   if (matchedProducts.length > 0) {
     console.log('\n🏷  Updating product descriptions...');
     await updateProductDescriptions(matchedProducts, researchData.keyword, post.title, CONFIG.storeDomain, shopifyToken);
+  }
+
+  // ── Post to WordPress (vet store only for now) ────────────
+  const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
+  const wpUser = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
+  const wpPass = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
+  const wcKey = audience === 'vet' ? process.env.WP_PHARMACY_WC_KEY : null;
+  const wcSecret = audience === 'vet' ? process.env.WP_PHARMACY_WC_SECRET : null;
+  const wpStoreUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
+
+  if (wpUrl && wpUser && wpPass) {
+    try {
+      const wpPost = await postToWordPress({
+        baseUrl: wpUrl,
+        username: wpUser,
+        appPassword: wpPass,
+        consumerKey: wcKey,
+        consumerSecret: wcSecret,
+        title: post.title,
+        body: post.body,
+        metaDescription: post.meta,
+        tags: post.tags,
+        imageUrl: image?.url || null,
+        imageAlt: post.title,
+        audience,
+        blogKeyword: researchData.keyword,
+        storeUrl: wpStoreUrl,
+      });
+      console.log(`\n✅ WordPress draft: ${wpPost.editUrl}`);
+    } catch (wpErr) {
+      console.warn('\n⚠️  WordPress posting failed:', wpErr.message);
+      console.warn('Blog was still saved to Shopify successfully.');
+    }
+  } else {
+    console.log('\nℹ️  WordPress secrets not set — skipping WordPress post');
   }
 
   markKeywordUsed(researchData.keyword);
