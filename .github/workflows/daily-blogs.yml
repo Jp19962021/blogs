@@ -37,6 +37,7 @@ jobs:
           WP_PHARMACY_APP_PASSWORD: ${{ secrets.WP_PHARMACY_APP_PASSWORD }}
           WP_PHARMACY_WC_KEY: ${{ secrets.WP_PHARMACY_WC_KEY }}
           WP_PHARMACY_WC_SECRET: ${{ secrets.WP_PHARMACY_WC_SECRET }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
@@ -86,6 +87,7 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+          GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           STORE_AUDIENCE: petowner
         run: node generate-blog.js
         working-directory: ./scripts
