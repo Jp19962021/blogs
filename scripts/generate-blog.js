@@ -363,6 +363,91 @@ async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
   }
 }
 
+// ── Generate AI image and return base64 ─────────────────────
+async function generateAIImageBase64(blogTitle, blogKeyword) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) return null;
+
+  const t = `${blogTitle} ${blogKeyword}`.toLowerCase();
+  let scene;
+
+  if (t.includes('poison') || t.includes('toxic') || t.includes('safety') || t.includes('danger')) {
+    scene = 'A responsible pet owner at home carefully reading medication labels while their healthy golden retriever sits beside them on the kitchen floor. Bright warm kitchen lighting, family home atmosphere. The dog looks happy and alert. Shot from eye level.';
+  } else if (t.includes('fip') || t.includes('feline infectious')) {
+    scene = 'A compassionate female veterinarian in a white coat gently holding a healthy orange tabby cat against her chest, both looking calm and trusting. Bright modern veterinary clinic background with soft bokeh. Warm professional lighting.';
+  } else if (t.includes('anxiety') || t.includes('separation') || t.includes('behavioral')) {
+    scene = 'A smiling woman sitting cross-legged on a sunny living room floor, her calm golden retriever resting its head in her lap while she gently strokes its fur. Warm afternoon sunlight through large windows.';
+  } else if (t.includes('kidney') || t.includes('renal')) {
+    scene = 'An elderly woman tenderly stroking a grey senior cat lying on a soft blanket in her lap, both looking peaceful and content. Warm indoor window light, cozy armchair setting.';
+  } else if (t.includes('pain') || t.includes('arthritis')) {
+    scene = 'A kind male veterinarian kneeling at ground level, warmly greeting a senior Labrador retriever who is wagging its tail. Bright modern clinic. The dog looks comfortable and happy.';
+  } else if (t.includes('cat') || t.includes('feline') || t.includes('kitten')) {
+    scene = 'A young woman laughing as a playful tabby kitten climbs her shoulder. Natural window light, bright airy home. Candid joyful moment.';
+  } else if (t.includes('dog') || t.includes('canine') || t.includes('puppy')) {
+    scene = 'A joyful golden retriever running through a sunny green park, ears flying, tongue out, captured mid-leap. Golden hour afternoon light.';
+  } else if (t.includes('compounding') || t.includes('pharmacy') || t.includes('medication')) {
+    scene = 'A confident female veterinarian in scrubs smiling at the camera inside a bright modern veterinary clinic. A friendly Beagle sits on the exam table beside her looking healthy and happy.';
+  } else if (t.includes('merger') || t.includes('industry') || t.includes('consolidation')) {
+    scene = 'A professional female veterinarian shaking hands with a smiling male colleague in a bright modern clinic lobby. A happy Corgi sits at their feet looking up.';
+  } else {
+    scene = 'A happy Border Collie and its owner playing fetch in a sunny park. The owner is laughing as the dog leaps to catch a ball. Warm golden afternoon sunlight.';
+  }
+
+  const prompt = `${scene} No text overlays, no logos, no pills or medicine bottles visible. High quality professional pet lifestyle photography for a veterinary brand. Photorealistic.`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-image-1', prompt, n: 1, size: '1536x1024', quality: 'high' }),
+    });
+
+    if (!res.ok) {
+      console.warn('OpenAI error:', res.status, (await res.text()).slice(0, 100));
+      return null;
+    }
+
+    const data = await res.json();
+    const b64 = data.data?.[0]?.b64_json;
+    if (!b64) { console.warn('No b64 in OpenAI response'); return null; }
+    console.log('✅ AI image generated');
+    return b64;
+  } catch (err) {
+    console.warn('OpenAI failed:', err.message);
+    return null;
+  }
+}
+
+// ── Upload base64 image to WordPress media library ───────────
+async function uploadBase64ToWordPress(baseUrl, username, appPassword, b64, title) {
+  try {
+    const buffer = Buffer.from(b64, 'base64');
+    const credentials = Buffer.from(`${username}:${appPassword}`).toString('base64');
+    const filename = `petscript-${Date.now()}.png`;
+
+    const res = await fetch(`${baseUrl}/wp-json/wp/v2/media`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Type': 'image/png',
+      },
+      body: buffer,
+    });
+
+    if (!res.ok) {
+      console.warn('WP media upload failed:', res.status, (await res.text()).slice(0, 100));
+      return null;
+    }
+
+    const media = await res.json();
+    return { id: media.id, url: media.source_url };
+  } catch (err) {
+    console.warn('WP upload error:', err.message);
+    return null;
+  }
+}
+
 // ── Pexels fallback image ─────────────────────────────────────
 // ── Topic-matched Pexels queries ────────────────────────────
 function getPexelsQueries(blogTitle, blogKeyword, suggestedQuery) {
@@ -484,10 +569,39 @@ async function main() {
   console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
   const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain, post.title, researchData.keyword);
 
-  // Use Pexels for reliable, high quality pet lifestyle photos
+  // Generate AI image, upload to WordPress for permanent URL, fall back to Pexels
   let image = null;
-  console.log(`\n🖼  Fetching Pexels image: "${post.pexelsQuery}"`);
-  try { image = await fetchPexelsImage(post.pexelsQuery, post.title, researchData.keyword); } catch (err) { console.warn('Pexels failed:', err.message); }
+  const wpUrlForImage = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
+  const wpUserForImage = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
+  const wpPassForImage = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
+
+  if (process.env.OPENAI_API_KEY && wpUrlForImage && wpUserForImage && wpPassForImage) {
+    try {
+      console.log('\n🎨 Generating AI image...');
+      const aiImage = await generateAIImageBase64(post.title, researchData.keyword);
+      if (aiImage) {
+        console.log('Uploading AI image to WordPress media library...');
+        const wpMediaId = await uploadBase64ToWordPress(wpUrlForImage, wpUserForImage, wpPassForImage, aiImage, post.title);
+        if (wpMediaId?.url) {
+          image = {
+            url: wpMediaId.url,
+            altText: post.title,
+            credit: 'AI generated image for PetScript',
+            creditUrl: wpUrlForImage,
+            wpMediaId: wpMediaId.id,
+          };
+          console.log(`✅ AI image hosted at: ${image.url.slice(0, 60)}`);
+        }
+      }
+    } catch (err) {
+      console.warn('AI image failed:', err.message);
+    }
+  }
+
+  if (!image) {
+    console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
+    try { image = await fetchPexelsImage(post.pexelsQuery, post.title, researchData.keyword); } catch (err) { console.warn('Pexels failed:', err.message); }
+  }
   if (!image) console.log('⚠️  Posting without image');
 
   let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
@@ -532,6 +646,7 @@ async function main() {
         tags: post.tags,
         imageUrl: image?.url || null,
         imageAlt: post.title,
+        wpMediaId: image?.wpMediaId || null,
         audience,
         blogKeyword: researchData.keyword,
         storeUrl: wpStoreUrl,
