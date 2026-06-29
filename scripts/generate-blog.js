@@ -168,36 +168,39 @@ async function generateBlogPost(researchData) {
     `SOURCE: ${s.title} (${s.url})\nKEY POINTS:\n${s.key_points?.map(p => `- ${p}`).join('\n')}`
   ).join('\n\n') || 'No sources found — write from general knowledge on the topic.';
 
-  const prompt = `You are a professional copywriter writing for ${storeName}, a veterinary compounding pharmacy.
+  const prompt = `You are a professional SEO copywriter writing for ${storeName}, a veterinary compounding pharmacy.
 
-TASK: Write a blog post based on the source material below.
-- Use the key points from the sources as your factual foundation
-- Rewrite everything in fresh, original language — never copy phrases directly
-- Write clearly and specifically (avoid vague marketing speak)
-- Use benefits over features — tell the reader what this means for THEM
-- Audience: ${audience === 'vet' ? 'veterinarians, vet techs, clinic managers' : 'pet owners who love their animals'}
-- Tone: ${audience === 'vet' ? 'professional, warm, knowledgeable peer' : 'friendly, caring, easy to understand'}
+TASK: Write a fully SEO-optimized blog post based on the source material below.
 
+AUDIENCE: ${audience === 'vet' ? 'Veterinarians, vet techs, and clinic managers — write as a knowledgeable peer' : 'Pet owners who love their animals — warm, friendly, easy to understand'}
 PRIMARY KEYWORD: "${researchData.keyword}"
-TOPIC ANGLE: ${researchData.topic}
+TOPIC: ${researchData.topic}
 
-SOURCE MATERIAL:
+SOURCE MATERIAL (base facts on this — rewrite in original language):
 ${sourceMaterial}
 
-REQUIREMENTS:
-- Use keyword naturally in title, at least one H2, and 2-3x in body
-- Link to ${siteUrl} at least once naturally
-- NEVER include dosing amounts, mg/kg values, or administration instructions
-- End with a strong call-to-action
-- 500-700 words
-- Clean HTML body only (h2, h3, p, ul, li tags)
+SEO REQUIREMENTS (follow these exactly):
+1. TITLE: Include primary keyword, use em dash (—) as separator, max 60 chars
+2. META: 150-160 chars exactly, include primary keyword, compel the click
+3. URL SLUG: short, lowercase, hyphens, includes keyword
+4. H1: Exactly one, matches or closely reflects the title
+5. H2s: 3-5 subheadings, include secondary keywords naturally
+6. KEYWORD DENSITY: Primary keyword appears in first paragraph, at least one H2, and 2-3x in body
+7. INTRO: 100-150 words — hook with a surprising stat, bold claim, or relatable scenario
+8. BODY: 500-700 words total — short paragraphs (2-4 sentences), active voice
+9. INTERNAL LINKS: Include 2 links to ${siteUrl} naturally in the body
+10. EXTERNAL LINKS: 1 link to an authoritative source (avma.org, fda.gov, etc.)
+11. CTA: Strong closing paragraph with clear action
+12. NEVER include dosing amounts, mg/kg values, or administration instructions
+13. Answer "People Also Ask" style questions where natural
+14. Write for featured snippets — use definition paragraphs and numbered lists where appropriate
 
 Respond with EXACTLY this format — each label at the START of a line:
-TITLE: your title here
-META: 150-160 char meta description
-TAGS: tag1, tag2, tag3, tag4
-PEXELS: 3 words for real lifestyle photo
-BODY: full HTML blog body here`;
+TITLE: your title here (max 60 chars, keyword included)
+META: meta description here (150-160 chars exactly, keyword included)
+TAGS: tag1, tag2, tag3, tag4, tag5
+PEXELS: 3 words for warm real lifestyle photo (pet or vet scene, NO pills/labs)
+BODY: full HTML blog body here (h2, h3, p, ul, li, a tags only — no html/body/head)`;
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-5',
@@ -398,6 +401,69 @@ async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
   }
 }
 
+// ── Generate image via Higgsfield Nano Banana ────────────────
+async function generateHiggsImage(blogTitle, blogKeyword) {
+  const apiKey = process.env.HIGGSFIELD_API_KEY;
+  if (!apiKey) { console.warn('No HIGGSFIELD_API_KEY'); return null; }
+
+  const t = `${blogTitle} ${blogKeyword}`.toLowerCase();
+  let prompt;
+
+  if (t.includes('gs-441524') || t.includes('gs441524') || t.includes('fip') || t.includes('feline infectious')) {
+    prompt = 'Medium shot, eye-level, of a female veterinarian in her thirties in a crisp white coat gently cradling a sleepy orange tabby cat. The vet is looking down at the cat with a warm smile, not at camera. Soft diffused window light from the left, warm tungsten fill from overhead. Modern veterinary clinic interior visible in background — clean whites, soft bokeh. Filmic editorial finish: subtle grain, lifted blacks, soft highlight rolloff. Mood: calm expertise, deep trust. Photorealistic.';
+  } else if (t.includes('pimobendan') || t.includes('cardiac') || t.includes('heart')) {
+    prompt = 'Candid documentary shot of a veterinarian using a stethoscope to listen to the heartbeat of a Cavalier King Charles Spaniel on an exam table. Vet is focused on the dog, not camera. Warm clinic lighting, soft depth of field. The dog looks relaxed and comfortable. Filmic editorial finish, muted palette, photorealistic.';
+  } else if (t.includes('anxiety') || t.includes('separation') || t.includes('behavioral')) {
+    prompt = 'Lifestyle editorial shot of a calm golden retriever lying on a sunny hardwood floor, warm afternoon light streaming through large windows. Dog is relaxed, head resting on paws, eyes soft. Owner's hand gently resting on the dog's back, owner not in frame. Warm neutral home interior. Shallow depth of field, photorealistic lifestyle photography.';
+  } else if (t.includes('kidney') || t.includes('renal')) {
+    prompt = 'Intimate candid shot of an elderly woman's hands gently stroking a senior grey cat curled in her lap. Neither looking at camera. Warm window light, cozy home setting, soft wool blanket. Close medium shot. Filmic finish, warm muted palette, photorealistic.';
+  } else if (t.includes('pain') || t.includes('arthritis') || t.includes('gabapentin')) {
+    prompt = 'Candid low-angle shot of a veterinarian kneeling at floor level beside a senior Labrador retriever. Vet is gently examining the dog's leg, both focused on each other not camera. Warm modern clinic floor, soft ambient light. Photorealistic, shallow depth of field.';
+  } else if (t.includes('methimazole') || t.includes('hyperthyroid') || t.includes('thyroid')) {
+    prompt = 'Editorial close-up of a grey and white cat sitting on a sunny windowsill, looking out the window peacefully. Warm natural backlight creates a gentle rim light on the cat's fur. Interior home setting softly visible in background. Photorealistic, filmic finish.';
+  } else if (t.includes('seizure') || t.includes('epilepsy') || t.includes('phenobarbital')) {
+    prompt = 'Warm candid shot of a Border Collie resting peacefully on a soft dog bed in a cozy living room. Dog is sleeping, relaxed. Warm afternoon light, blurred home interior background. Photorealistic lifestyle photography.';
+  } else if (t.includes('cat') || t.includes('feline') || t.includes('kitten')) {
+    prompt = 'Candid lifestyle shot of a tabby kitten playing with a toy on a bright white linen bed. Natural window light, airy bedroom setting. Kitten is mid-motion, not looking at camera. Shallow depth of field, soft warm tones. Photorealistic.';
+  } else if (t.includes('dog') || t.includes('canine') || t.includes('puppy')) {
+    prompt = 'Lifestyle editorial shot of a happy golden retriever running through a sunny green park, tongue out, caught mid-stride. Owner blurred in background watching. Golden hour light, warm tones. Shallow depth of field. Photorealistic action photography.';
+  } else if (t.includes('compounding') || t.includes('pharmacy') || t.includes('formulary')) {
+    prompt = 'Candid shot of a confident female veterinarian reviewing a patient chart at a modern clinic desk. She is focused on the chart, not camera. Clean white clinic interior, warm overhead lighting, medical equipment softly visible in background. Photorealistic editorial photography.';
+  } else {
+    prompt = 'Warm lifestyle editorial shot of a happy mixed-breed dog sitting in a sunny backyard, looking up at something off-camera with an alert happy expression. Lush green background, golden afternoon light. Shallow depth of field. Photorealistic photography.';
+  }
+
+  try {
+    console.log('🎨 Generating Higgsfield image...');
+
+    // Use Higgsfield JS SDK v2
+    const { higgsfield, config } = await import('@higgsfield/client/v2');
+    config({ credentials: apiKey }); // format: KEY_ID:KEY_SECRET
+
+    const jobSet = await higgsfield.subscribe('nano-banana-2/text-to-image', {
+      input: {
+        prompt,
+        aspect_ratio: '16:9',
+        safety_tolerance: 2,
+      },
+      withPolling: true,
+    });
+
+    if (jobSet.isCompleted) {
+      const imageUrl = jobSet.jobs[0]?.results?.raw?.url;
+      if (imageUrl) {
+        console.log('✅ Higgsfield image ready:', imageUrl.slice(0, 60));
+        return { url: imageUrl, altText: blogTitle, credit: '', creditUrl: '' };
+      }
+    }
+    console.warn('Higgsfield job did not complete');
+    return null;
+  } catch (err) {
+    console.warn('Higgsfield error:', err.message);
+    return null;
+  }
+}
+
 // ── Generate AI image and return base64 ─────────────────────
 async function generateAIImageBase64(blogTitle, blogKeyword) {
   const openaiKey = process.env.OPENAI_API_KEY;
@@ -406,26 +472,48 @@ async function generateAIImageBase64(blogTitle, blogKeyword) {
   const t = `${blogTitle} ${blogKeyword}`.toLowerCase();
   let scene;
 
-  if (t.includes('poison') || t.includes('toxic') || t.includes('safety') || t.includes('danger')) {
-    scene = 'A responsible pet owner at home carefully reading medication labels while their healthy golden retriever sits beside them on the kitchen floor. Bright warm kitchen lighting, family home atmosphere. The dog looks happy and alert. Shot from eye level.';
-  } else if (t.includes('fip') || t.includes('feline infectious')) {
-    scene = 'A compassionate female veterinarian in a white coat gently holding a healthy orange tabby cat against her chest, both looking calm and trusting. Bright modern veterinary clinic background with soft bokeh. Warm professional lighting.';
-  } else if (t.includes('anxiety') || t.includes('separation') || t.includes('behavioral')) {
-    scene = 'A smiling woman sitting cross-legged on a sunny living room floor, her calm golden retriever resting its head in her lap while she gently strokes its fur. Warm afternoon sunlight through large windows.';
-  } else if (t.includes('kidney') || t.includes('renal')) {
-    scene = 'An elderly woman tenderly stroking a grey senior cat lying on a soft blanket in her lap, both looking peaceful and content. Warm indoor window light, cozy armchair setting.';
-  } else if (t.includes('pain') || t.includes('arthritis')) {
-    scene = 'A kind male veterinarian kneeling at ground level, warmly greeting a senior Labrador retriever who is wagging its tail. Bright modern clinic. The dog looks comfortable and happy.';
+  // FIP and GS-441524 — ALWAYS cats, never dogs
+  if (t.includes('gs-441524') || t.includes('gs441524') || t.includes('fip') || t.includes('feline infectious peritonitis')) {
+    scene = 'A compassionate female veterinarian in a white coat gently cradling a sleepy orange tabby cat in her arms, both looking calm and content. Soft warm clinic lighting, blurred modern clinic background. Close up portrait style.';
+  // Cat-specific conditions
+  } else if (t.includes('hyperthyroid') || t.includes('methimazole') || t.includes('kidney') && t.includes('cat')) {
+    scene = 'A loving pet owner gently stroking a fluffy grey cat sitting on a veterinary exam table, a smiling vet looking on. Warm professional clinic lighting.';
+  // Ophthalmic — eye close up with animal
+  } else if (t.includes('ophthalm') || t.includes('kcs') || t.includes('tacrolimus') || t.includes('cyclosporine') || t.includes('eye')) {
+    scene = 'A veterinarian using an ophthalmoscope to gently examine the eye of a calm golden retriever on an exam table. Bright focused clinic lighting, professional and caring atmosphere.';
+  // Cardiac — dog with vet listening to heart
+  } else if (t.includes('pimobendan') || t.includes('cardiac') || t.includes('heart') || t.includes('furosemide')) {
+    scene = 'A caring veterinarian using a stethoscope to listen to the heartbeat of a calm Cavalier King Charles Spaniel on an exam table. Warm clinic lighting, focused and professional.';
+  // Pain and arthritis — senior dog
+  } else if (t.includes('pain') || t.includes('arthritis') || t.includes('gabapentin') || t.includes('tramadol')) {
+    scene = 'A kind veterinarian kneeling beside a gentle senior Labrador retriever, both at ground level. The dog looks relaxed and trusting. Bright warm clinic flooring, natural light.';
+  // Anxiety and behavioral — calm dog with owner
+  } else if (t.includes('anxiety') || t.includes('separation') || t.includes('behavioral') || t.includes('trazodone')) {
+    scene = 'A smiling woman sitting on a sunny living room floor, her calm golden retriever resting its head in her lap. Warm afternoon sunlight through large windows, cozy home atmosphere.';
+  // Seizures — dog with vet
+  } else if (t.includes('seizure') || t.includes('epilepsy') || t.includes('phenobarbital') || t.includes('bromide')) {
+    scene = 'A reassuring veterinarian placing a gentle hand on a Border Collie lying calmly on an exam table. Soft clinic lighting, caring professional atmosphere.';
+  // Cushings / hormonal
+  } else if (t.includes('cushings') || t.includes('trilostane') || t.includes('adrenal') || t.includes('hormone')) {
+    scene = 'A veterinarian reviewing notes on a tablet while a friendly Poodle sits beside them on an exam table, looking healthy and bright-eyed. Modern clinic setting.';
+  // Skin / dermatology
+  } else if (t.includes('skin') || t.includes('allergy') || t.includes('dermat') || t.includes('itch')) {
+    scene = 'A gentle veterinarian carefully examining the coat and skin of a happy Labrador retriever. Bright clinic lighting, the dog looks relaxed and cooperative.';
+  // General cat topics
   } else if (t.includes('cat') || t.includes('feline') || t.includes('kitten')) {
-    scene = 'A young woman laughing as a playful tabby kitten climbs her shoulder. Natural window light, bright airy home. Candid joyful moment.';
+    scene = 'A young woman laughing as a playful tabby kitten nuzzles her cheek. Natural window light, bright airy home. Warm candid joyful moment.';
+  // General dog topics  
   } else if (t.includes('dog') || t.includes('canine') || t.includes('puppy')) {
-    scene = 'A joyful golden retriever running through a sunny green park, ears flying, tongue out, captured mid-leap. Golden hour afternoon light.';
-  } else if (t.includes('compounding') || t.includes('pharmacy') || t.includes('medication')) {
-    scene = 'A confident female veterinarian in scrubs smiling at the camera inside a bright modern veterinary clinic. A friendly Beagle sits on the exam table beside her looking healthy and happy.';
-  } else if (t.includes('merger') || t.includes('industry') || t.includes('consolidation')) {
-    scene = 'A professional female veterinarian shaking hands with a smiling male colleague in a bright modern clinic lobby. A happy Corgi sits at their feet looking up.';
+    scene = 'A happy golden retriever looking up adoringly at its smiling owner in a sunny park. Warm afternoon light, shallow depth of field green background.';
+  // Pharmacy / compounding / B2B
+  } else if (t.includes('compounding') || t.includes('pharmacy') || t.includes('formulary') || t.includes('veterinari')) {
+    scene = 'A confident female veterinarian in scrubs smiling warmly at the camera inside a bright modern clinic. A friendly Beagle sits on the exam table beside her, looking healthy and happy.';
+  // Industry / business
+  } else if (t.includes('merger') || t.includes('industry') || t.includes('consolidation') || t.includes('practice')) {
+    scene = 'Two professional veterinarians having a friendly conversation in a bright modern clinic hallway, both smiling. A happy Labrador sits between them looking up.';
+  // Default — warm vet scene
   } else {
-    scene = 'A happy Border Collie and its owner playing fetch in a sunny park. The owner is laughing as the dog leaps to catch a ball. Warm golden afternoon sunlight.';
+    scene = 'A caring veterinarian kneeling to greet a happy mixed-breed dog in a bright modern clinic, the dog is wagging its tail enthusiastically. Warm natural lighting, inviting atmosphere.';
   }
 
   const prompt = `${scene} No text overlays, no logos, no pills or medicine bottles visible. High quality professional pet lifestyle photography for a veterinary brand. Photorealistic.`;
@@ -629,35 +717,15 @@ async function main() {
   console.log(`Found ${matchedProducts.length} matching products: ${matchedProducts.map(p => p.title).join(', ') || 'none'}`);
   const productBlock = buildProductBlock(matchedProducts, CONFIG.storeDomain, post.title, researchData.keyword);
 
-  // Generate AI image, upload to WordPress for permanent URL, fall back to Pexels
+  // Try Higgsfield Nano Banana first, fall back to Pexels
   let image = null;
-  const wpUrlForImage = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
-  const wpUserForImage = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
-  const wpPassForImage = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
-
-  if (process.env.OPENAI_API_KEY && wpUrlForImage && wpUserForImage && wpPassForImage) {
+  if (process.env.HIGGSFIELD_API_KEY) {
     try {
-      console.log('\n🎨 Generating AI image...');
-      const aiImage = await generateAIImageBase64(post.title, researchData.keyword);
-      if (aiImage) {
-        console.log('Uploading AI image to WordPress media library...');
-        const wpMediaId = await uploadBase64ToWordPress(wpUrlForImage, wpUserForImage, wpPassForImage, aiImage, post.title);
-        if (wpMediaId?.url) {
-          image = {
-            url: wpMediaId.url,
-            altText: post.title,
-            credit: 'AI generated image for PetScript',
-            creditUrl: wpUrlForImage,
-            wpMediaId: wpMediaId.id,
-          };
-          console.log(`✅ AI image hosted at: ${image.url.slice(0, 60)}`);
-        }
-      }
+      image = await generateHiggsImage(post.title, researchData.keyword);
     } catch (err) {
-      console.warn('AI image failed:', err.message);
+      console.warn('Higgsfield failed:', err.message);
     }
   }
-
   if (!image) {
     console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
     try { image = await fetchPexelsImage(post.pexelsQuery, post.title, researchData.keyword); } catch (err) { console.warn('Pexels failed:', err.message); }
@@ -665,7 +733,7 @@ async function main() {
   if (!image) console.log('⚠️  Posting without image');
 
   let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
-  if (image?.credit) finalBody += `\n<p><small><em>${image.credit}</em></small></p>`;
+  // No image credit line added
 
   const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
 
@@ -721,7 +789,7 @@ async function main() {
   }
 
   markKeywordUsed(researchData.keyword);
-  if (topicRow) await markTopicUsed(audience, topicRow);
+  if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
 
   saveRunLog({
     date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
