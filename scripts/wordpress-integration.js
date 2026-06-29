@@ -184,6 +184,7 @@ export async function postToWordPress({
   tags,
   imageUrl,
   imageAlt,
+  wpMediaId,
   audience,
   blogKeyword,
   storeUrl,
@@ -195,9 +196,9 @@ export async function postToWordPress({
   const categoryId = await getOrCreateCategory(baseUrl, username, appPassword, categoryName);
   console.log(`Category: ${categoryName} (${categoryId})`);
 
-  // 2. Upload featured image
-  let featuredMediaId = null;
-  if (imageUrl) {
+  // 2. Use already-uploaded media ID or upload from URL
+  let featuredMediaId = wpMediaId || null;
+  if (!featuredMediaId && imageUrl) {
     featuredMediaId = await uploadImageToWordPress(baseUrl, username, appPassword, imageUrl, imageAlt || title);
   }
 
