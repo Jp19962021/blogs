@@ -1,5 +1,30 @@
 [
   {
+    "date": "2026-06-29T01:24:25.403Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "human medications toxic to pets",
+    "angle": "Common household medications that can poison or kill dogs and cats",
+    "trending_reason": "Based on sources: Can You Give Human Pain Medication to Your Pet?, Human Medications Toxic to Dogs & Cats: Vet Emergency Guide (2026), Are Human Medications Safe for Pets? The Dangers Every Pet Owner Should Know",
+    "search_volume": "high",
+    "sources": [
+      "https://www.preventivevet.com/pets/can-you-give-human-pain-medication-to-your-pet",
+      "https://toxipets.com/blog/human-medications-toxic-to-dogs-cats",
+      "https://www.dovelewis.org/blog/are-human-medications-safe-pets-dangers-every-pet-owner-should-know"
+    ],
+    "title": "Human Medications Toxic to Pets: Common Household Drugs That Can Poison Your Dog or Cat",
+    "tags": [
+      "pet safety",
+      "medication toxicity",
+      "pet poisoning",
+      "pet health"
+    ],
+    "articleId": "gid://shopify/Article/581857247294",
+    "articleHandle": "human-medications-toxic-to-pets-common-household-drugs-that-can-poison-your-dog-or-cat",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-06-29T01:21:51.074Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
