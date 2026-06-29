@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.24.0",
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@higgsfield/client": "^2.0.0",
     "node-fetch": "^3.3.2"
   }
 }
