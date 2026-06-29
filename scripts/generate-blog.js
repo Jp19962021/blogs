@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { fetchProducts, matchProductsToBlog, buildProductBlock, updateProductDescriptions } from './product-integration.js';
 import { postToWordPress } from './wordpress-integration.js';
+import { getNextTopic, markTopicUsed, prettifyTopic } from './google-sheets.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
@@ -54,7 +55,7 @@ function getContactBlock() {
     : `<div style="background:#EBF4FF;border-left:4px solid #1a56db;padding:20px 24px;margin:32px 0;border-radius:0 8px 8px 0"><h3 style="margin:0 0 8px;color:#1a56db">Get Your Pet's Medication from PetScript Direct</h3><p style="margin:0 0 12px;color:#374151">Custom compounded medications delivered to your door.</p><ul style="margin:0;padding-left:20px;color:#374151"><li>Website: <a href="https://www.petscriptdirect.com" style="color:#1a56db">www.petscriptdirect.com</a></li><li>Phone: <a href="tel:8667846915" style="color:#1a56db">866-784-6915</a></li><li>Email: <a href="mailto:info@petscriptdirect.com" style="color:#1a56db">info@petscriptdirect.com</a></li></ul></div>`;
 }
 
-async function researchTopicAndArticles() {
+async function researchTopicAndArticles(topicOverride = null) {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const usedKeywords = getUsedKeywords();
   const recentTitles = getRecentTitles();
@@ -63,7 +64,22 @@ async function researchTopicAndArticles() {
     ? 'avma.org, wedgewoodpharmacy.com, mixlab.com, covetrus.com, veterinarypracticenews.com, dvm360.com'
     : 'akc.org, petmd.com, catvills.com, preventivevet.com, thesprucepets.com';
 
-  const prompt = audience === 'vet'
+  const prompt = topicOverride
+    ? `You are a veterinary content researcher. Search for 2-3 real articles about this specific topic: "${topicOverride}"
+
+Search sources like: ${sources}
+
+Return ONLY valid JSON:
+{
+  "keyword": "${topicOverride}",
+  "topic": "${topicOverride}",
+  "search_volume": "high",
+  "sources": [
+    {"url": "actual url", "title": "article title", "key_points": ["point 1", "point 2", "point 3"]}
+  ],
+  "pexels_query": "3 words for warm real pet lifestyle photo"
+}`
+    : audience === 'vet'
     ? `You are a veterinary content researcher. Search these sources for trending topics relevant to veterinary compounding pharmacy: ${sources}
 
 Find ONE trending topic from the past 30 days that veterinarians are searching for.
@@ -555,8 +571,33 @@ async function main() {
   const shopifyToken = await getShopifyToken(CONFIG.storeDomain, clientId, clientSecret);
   console.log('Got Shopify token');
 
-  console.log('\n🔍 Finding trending topic and real source articles...');
-  const researchData = await researchTopicAndArticles();
+  // ── Get topic from Google Sheet ──────────────────────────────
+  console.log('\n📋 Getting topic from Google Sheet...');
+  let topicRow = null;
+  let rawTopic = null;
+
+  if (process.env.GOOGLE_SHEETS_CREDENTIALS) {
+    const sheetTopic = await getNextTopic(audience);
+    if (sheetTopic) {
+      rawTopic = sheetTopic.topic;
+      topicRow = sheetTopic.rowIndex;
+      console.log(`Raw topic: "${rawTopic}"`);
+    }
+  }
+
+  // Fall back to web research if no sheet topic
+  let researchData;
+  if (rawTopic) {
+    console.log('✨ Prettifying topic title...');
+    const prettyTitle = await prettifyTopic(rawTopic);
+    console.log(`Pretty title: "${prettyTitle}"`);
+
+    console.log('\n🔍 Researching source articles for topic...');
+    researchData = await researchTopicAndArticles(prettyTitle);
+  } else {
+    console.log('\n🔍 No sheet topic — finding trending topic...');
+    researchData = await researchTopicAndArticles();
+  }
 
   console.log('\n✍️  Writing blog post from source material...');
   const post = await generateBlogPost(researchData);
@@ -661,6 +702,7 @@ async function main() {
   }
 
   markKeywordUsed(researchData.keyword);
+  if (topicRow) await markTopicUsed(audience, topicRow);
 
   saveRunLog({
     date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
