@@ -436,27 +436,57 @@ async function generateHiggsImage(blogTitle, blogKeyword) {
   try {
     console.log('🎨 Generating Higgsfield image...');
 
-    // Use Higgsfield JS SDK v2
-    const { higgsfield, config } = await import('@higgsfield/client/v2');
-    config({ credentials: apiKey }); // format: KEY_ID:KEY_SECRET
+    // Use Higgsfield REST API directly
+    const [keyId, keySecret] = apiKey.split(':');
+    const authHeader = `Key ${keyId}:${keySecret}`;
 
-    const jobSet = await higgsfield.subscribe('nano-banana-2/text-to-image', {
-      input: {
-        prompt,
-        aspect_ratio: '16:9',
-        safety_tolerance: 2,
+    // Step 1: Submit generation job
+    const res = await fetch('https://api.higgsfield.ai/v1/nano-banana-2/text-to-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
       },
-      withPolling: true,
+      body: JSON.stringify({ prompt, aspect_ratio: '16:9', count: 1 }),
     });
 
-    if (jobSet.isCompleted) {
-      const imageUrl = jobSet.jobs[0]?.results?.raw?.url;
-      if (imageUrl) {
-        console.log('✅ Higgsfield image ready:', imageUrl.slice(0, 60));
-        return { url: imageUrl, altText: blogTitle, credit: '', creditUrl: '' };
+    if (!res.ok) {
+      const errText = await res.text();
+      console.warn('Higgsfield submit error:', res.status, errText.slice(0, 200));
+      return null;
+    }
+
+    const data = await res.json();
+    const jobSetId = data.job_set_id || data.id;
+    if (!jobSetId) { console.warn('No job_set_id from Higgsfield:', JSON.stringify(data).slice(0, 200)); return null; }
+    console.log('Higgsfield job set ID:', jobSetId);
+
+    // Step 2: Poll for completion (max 2 mins)
+    for (let i = 0; i < 24; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      const pollRes = await fetch(`https://api.higgsfield.ai/v1/job-sets/${jobSetId}`, {
+        headers: { 'Authorization': authHeader },
+      });
+      if (!pollRes.ok) continue;
+      const pollData = await pollRes.json();
+      const status = pollData.status;
+      console.log(`Higgsfield status: ${status} (${i + 1}/24)`);
+
+      if (status === 'completed' || status === 'COMPLETED') {
+        const imageUrl = pollData.jobs?.[0]?.results?.raw?.url
+          || pollData.jobs?.[0]?.output_url
+          || pollData.result_url;
+        if (imageUrl) {
+          console.log('✅ Higgsfield image ready:', imageUrl.slice(0, 60));
+          return { url: imageUrl, altText: blogTitle, credit: '', creditUrl: '' };
+        }
+      }
+      if (status === 'failed' || status === 'FAILED' || status === 'error') {
+        console.warn('Higgsfield job failed:', JSON.stringify(pollData).slice(0, 200));
+        return null;
       }
     }
-    console.warn('Higgsfield job did not complete');
+    console.warn('Higgsfield timed out after 2 minutes');
     return null;
   } catch (err) {
     console.warn('Higgsfield error:', err.message);
