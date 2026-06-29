@@ -32,6 +32,11 @@ jobs:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+          WP_PHARMACY_URL: ${{ secrets.WP_PHARMACY_URL }}
+          WP_PHARMACY_USERNAME: ${{ secrets.WP_PHARMACY_USERNAME }}
+          WP_PHARMACY_APP_PASSWORD: ${{ secrets.WP_PHARMACY_APP_PASSWORD }}
+          WP_PHARMACY_WC_KEY: ${{ secrets.WP_PHARMACY_WC_KEY }}
+          WP_PHARMACY_WC_SECRET: ${{ secrets.WP_PHARMACY_WC_SECRET }}
           STORE_AUDIENCE: vet
         run: node generate-blog.js
         working-directory: ./scripts
