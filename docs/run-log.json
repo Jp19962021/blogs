@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-01T15:45:40.707Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "compounded pet medications",
+    "angle": "Custom Medications for Pets: When Your Dog or Cat Needs a Compounded Drug",
+    "trending_reason": "Based on sources: What Is a Veterinary Compounding Pharmacy? | PetMD, Medicines for Your Pet: What's The Difference Between FDA-approved & Pharmacy-compounded Drugs? | FDA, What is compounded medication for Pets?",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/what-veterinary-compounding-pharmacy",
+      "https://www.fda.gov/consumers/consumer-updates/medicines-your-pet-whats-difference-between-fda-approved-pharmacy-compounded-drugs",
+      "https://www.prosperitypharmacyrx.com/post/what-is-compounded-medication-for-pets"
+    ],
+    "title": "Compounded Pet Medications — Custom Solutions for Your Pet",
+    "tags": [
+      "compounded pet medications",
+      "veterinary compounding",
+      "pet medication solutions",
+      "custom pet prescriptions",
+      "pet pharmacy"
+    ],
+    "articleId": "gid://shopify/Article/581967904830",
+    "articleHandle": "compounded-pet-medications-custom-solutions-for-your-pet",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-01T15:43:37.966Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
