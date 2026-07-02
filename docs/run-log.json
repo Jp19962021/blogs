@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-02T15:19:17.119Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Vet Cost More Than Chewy?",
+    "angle": "Why Does My Vet Cost More Than Chewy?",
+    "trending_reason": "Based on sources: Why Do Pet Medications Cost So Much? | PetMD, How to Order Pet Medications Online | Consumer Reports, Veterinary Big Box and Online Pricing: Why is My Veterinarian Always More Expensive?",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/evr_dg_why_do_pet_medications_cost_so_much",
+      "https://www.consumerreports.org/home-garden/pets/how-to-order-pet-meds-online-a1162117639/",
+      "https://www.northernoaksvet.com/services/other/blog/veterinary-big-box-and-online-pricing-why-my-veterinarian-always-more-expensive"
+    ],
+    "title": "Why Does My Vet Cost More Than Chewy? — The Truth",
+    "tags": [
+      "pet medication costs",
+      "veterinary pricing",
+      "Chewy vs vet prices",
+      "pet prescription costs",
+      "affordable pet meds"
+    ],
+    "articleId": "gid://shopify/Article/581978816574",
+    "articleHandle": "why-does-my-vet-cost-more-than-chewy-the-truth",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-02T15:17:31.379Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
