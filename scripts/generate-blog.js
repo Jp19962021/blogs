@@ -403,8 +403,8 @@ async function generateAIImage(blogTitle, blogKeyword, pexelsQuery) {
 
 // ── Generate image via Higgsfield Nano Banana ────────────────
 async function generateHiggsImage(blogTitle, blogKeyword) {
-  const apiKey = process.env.HIGGSFIELD_API_KEY;
-  if (!apiKey) { console.warn('No HIGGSFIELD_API_KEY'); return null; }
+  const apiKey = process.env.FAL_API_KEY;
+  if (!apiKey) { console.warn('No FAL_API_KEY'); return null; }
 
   const t = `${blogTitle} ${blogKeyword}`.toLowerCase();
   let prompt;
@@ -434,59 +434,30 @@ async function generateHiggsImage(blogTitle, blogKeyword) {
   }
 
   try {
-    console.log('🎨 Generating Higgsfield image...');
+    console.log('🎨 Generating Nano Banana image via fal.ai...');
 
-    // Use Higgsfield REST API directly
-    const [keyId, keySecret] = apiKey.split(':');
-    const authHeader = `Key ${keyId}:${keySecret}`;
+    // Use fal.ai API for Nano Banana 2
+    const { fal } = await import('@fal-ai/client');
+    fal.config({ credentials: apiKey });
 
-    // Step 1: Submit generation job
-    const res = await fetch('https://api.higgsfield.ai/v1/nano-banana-2/text-to-image', {
-      method: 'POST',
-      headers: {
-        'Authorization': authHeader,
-        'Content-Type': 'application/json',
+    const result = await fal.subscribe('fal-ai/nano-banana-2', {
+      input: {
+        prompt,
+        aspect_ratio: '16:9',
+        resolution: '2K',
+        num_images: 1,
+        safety_tolerance: '4',
+        output_format: 'jpeg',
       },
-      body: JSON.stringify({ prompt, aspect_ratio: '16:9', count: 1 }),
+      logs: false,
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      console.warn('Higgsfield submit error:', res.status, errText.slice(0, 200));
-      return null;
+    const imageUrl = result?.data?.images?.[0]?.url;
+    if (imageUrl) {
+      console.log('✅ Nano Banana image ready:', imageUrl.slice(0, 80));
+      return { url: imageUrl, altText: blogTitle, credit: '', creditUrl: '' };
     }
-
-    const data = await res.json();
-    const jobSetId = data.job_set_id || data.id;
-    if (!jobSetId) { console.warn('No job_set_id from Higgsfield:', JSON.stringify(data).slice(0, 200)); return null; }
-    console.log('Higgsfield job set ID:', jobSetId);
-
-    // Step 2: Poll for completion (max 2 mins)
-    for (let i = 0; i < 24; i++) {
-      await new Promise(r => setTimeout(r, 5000));
-      const pollRes = await fetch(`https://api.higgsfield.ai/v1/job-sets/${jobSetId}`, {
-        headers: { 'Authorization': authHeader },
-      });
-      if (!pollRes.ok) continue;
-      const pollData = await pollRes.json();
-      const status = pollData.status;
-      console.log(`Higgsfield status: ${status} (${i + 1}/24)`);
-
-      if (status === 'completed' || status === 'COMPLETED') {
-        const imageUrl = pollData.jobs?.[0]?.results?.raw?.url
-          || pollData.jobs?.[0]?.output_url
-          || pollData.result_url;
-        if (imageUrl) {
-          console.log('✅ Higgsfield image ready:', imageUrl.slice(0, 60));
-          return { url: imageUrl, altText: blogTitle, credit: '', creditUrl: '' };
-        }
-      }
-      if (status === 'failed' || status === 'FAILED' || status === 'error') {
-        console.warn('Higgsfield job failed:', JSON.stringify(pollData).slice(0, 200));
-        return null;
-      }
-    }
-    console.warn('Higgsfield timed out after 2 minutes');
+    console.warn('No image URL in fal.ai response:', JSON.stringify(result?.data).slice(0, 200));
     return null;
   } catch (err) {
     console.warn('Higgsfield error:', err.message);
@@ -599,6 +570,26 @@ async function uploadBase64ToWordPress(baseUrl, username, appPassword, b64, titl
     console.warn('WP upload error:', err.message);
     return null;
   }
+}
+
+// ── Static CTA block ────────────────────────────────────────
+function buildStaticCTABlock(audience) {
+  const isVet = audience === 'vet';
+  const browseUrl = isVet ? 'https://www.petscriptpharmacy.com/collections/all' : 'https://www.petscriptdirect.com/collections/all';
+  const phone = '866-784-6915';
+  const title = isVet ? 'PetScript Pharmacy Compounded Medications' : 'PetScript Direct Compounded Medications';
+  const desc = isVet
+    ? 'We compound thousands of medications in flavored, chewable, transdermal, and liquid formulations — made specifically for your patients. Browse or contact us for a specific medication.'
+    : 'We compound thousands of medications in flavored, chewable, transdermal, and liquid formulations — made specifically for your pet. Browse or contact us for a specific medication.';
+
+  return `<div style="background:#EBF4FF;border-radius:8px;padding:20px 24px;margin:32px 0">
+  <p style="margin:0 0 8px;font-size:15px;font-weight:700;color:#003767">🐾 ${title}</p>
+  <p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.6">${desc}</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <a href="${browseUrl}" style="display:inline-block;background:#003767;color:#ffffff;text-decoration:none;padding:10px 22px;border-radius:6px;font-size:14px;font-weight:700">Browse Our Formulary →</a>
+    <a href="tel:${phone}" style="display:inline-block;background:#ffffff;color:#003767;text-decoration:none;padding:10px 22px;border-radius:6px;font-size:14px;font-weight:700;border:2px solid #003767">Call ${phone}</a>
+  </div>
+</div>`;
 }
 
 // ── Pexels fallback image ─────────────────────────────────────
@@ -749,11 +740,11 @@ async function main() {
 
   // Try Higgsfield Nano Banana first, fall back to Pexels
   let image = null;
-  if (process.env.HIGGSFIELD_API_KEY) {
+  if (process.env.FAL_API_KEY) {
     try {
       image = await generateHiggsImage(post.title, researchData.keyword);
     } catch (err) {
-      console.warn('Higgsfield failed:', err.message);
+      console.warn('fal.ai failed:', err.message);
     }
   }
   if (!image) {
@@ -777,10 +768,7 @@ async function main() {
   console.log(`✅ Draft created: "${article.title}"`);
   console.log(`   ID: ${article.id}`);
 
-  if (matchedProducts.length > 0) {
-    console.log('\n🏷  Updating product descriptions...');
-    await updateProductDescriptions(matchedProducts, researchData.keyword, post.title, CONFIG.storeDomain, shopifyToken);
-  }
+  // Product description updates removed
 
   // ── Post to WordPress (vet store only for now) ────────────
   const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
