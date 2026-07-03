@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-03T15:12:22.553Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "How Do I Diagnose FIP?",
+    "angle": "How Do I Diagnose FIP?",
+    "trending_reason": "Based on sources: Diagnosis of FIP: Facing the challenge, AAFP and Every Cat Health Foundation release new FIP guidelines, FIP guidelines offer hope for quick diagnosis",
+    "search_volume": "high",
+    "sources": [
+      "https://www.dvm360.com/view/diagnosis-fip-facing-challenge",
+      "https://www.dvm360.com/view/aafp-and-every-cat-health-foundation-release-new-fip-guidelines",
+      "https://www.veterinarypracticenews.com/fip-guidelines-offer-hope-for-quick-diagnosis/"
+    ],
+    "title": "How Do I Diagnose FIP? — Veterinary Guidance",
+    "tags": [
+      "feline infectious peritonitis",
+      "FIP diagnosis",
+      "veterinary diagnostics",
+      "cat diseases",
+      "feline health"
+    ],
+    "articleId": "gid://shopify/Article/597314568447",
+    "articleHandle": "how-do-i-diagnose-fip-veterinary-guidance",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-02T15:19:17.119Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
