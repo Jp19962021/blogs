@@ -31,7 +31,6 @@ jobs:
           SHOPIFY_PHARMACY_STORE: ${{ secrets.SHOPIFY_PHARMACY_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
           WP_PHARMACY_URL: ${{ secrets.WP_PHARMACY_URL }}
           WP_PHARMACY_USERNAME: ${{ secrets.WP_PHARMACY_USERNAME }}
           WP_PHARMACY_APP_PASSWORD: ${{ secrets.WP_PHARMACY_APP_PASSWORD }}
@@ -86,7 +85,6 @@ jobs:
           SHOPIFY_DIRECT_STORE: ${{ secrets.SHOPIFY_DIRECT_STORE }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
           GOOGLE_SHEETS_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           STORE_AUDIENCE: petowner
         run: node generate-blog.js
