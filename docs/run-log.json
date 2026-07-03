@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-03T15:13:59.716Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Dog Have Stains by His Eyes?",
+    "angle": "Why Does My Dog Have Stains by His Eyes?",
+    "trending_reason": "Based on sources: Dog Tear Stains: Causes, Treatment, and Prevention | PetMD, How to Prevent & Clean Tear Stains on Your Dog's Face, Tear and Fur Staining: How to Stop It | Preventive Vet",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/dog-tear-stains",
+      "https://www.akc.org/expert-advice/health/tear-stains-prevent-and-clean/",
+      "https://www.preventivevet.com/pets/tear-and-fur-staining"
+    ],
+    "title": "Why Does My Dog Have Stains by His Eyes? — PetScript",
+    "tags": [
+      "dog tear stains",
+      "dog eye discharge",
+      "dog grooming",
+      "canine eye health",
+      "pet eye care"
+    ],
+    "articleId": "gid://shopify/Article/582000246846",
+    "articleHandle": "why-does-my-dog-have-stains-by-his-eyes-petscript",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-03T15:12:22.553Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
