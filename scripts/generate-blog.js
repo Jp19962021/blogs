@@ -827,4 +827,219 @@ main().catch(err => {
   console.error('\n❌ Failed:', err.message);
   saveRunLog({ date: new Date().toISOString(), audience, store: CONFIG?.storeDomain || 'unknown', status: 'failed', error: err.message });
   process.exit(1);
+});// ── Ask Claude to write a cinematic image prompt ─────────────
+async function generateImagePrompt(blogTitle, blogBody) {
+  const { default: Anthropic } = await import('@anthropic-ai/sdk');
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-5',
+    max_tokens: 300,
+    messages: [{
+      role: 'user',
+      content: `You are a professional photography director creating image prompts for AI image generation.
+
+Based on this blog post, write ONE cinematic image prompt for a veterinary or pet lifestyle photograph.
+
+BLOG TITLE: ${blogTitle}
+BLOG EXCERPT: ${(blogBody || '').replace(/<[^>]*>/g, '').slice(0, 400)}
+
+STRICT RULES:
+- NEVER have any subject looking at the camera — always candid, caught in the moment
+- Describe the specific animal breed relevant to the topic
+- Describe exact lighting (direction, quality, warm/cool)
+- Describe the setting in detail (clinic, home, park, etc.)
+- Describe the emotional mood and tone
+- Include: shot type, subject, action, lighting, setting, depth of field, mood, photographic finish
+- Style: photorealistic lifestyle editorial — never clinical or sterile
+- NO pills, syringes, medicine bottles, or medical equipment as the focus
+- NO text, logos, overlays
+- Max 100 words
+
+Return ONLY the image prompt, nothing else.`
+    }],
+  });
+
+  return response.content.find(b => b.type === 'text')?.text?.trim() || null;
+}
+
+// ── Generate image via OpenAI gpt-image-1 ───────────────────
+async function generateImage(blogTitle, blogBody) {
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) { console.warn('No OPENAI_API_KEY — skipping image'); return null; }
+
+  try {
+    // Step 1: Claude writes the perfect prompt
+    console.log('\n🎨 Asking Claude to write image prompt...');
+    const prompt = await generateImagePrompt(blogTitle, blogBody);
+    if (!prompt) { console.warn('No prompt generated'); return null; }
+    console.log(`📝 Prompt: ${prompt.slice(0, 120)}...`);
+
+    // Step 2: OpenAI generates the image
+    console.log('🖼  Generating image via gpt-image-1...');
+    const res = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt,
+        n: 1,
+        size: '1536x1024',
+        quality: 'high',
+        output_format: 'b64_json',
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn('OpenAI error:', res.status, (await res.text()).slice(0, 200));
+      return null;
+    }
+
+    const data = await res.json();
+    const b64 = data.data?.[0]?.b64_json;
+    if (!b64) { console.warn('No b64 in OpenAI response'); return null; }
+    console.log('✅ Image generated');
+    return { b64, prompt };
+  } catch (err) {
+    console.warn('Image generation failed:', err.message);
+    return null;
+  }
+}
+
+// ── Upload base64 image to WordPress media library ───────────
+async function uploadImageToWordPress(baseUrl, username, appPassword, b64, title) {
+  try {
+    const buffer = Buffer.from(b64, 'base64');
+    const credentials = Buffer.from(`${username}:${appPassword}`).toString('base64');
+    const filename = `petscript-${Date.now()}.png`;
+
+    const res = await fetch(`${baseUrl}/wp-json/wp/v2/media`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
+        'Content-Type': 'image/png',
+      },
+      body: buffer,
+    });
+
+    if (!res.ok) {
+      console.warn('WordPress upload failed:', res.status, (await res.text()).slice(0, 200));
+      return null;
+    }
+
+    const media = await res.json();
+    console.log('✅ Image uploaded to WordPress:', media.source_url?.slice(0, 80));
+    return { id: media.id, url: media.source_url };
+  } catch (err) {
+    console.warn('WordPress upload error:', err.message);
+    return null;
+  }
+}
+
+  // ── Generate image → upload to WordPress → use URL for Shopify ──
+  let image = null;
+  const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
+  const wpUser = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
+  const wpPass = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
+
+  const generated = await generateImage(post.title, post.body);
+  if (generated?.b64) {
+    // Upload to WordPress first to get permanent URL
+    if (wpUrl && wpUser && wpPass) {
+      const wpMedia = await uploadImageToWordPress(wpUrl, wpUser, wpPass, generated.b64, post.title);
+      if (wpMedia?.url) {
+        image = { url: wpMedia.url, altText: post.title, wpMediaId: wpMedia.id };
+        console.log('✅ Using WordPress URL for both Shopify and WordPress');
+      }
+    }
+    // For Direct store (no WordPress yet) — fall through to Pexels
+    if (!image && audience !== 'vet') {
+      console.log('ℹ️  No WordPress for Direct store yet — falling back to Pexels');
+    }
+  }
+
+  if (!image) {
+    console.log(`\n🖼  Falling back to Pexels: "${post.pexelsQuery}"`);
+    try { image = await fetchPexelsImage(post.pexelsQuery, post.title, researchData.keyword); } catch (err) { console.warn('Pexels failed:', err.message); }
+  }
+  if (!image) console.log('⚠️  Posting without image');
+
+  let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
+  // No image credit line added
+
+  const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
+
+  console.log('\n📤 Creating Shopify draft...');
+  const article = await createDraft({
+    domain: CONFIG.storeDomain, token: shopifyToken, blogId,
+    title: post.title, body: finalBody, summary: post.meta,
+    tags: post.tags, image,
+  });
+
+  console.log(`✅ Draft created: "${article.title}"`);
+  console.log(`   ID: ${article.id}`);
+
+  // Product description updates removed
+
+  // ── Post to WordPress (vet store only for now) ────────────
+  const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
+  const wpUser = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
+  const wpPass = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
+  const wcKey = audience === 'vet' ? process.env.WP_PHARMACY_WC_KEY : null;
+  const wcSecret = audience === 'vet' ? process.env.WP_PHARMACY_WC_SECRET : null;
+  const wpStoreUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
+
+  if (wpUrl && wpUser && wpPass) {
+    try {
+      const wpPost = await postToWordPress({
+        baseUrl: wpUrl,
+        username: wpUser,
+        appPassword: wpPass,
+        consumerKey: wcKey,
+        consumerSecret: wcSecret,
+        title: post.title,
+        body: post.body,
+        metaDescription: post.meta,
+        tags: post.tags,
+        imageUrl: image?.url || null,
+        imageAlt: post.title,
+        wpMediaId: image?.wpMediaId || null,
+        audience,
+        blogKeyword: researchData.keyword,
+        storeUrl: wpStoreUrl,
+      });
+      console.log(`\n✅ WordPress draft: ${wpPost.editUrl}`);
+    } catch (wpErr) {
+      console.warn('\n⚠️  WordPress posting failed:', wpErr.message);
+      console.warn('Blog was still saved to Shopify successfully.');
+    }
+  } else {
+    console.log('\nℹ️  WordPress secrets not set — skipping WordPress post');
+  }
+
+  markKeywordUsed(researchData.keyword);
+  if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
+
+  saveRunLog({
+    date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
+    keyword: researchData.keyword, angle: researchData.topic,
+    trending_reason: `Based on sources: ${researchData.sources?.map(s => s.title).join(', ')}`,
+    search_volume: researchData.search_volume,
+    sources: researchData.sources?.map(s => s.url) || [],
+    title: post.title, tags: post.tags,
+    articleId: article.id, articleHandle: article.handle,
+    hasImage: !!image, status: 'success',
+  });
+
+  console.log('\n🎉 Done! Review in Shopify > Online Store > Blog Posts');
+}
+
+main().catch(err => {
+  console.error('\n❌ Failed:', err.message);
+  saveRunLog({ date: new Date().toISOString(), audience, store: CONFIG?.storeDomain || 'unknown', status: 'failed', error: err.message });
+  process.exit(1);
 });
