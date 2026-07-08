@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-08T15:24:28.615Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "pet health wearables and trackers",
+    "angle": "smart collars and fitness trackers that monitor your pet's vital signs and activity in real-time",
+    "trending_reason": "Based on sources: Maven Pet Health App and Tracker | Preventive Vet, How Pets Impact Our Mental Health | PetMD, Vet Recommended Prebiotic & Probiotic Supplements for Dogs & Cats",
+    "search_volume": "high",
+    "sources": [
+      "https://www.preventivevet.com/maven-pet-health-tracker",
+      "https://www.petmd.com/general-health/how-pets-impact-our-mental-health",
+      "https://www.preventivevet.com/best-probiotic-supplements-for-dogs-and-cats"
+    ],
+    "title": "Pet Health Wearables and Trackers — A Complete Guide",
+    "tags": [
+      "pet health wearables",
+      "pet fitness trackers",
+      "smart pet collars",
+      "pet health monitoring",
+      "pet technology"
+    ],
+    "articleId": "gid://shopify/Article/582074073150",
+    "articleHandle": "pet-health-wearables-and-trackers-a-complete-guide",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-08T15:23:03.493Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
