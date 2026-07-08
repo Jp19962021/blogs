@@ -770,42 +770,6 @@ async function main() {
 
   // Product description updates removed
 
-  // ── Post to WordPress (vet store only for now) ────────────
-  const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
-  const wpUser = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
-  const wpPass = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
-  const wcKey = audience === 'vet' ? process.env.WP_PHARMACY_WC_KEY : null;
-  const wcSecret = audience === 'vet' ? process.env.WP_PHARMACY_WC_SECRET : null;
-  const wpStoreUrl = audience === 'vet' ? 'https://www.petscriptpharmacy.com' : 'https://www.petscriptdirect.com';
-
-  if (wpUrl && wpUser && wpPass) {
-    try {
-      const wpPost = await postToWordPress({
-        baseUrl: wpUrl,
-        username: wpUser,
-        appPassword: wpPass,
-        consumerKey: wcKey,
-        consumerSecret: wcSecret,
-        title: post.title,
-        body: post.body,
-        metaDescription: post.meta,
-        tags: post.tags,
-        imageUrl: image?.url || null,
-        imageAlt: post.title,
-        wpMediaId: image?.wpMediaId || null,
-        audience,
-        blogKeyword: researchData.keyword,
-        storeUrl: wpStoreUrl,
-      });
-      console.log(`\n✅ WordPress draft: ${wpPost.editUrl}`);
-    } catch (wpErr) {
-      console.warn('\n⚠️  WordPress posting failed:', wpErr.message);
-      console.warn('Blog was still saved to Shopify successfully.');
-    }
-  } else {
-    console.log('\nℹ️  WordPress secrets not set — skipping WordPress post');
-  }
-
   markKeywordUsed(researchData.keyword);
   if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
 
@@ -942,9 +906,6 @@ async function uploadImageToWordPress(baseUrl, username, appPassword, b64, title
 
   // ── Generate image → upload to WordPress → use URL for Shopify ──
   let image = null;
-  const wpUrl = audience === 'vet' ? process.env.WP_PHARMACY_URL : null;
-  const wpUser = audience === 'vet' ? process.env.WP_PHARMACY_USERNAME : null;
-  const wpPass = audience === 'vet' ? process.env.WP_PHARMACY_APP_PASSWORD : null;
 
   const generated = await generateImage(post.title, post.body);
   if (generated?.b64) {
