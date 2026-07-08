@@ -784,6 +784,37 @@ async function main() {
     hasImage: !!image, status: 'success',
   });
 
+  let finalBody = post.body + '\n' + productBlock + '\n' + getContactBlock();
+  // No image credit line added
+
+  const blogId = await getBlogId(CONFIG.storeDomain, shopifyToken);
+
+  console.log('\n📤 Creating Shopify draft...');
+  const article = await createDraft({
+    domain: CONFIG.storeDomain, token: shopifyToken, blogId,
+    title: post.title, body: finalBody, summary: post.meta,
+    tags: post.tags, image,
+  });
+
+  console.log(`✅ Draft created: "${article.title}"`);
+  console.log(`   ID: ${article.id}`);
+
+  // Product description updates removed
+
+  markKeywordUsed(researchData.keyword);
+  if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
+
+  saveRunLog({
+    date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
+    keyword: researchData.keyword, angle: researchData.topic,
+    trending_reason: `Based on sources: ${researchData.sources?.map(s => s.title).join(', ')}`,
+    search_volume: researchData.search_volume,
+    sources: researchData.sources?.map(s => s.url) || [],
+    title: post.title, tags: post.tags,
+    articleId: article.id, articleHandle: article.handle,
+    hasImage: !!image, status: 'success',
+  });
+
   console.log('\n🎉 Done! Review in Shopify > Online Store > Blog Posts');
 }
 
@@ -791,7 +822,9 @@ main().catch(err => {
   console.error('\n❌ Failed:', err.message);
   saveRunLog({ date: new Date().toISOString(), audience, store: CONFIG?.storeDomain || 'unknown', status: 'failed', error: err.message });
   process.exit(1);
-});// ── Ask Claude to write a cinematic image prompt ─────────────
+});
+
+// ── Ask Claude to write a cinematic image prompt ─────────────
 async function generateImagePrompt(blogTitle, blogBody) {
   const { default: Anthropic } = await import('@anthropic-ai/sdk');
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -1004,4 +1037,3 @@ main().catch(err => {
   saveRunLog({ date: new Date().toISOString(), audience, store: CONFIG?.storeDomain || 'unknown', status: 'failed', error: err.message });
   process.exit(1);
 });
-
