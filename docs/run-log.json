@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-08T15:34:29.162Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "What Is Dry Eye?",
+    "angle": "What Is Dry Eye?",
+    "trending_reason": "Based on sources: Dry Eye Syndrome in Dogs | PetMD, Dry Eye Syndrome in Cats | PetMD, Causes of Goopy Eyes: How to Help Your Pet | Preventive Vet",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/conditions/eyes/c_dg_keratoconjunctivitis_sicca",
+      "https://www.petmd.com/cat/conditions/eyes/c_ct_keratoconjunctivitis_sicca",
+      "https://www.preventivevet.com/pets/causes-of-goopy-eyes-how-to-help-your-dog-or-cat"
+    ],
+    "title": "What Is Dry Eye? — A Pet Owner's Guide",
+    "tags": [
+      "dry eye in pets",
+      "keratoconjunctivitis sicca",
+      "pet eye health",
+      "dog eye problems",
+      "cat eye conditions"
+    ],
+    "articleId": "gid://shopify/Article/582074138686",
+    "articleHandle": "what-is-dry-eye-a-pet-owners-guide",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-08T15:33:02.488Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
