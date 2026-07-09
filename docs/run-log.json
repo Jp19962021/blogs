@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-09T15:58:28.266Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Dogs vs. Cats — Which Animal Has the Better Nose?",
+    "angle": "Dogs vs. Cats — Which Animal Has the Better Nose?",
+    "trending_reason": "Based on sources: Cat vs. Dog. Sense of Smell | VCA Animal Hospitals, Do Dogs Really Have More Sensitive Noses Than Cats? | Beverly Hills Veterinary Associates, Is a Cat's Sense of Smell Stronger Than a Dog's? - Catster",
+    "search_volume": "high",
+    "sources": [
+      "https://vcahospitals.com/resources/conditions-cat/eyes-ears-nose/nose-smarts-what-pets-can-tell-with-their-sense-of-smell",
+      "https://www.beverlyhillsvets.com/blog/do-dogs-really-have-more-sensitive-noses-than-cats/",
+      "https://www.catster.com/lifestyle/is-cats-sense-of-smell-stronger-than-dogs/"
+    ],
+    "title": "Dogs vs. Cats — Which Animal Has the Better Nose?",
+    "tags": [
+      "dog sense of smell",
+      "cat sense of smell",
+      "pet nose facts",
+      "dog vs cat comparison",
+      "pet health education"
+    ],
+    "articleId": "gid://shopify/Article/582099894334",
+    "articleHandle": "dogs-vs-cats-which-animal-has-the-better-nose",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-09T15:57:08.011Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
