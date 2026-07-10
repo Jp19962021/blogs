@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-10T15:33:59.510Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "pet dental health care",
+    "angle": "How to Prevent Gum Disease and Bad Breath in Dogs and Cats at Home",
+    "trending_reason": "Based on sources: Preventive Vet Pet Health & Safety Resources, Dental Care for Pets is at an Inflection Point, Best Wet Cat Foods of 2026",
+    "search_volume": "high",
+    "sources": [
+      "https://www.preventivevet.com/",
+      "https://www.petage.com/dinovite-dental-care-for-pets-is-at-an-inflection-point/",
+      "https://catvills.com/best-wet-cat-foods/"
+    ],
+    "title": "Pet Dental Health Care — Stop Gum Disease at Home",
+    "tags": [
+      "pet dental health care",
+      "dog gum disease",
+      "cat dental care",
+      "pet bad breath",
+      "preventive pet care"
+    ],
+    "articleId": "gid://shopify/Article/582125191230",
+    "articleHandle": "pet-dental-health-care-stop-gum-disease-at-home",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-10T15:32:38.009Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
