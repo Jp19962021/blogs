@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-16T15:04:55.261Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Dog Drink From My Cat's Bowl and Not His Own?",
+    "angle": "Why Does My Dog Drink From My Cat's Bowl and Not His Own?",
+    "trending_reason": "Based on sources: Is Toilet Water Safe for Pets to Drink? | PetMD, Can Cats And Dogs Drink From the Same Water Bowl? Vet Approved Facts & Tips - Catster, Can Dogs and Cats Share a Water Bowl? Safety & Expert Tips",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/is-toilet-water-safe-for-pets-to-drink",
+      "https://www.catster.com/cat-health-care/can-cats-and-dogs-drink-from-the-same-water-bowl/",
+      "https://www.houndsy.com/blogs/modern-tails/should-dogs-and-cats-share-a-water-bowl-exploring-the-pros-and-cons"
+    ],
+    "title": "Why Does My Dog Drink From My Cat's Bowl? — PetScript",
+    "tags": [
+      "dog behavior",
+      "cat water bowl",
+      "pet hydration",
+      "dog drinking habits",
+      "pet care tips"
+    ],
+    "articleId": "gid://shopify/Article/582250594366",
+    "articleHandle": "why-does-my-dog-drink-from-my-cats-bowl-petscript",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-16T15:03:17.662Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
