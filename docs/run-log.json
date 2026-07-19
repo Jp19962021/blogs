@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-19T14:25:49.257Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "pet health tracker wearable",
+    "angle": "smart collars and monitors that detect early health issues in dogs and cats",
+    "trending_reason": "Based on sources: Maven Pet Health App and Tracker | Preventive Vet, Top 5 Wearables for Pets in 2026: Track Health & Safety, How Wearable Devices Are Changing Animal Health Monitoring | Animal Care Unlimited",
+    "search_volume": "high",
+    "sources": [
+      "https://www.preventivevet.com/maven-pet-health-tracker",
+      "https://www.technowize.com/top-5-wearables-for-pets-in-2026-track-health-safety/",
+      "https://www.animalcareunlimited.com/blog/pet-friendly-tech-how-wearable-devices-are-changing-animal-health-monitoring/"
+    ],
+    "title": "Pet Health Tracker Wearable — Early Detection Guide",
+    "tags": [
+      "pet health tracker",
+      "smart collar for pets",
+      "pet wearable technology",
+      "dog health monitor",
+      "cat health tracking"
+    ],
+    "articleId": "gid://shopify/Article/582291423294",
+    "articleHandle": "pet-health-tracker-wearable-early-detection-guide",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-19T14:24:03.029Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2265,33 +2291,6 @@
     ],
     "articleId": "gid://shopify/Article/596814397695",
     "articleHandle": "how-transdermal-compounding-for-chronic-disease-management-in-pets-is-transforming-senior-care",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T18:51:01.125Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "FDA bulk drug substances veterinary compounding GFI 256",
-    "angle": "How GFI #256 compliance impacts veterinary compounding pharmacies in 2026",
-    "trending_reason": "FDA's GFI #256 became effective in April 2023 and ongoing FDA compounding listening sessions in February 2026 are driving veterinarians to search for compliance requirements for bulk drug substances, certificate of analysis documentation, and approved BDS lists for office stock drugs",
-    "search_volume": "high",
-    "facts": [
-      "FDA's GFI #256 allows pharmacies to purchase bulk drug substances from FDA-registered suppliers only if a certificate of analysis is included with the compounding record",
-      "Separate FDA-approved bulk drug substance lists exist for non-food producing animals, food producing animals, veterinary office stock drugs, and certain wildlife species",
-      "FDA hosted a formal compounding listening session on February 27, 2026, with ACVP invited to attend, indicating active regulatory discussions",
-      "The FDA requires compounders to report any adverse reactions within 15 days under current GFI #256 compliance requirements",
-      "FDA released updates to its List of Bulk Drug Substances for Compounding Office Stock Drugs under GFI #256 allowing application discretion for specific drugs required for urgent care"
-    ],
-    "title": "Understanding FDA Bulk Drug Substances and Veterinary Compounding: GFI #256 Compliance in 2026",
-    "tags": [
-      "FDA compliance",
-      "veterinary compounding",
-      "GFI 256",
-      "bulk drug substances"
-    ],
-    "articleId": "gid://shopify/Article/596814299391",
-    "articleHandle": "understanding-fda-bulk-drug-substances-and-veterinary-compounding-gfi-256-compliance-in-2026",
     "hasImage": true,
     "status": "success"
   }
