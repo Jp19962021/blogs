@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-20T15:12:21.312Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "AI veterinary compounding pharmacy integration",
+    "angle": "How AI Technology Is Transforming Veterinary Compounding Pharmacy Services and Medication Management",
+    "trending_reason": "Based on sources: Mixlab Unveils Maisy, an AI Health Partner, Veterinary Compounding Pharmacy 2025 Year in Review: Technology, Access & Growth, AI in Veterinary Software: Feature Comparison for 2026",
+    "search_volume": "medium",
+    "sources": [
+      "https://mixlab.com/blog/mixlab-unveils-maisy-ai-health-partner-following-year-of-rapid-growth",
+      "https://mixlab.com/blog/2025-year-in-review",
+      "https://www.shepherd.vet/blog/ai-in-veterinary-software-feature-comparison-for-2026/"
+    ],
+    "title": "AI Veterinary Compounding Pharmacy Integration — 2026 Guide",
+    "tags": [
+      "veterinary compounding pharmacy",
+      "AI in veterinary medicine",
+      "veterinary technology",
+      "prescription management",
+      "veterinary practice automation"
+    ],
+    "articleId": "gid://shopify/Article/597709979903",
+    "articleHandle": "ai-veterinary-compounding-pharmacy-integration-2026-guide",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-19T14:25:49.257Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2264,33 +2290,6 @@
     ],
     "articleId": "gid://shopify/Article/596814495999",
     "articleHandle": "how-veterinary-pharmacy-consolidation-is-changing-your-practice-partnerships-in-2026",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T19:27:58.060Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "transdermal compounding for chronic disease management in pets",
-    "angle": "How Transdermal Veterinary Compounding Is Transforming Long-Term Care for Senior Pets with Chronic Conditions",
-    "trending_reason": "As pets live longer (market growing 8.32% CAGR to $3.73B by 2035), chronic disease management for diabetes, hyperthyroidism, and osteoarthritis is surging. Transdermal gels are solving medication compliance issues in June 2026, especially for cats requiring years of daily medication where traditional pills fail.",
-    "search_volume": "high",
-    "facts": [
-      "The animal drug compounding market is projected to reach $3.73 billion by 2035 with an 8.32% CAGR from 2026-2035, driven by rising chronic disease prevalence in aging pets",
-      "Transdermal medications like methimazole for hyperthyroidism and mirtazapine for appetite stimulation have meaningfully improved medication compliance and outcomes in chronic care patients",
-      "Compounding pharmacies are increasingly specializing in niche areas like oncology and dermatology, with transdermal formulations becoming a preferred alternative for medication-averse cats requiring long-term daily treatment",
-      "Recent FDA updates to GFI #256 in 2026 allow application discretion for specific bulk drug substances required for urgent care in nonfood-producing animals",
-      "Drug shortages affecting veterinary medicine in 2024-2026 are driving increased demand for compounded alternatives, with veterinarians forced to find therapeutic substitutes when commercial drugs are unavailable"
-    ],
-    "title": "How Transdermal Compounding for Chronic Disease Management in Pets Is Transforming Senior Care",
-    "tags": [
-      "transdermal compounding",
-      "chronic disease management",
-      "senior pets",
-      "medication compliance"
-    ],
-    "articleId": "gid://shopify/Article/596814397695",
-    "articleHandle": "how-transdermal-compounding-for-chronic-disease-management-in-pets-is-transforming-senior-care",
     "hasImage": true,
     "status": "success"
   }
