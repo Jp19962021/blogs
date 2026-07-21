@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-21T15:04:49.564Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "veterinary compounding pharmacy consolidation mergers",
+    "angle": "The acceleration of veterinary compounding pharmacy mergers and acquisitions driven by GFI #256 regulatory changes and institutional capital influx",
+    "trending_reason": "Based on sources: Covetrus, MWI announce $3.5B merger, Pet Sector Update - April 2026, Chewy launches compounded medications for pets, Chewy to Acquire Modern Animal Accelerating Evolution to a Fully Integrated Healthcare Ecosystem",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.avma.org/news/covetrus-mwi-announce-35b-merger",
+      "https://www.capstonepartners.com/insights/article-pet-sector-ma-update/",
+      "https://www.dvm360.com/view/chewy-launches-compounded-medications-for-pets",
+      "https://www.businesswire.com/news/home/20260408567488/en/Chewy-to-Acquire-Modern-Animal-Accelerating-Evolution-to-a-Fully-Integrated-Healthcare-Ecosystem"
+    ],
+    "title": "Veterinary Compounding Pharmacy Consolidation Mergers",
+    "tags": [
+      "veterinary compounding pharmacy",
+      "GFI 256 compliance",
+      "veterinary pharmacy mergers",
+      "compounding regulations",
+      "veterinary supply chain"
+    ],
+    "articleId": "gid://shopify/Article/597743698175",
+    "articleHandle": "veterinary-compounding-pharmacy-consolidation-mergers",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-20T15:14:18.241Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2268,31 +2295,6 @@
     ],
     "articleId": "gid://shopify/Article/596814659839",
     "articleHandle": "how-pims-pharmacy-integration-for-veterinary-practices-eliminates-workflow-bottlenecks",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T19:56:13.104Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "AI in veterinary pharmacy",
-    "angle": "How AI Technology Is Streamlining Veterinary Pharmacy Workflows and Medication Management in 2026",
-    "trending_reason": "Based on sources: Mixlab Unveils Maisy, an AI Health Partner, Veterinary operating system now includes AI features, 7 Digital Veterinary Technology Trends Shaping Practices In 2026",
-    "search_volume": "high",
-    "sources": [
-      "https://mixlab.com/blog/mixlab-unveils-maisy-ai-health-partner-following-year-of-rapid-growth",
-      "https://www.dvm360.com/view/veterinary-operating-system-now-includes-ai-features",
-      "https://software.idexx.com/resources/blog/7-digital-veterinary-technology-trends-shaping-practices-in-2026"
-    ],
-    "title": "How AI in Veterinary Pharmacy Is Transforming Medication Management in 2026",
-    "tags": [
-      "AI veterinary pharmacy",
-      "veterinary technology",
-      "pharmacy workflow",
-      "medication management"
-    ],
-    "articleId": "gid://shopify/Article/596814528767",
-    "articleHandle": "how-ai-in-veterinary-pharmacy-is-transforming-medication-management-in-2026",
     "hasImage": true,
     "status": "success"
   }
