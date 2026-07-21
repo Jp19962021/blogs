@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-21T15:06:25.678Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "dog heatstroke prevention summer",
+    "angle": "preventing heatstroke in dogs during summer heat - exercise timing and warning signs",
+    "trending_reason": "Based on sources: Heatstroke in Dogs: Signs, Symptoms, Treatments, 10 Summer Dog Walking Tips, How to Treat Heat Exhaustion & Heatstroke in Pets, Heatstroke in Dogs: Signs, Treatment, and Prevention",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/health/heatstroke-in-dogs/",
+      "https://www.petmd.com/dog/general-health/summer-dog-walking-tips",
+      "https://www.preventivevet.com/pets/how-to-treat-heatstroke-heat-exhaustion-in-dogs-and-cats",
+      "https://www.petmd.com/dog/conditions/systemic/heatstroke-dogs"
+    ],
+    "title": "Dog Heatstroke Prevention Summer — Keep Your Pup Safe",
+    "tags": [
+      "dog heatstroke prevention",
+      "summer dog safety",
+      "dog heat exhaustion",
+      "preventing heatstroke in dogs",
+      "summer pet care"
+    ],
+    "articleId": "gid://shopify/Article/582347817022",
+    "articleHandle": "dog-heatstroke-prevention-summer-keep-your-pup-safe",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-21T15:04:49.564Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2270,31 +2297,6 @@
     ],
     "articleId": "gid://shopify/Article/596815773951",
     "articleHandle": "veterinary-pharmacy-specialty-certification-a-historic-opportunity-for-our-profession",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T22:57:31.920Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "PIMS pharmacy integration for veterinary practices",
-    "angle": "How PIMS-Integrated Pharmacy Solutions Are Streamlining Prescription Workflows in Veterinary Practices",
-    "trending_reason": "Based on sources: Must-Have Integrations for Veterinary Software in 2026, A turning point for onsite pharmacies arrives: e-prescribing for veterinarians, Veterinary Data Integration in 2026: Key Benefits & Best Practices",
-    "search_volume": "high",
-    "sources": [
-      "https://digitail.com/blog/must-have-integrations-for-veterinary-software-in-2026/",
-      "https://www.dvm360.com/view/a-turning-point-for-onsite-pharmacies-arrives-e-prescribing-for-veterinarians",
-      "https://software.covetrus.com/apac/veterinary-insights/article/practice-solutions/veterinary-data-integration/"
-    ],
-    "title": "How PIMS Pharmacy Integration for Veterinary Practices Eliminates Workflow Bottlenecks",
-    "tags": [
-      "veterinary pharmacy integration",
-      "PIMS integration",
-      "veterinary workflow efficiency",
-      "veterinary practice management"
-    ],
-    "articleId": "gid://shopify/Article/596814659839",
-    "articleHandle": "how-pims-pharmacy-integration-for-veterinary-practices-eliminates-workflow-bottlenecks",
     "hasImage": true,
     "status": "success"
   }
