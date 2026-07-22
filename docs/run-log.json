@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-22T15:06:39.329Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Dog Anxiety and Fear Management",
+    "angle": "Rising canine anxiety concerns with 84%+ of dogs showing fear behaviors — practical solutions for worried pet parents",
+    "trending_reason": "Based on sources: Study finds more than 84% of dogs show signs of fear, anxiety, Bark Busters Publishes 2026 National Dog Behavior Analysis, Managing Dog Anxiety: Treatments, Medication & Supplements",
+    "search_volume": "high",
+    "sources": [
+      "https://stories.tamu.edu/news/2026/05/14/study-finds-more-than-84-of-dogs-show-signs-of-fear-anxiety/",
+      "https://www.barkbusters.com/news/2026-national-dog-behavior-analysis",
+      "https://www.preventivevet.com/dogs/dog-anxiety-medication-and-treatment"
+    ],
+    "title": "Dog Anxiety and Fear Management — Help Your Pup Feel Safe",
+    "tags": [
+      "dog anxiety",
+      "canine fear",
+      "separation anxiety in dogs",
+      "dog behavior problems",
+      "anxious dogs"
+    ],
+    "articleId": "gid://shopify/Article/582368428094",
+    "articleHandle": "dog-anxiety-and-fear-management-help-your-pup-feel-safe",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-22T15:04:33.067Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2274,31 +2300,6 @@
     ],
     "articleId": "gid://shopify/Article/596817019135",
     "articleHandle": "how-compounded-fip-treatment-for-cats-is-transforming-veterinary-practice",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T23:37:53.935Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "dog separation anxiety medication",
-    "angle": "FDA-approved medications and treatment options for dogs with separation anxiety",
-    "trending_reason": "Based on sources: Anxiety in Dogs: Signs, Symptoms, and Treatment, Separation Anxiety in Dogs, Managing Dog Anxiety: Treatments, Medication & Supplements",
-    "search_volume": "high",
-    "sources": [
-      "https://www.akc.org/expert-advice/health/anxiety-in-dogs/",
-      "https://www.petmd.com/dog/conditions/behavioral/separation-anxiety-dogs",
-      "https://www.preventivevet.com/dogs/dog-anxiety-medication-and-treatment"
-    ],
-    "title": "Dog Separation Anxiety Medication: What Pet Parents Need to Know",
-    "tags": [
-      "dog separation anxiety",
-      "dog anxiety medication",
-      "separation anxiety treatment",
-      "anxious dogs"
-    ],
-    "articleId": "gid://shopify/Article/581468192830",
-    "articleHandle": "dog-separation-anxiety-medication-what-pet-parents-need-to-know",
     "hasImage": true,
     "status": "success"
   }
