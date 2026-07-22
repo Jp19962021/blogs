@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-22T15:04:33.067Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "veterinary compounding pharmacy exotic animals",
+    "angle": "Compounded medications for exotic pets (birds, reptiles, small mammals) — growth drivers, formulation challenges, and market expansion",
+    "trending_reason": "Based on sources: Top 10 Compounding Pharmacies for Veterinary Medicine (2026), Animal Drug Compounding Market Size, Share | CAGR of 9.2%, U.S. Exotic Vet Market Report 2026: 727 Clinics, Species Coverage, Cost by Species, Exotic Pet Medication Compounding Pharmacy: Suspendit Anhydrous Formulas",
+    "search_volume": "medium",
+    "sources": [
+      "https://newtropin.com/blog/top-10-compounding-pharmacies-for-veterinary-medicine-2026",
+      "https://market.us/report/animal-drug-compounding-market/",
+      "https://findanexoticvet.com/blog/us-exotic-vet-market-report-2026",
+      "https://cocprx.com/veterinary-compounding/exotic-animal-prescription-suspendit-anhydrous-medication-veterinary-pharmacy-ohio/"
+    ],
+    "title": "Veterinary Compounding Pharmacy Exotic Animals — Market Growth",
+    "tags": [
+      "veterinary compounding pharmacy",
+      "exotic animal medications",
+      "compounded veterinary drugs",
+      "exotic pet pharmacy",
+      "avian reptile compounding"
+    ],
+    "articleId": "gid://shopify/Article/597778661631",
+    "articleHandle": "veterinary-compounding-pharmacy-exotic-animals-market-growth",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-21T15:06:25.678Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2272,31 +2299,6 @@
     ],
     "articleId": "gid://shopify/Article/581468192830",
     "articleHandle": "dog-separation-anxiety-medication-what-pet-parents-need-to-know",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-13T23:36:28.952Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "veterinary pharmacy specialty certification",
-    "angle": "Board of Pharmacy Specialties petition to recognize veterinary pharmacy as a pharmacist board certification specialty",
-    "trending_reason": "Based on sources: BPS Receives Petition to Recognize Veterinary Pharmacy as a Specialty Certification, A Milestone for Veterinary Pharmacy! Your Input is Needed for the Board of Pharmacy Specialties, Evaluating Pharmacists' Role In Veterinary Medication Management and Education",
-    "search_volume": "medium",
-    "sources": [
-      "https://bpsweb.org/2026/02/25/bps-receives-petition-to-recognize-veterinary-pharmacy-as-a-specialty-certification/",
-      "https://vetmeds.org/veterinary-pharmacy-specialty/",
-      "https://www.pharmacytimes.com/view/evaluating-pharmacists-role-in-veterinary-medication-management-and-education"
-    ],
-    "title": "Veterinary Pharmacy Specialty Certification: A Historic Opportunity for Our Profession",
-    "tags": [
-      "veterinary pharmacy",
-      "board certification",
-      "veterinary compounding",
-      "pharmacy specialization"
-    ],
-    "articleId": "gid://shopify/Article/596815773951",
-    "articleHandle": "veterinary-pharmacy-specialty-certification-a-historic-opportunity-for-our-profession",
     "hasImage": true,
     "status": "success"
   }
