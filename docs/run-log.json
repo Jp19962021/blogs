@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-23T15:11:43.897Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "pet dental health preventive care",
+    "angle": "home dental care routines to prevent periodontal disease in dogs and cats",
+    "trending_reason": "Based on sources: Everything You Need to Know About Periodontal Disease in Dogs, Top 10 Pet Health Trends in 2026 for Dog & Cat Owners, Dog Dental Care: How To Keep The Cost Of Dog Oral Care Down, How to Find Safe and Effective Dental Treats for Your Dog",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/health/periodontal-disease-in-dogs/",
+      "https://www.mountainveterinaryservice.com/top-10-pet-health-trends-in-2026-every-dog-and-cat-owner-should-know/",
+      "https://www.akc.org/expert-advice/health/dental-care-dog/",
+      "https://www.akc.org/expert-advice/health/dog-dental-treats-safety/"
+    ],
+    "title": "Pet Dental Health Preventive Care — Daily Routines",
+    "tags": [
+      "pet dental health",
+      "dog dental care",
+      "cat dental care",
+      "preventive pet care",
+      "periodontal disease prevention"
+    ],
+    "articleId": "gid://shopify/Article/582402605118",
+    "articleHandle": "pet-dental-health-preventive-care-daily-routines",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-23T15:09:50.398Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2276,31 +2303,6 @@
     ],
     "articleId": "gid://shopify/Article/596817084671",
     "articleHandle": "how-specialty-equine-compounding-pharmacy-partnerships-are-expanding-veterinary-practice-capabilities",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T02:14:30.450Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "pet medication interactions",
-    "angle": "dangerous drug combinations pet owners should avoid",
-    "trending_reason": "Based on sources: Dangerous Pet Medication Mixes to Avoid | PetMD, Managing Dog Anxiety: Treatments, Medication & Supplements, NSAIDs for Dogs: Uses, Side Effects, and Alternatives",
-    "search_volume": "high",
-    "sources": [
-      "https://www.petmd.com/dog/general-health/dangerous-pet-medication-mixes-avoid",
-      "https://www.preventivevet.com/dogs/dog-anxiety-medication-and-treatment",
-      "https://www.akc.org/expert-advice/health/nsaids-for-dogs/"
-    ],
-    "title": "Pet Medication Interactions: Dangerous Drug Combinations That Could Harm Your Animal",
-    "tags": [
-      "pet medication safety",
-      "drug interactions in pets",
-      "pet health",
-      "veterinary medications"
-    ],
-    "articleId": "gid://shopify/Article/581468815422",
-    "articleHandle": "pet-medication-interactions-dangerous-drug-combinations-that-could-harm-your-animal",
     "hasImage": true,
     "status": "success"
   }
