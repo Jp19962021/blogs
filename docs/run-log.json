@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-23T15:09:50.398Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "veterinary compounding pharmacy partnerships",
+    "angle": "How Practice Network Partnerships Are Reshaping Compounding Pharmacy Access",
+    "trending_reason": "Based on sources: Veterinary Growth Partners selects Brava as preferred compounding pharmacy provider, Brava Veterinary Pharmacy, Wedgewood Veterinary Pharmacy",
+    "search_volume": "medium",
+    "sources": [
+      "https://www.dvm360.com/view/veterinary-growth-partners-selects-brava-as-preferred-compounding-pharmacy-provider",
+      "https://bravacare.com/",
+      "https://www.wedgewood.com/"
+    ],
+    "title": "Veterinary Compounding Pharmacy Partnerships — New Era",
+    "tags": [
+      "veterinary compounding pharmacy",
+      "practice partnerships",
+      "PIMS integration",
+      "veterinary pharmacy networks",
+      "compounding pharmacy access"
+    ],
+    "articleId": "gid://shopify/Article/597802025215",
+    "articleHandle": "veterinary-compounding-pharmacy-partnerships-new-era",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-22T15:06:39.329Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2275,31 +2301,6 @@
     ],
     "articleId": "gid://shopify/Article/581468815422",
     "articleHandle": "pet-medication-interactions-dangerous-drug-combinations-that-could-harm-your-animal",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T02:12:59.896Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "compounded FIP treatment for cats",
-    "angle": "How Compounded Antiviral Medications Are Making FIP Treatment Accessible for Veterinary Practices",
-    "trending_reason": "Based on sources: Compounded oral FIP treatment is now available, Wedgewood announces FIP treatment, Compounded, veterinarian-prescribed treatment for FIP now available in United States and Canada",
-    "search_volume": "high",
-    "sources": [
-      "https://www.dvm360.com/view/compounded-oral-fip-treatment-is-now-available",
-      "https://www.dvm360.com/view/wedgewood-announces-fip-treatment",
-      "https://www.aaha.org/newstat/publications/compounded-veterinarian-prescribed-treatment-for-fip-now-available-in-united-states-and-canada/"
-    ],
-    "title": "How Compounded FIP Treatment for Cats Is Transforming Veterinary Practice",
-    "tags": [
-      "FIP treatment",
-      "veterinary compounding",
-      "feline infectious peritonitis",
-      "antiviral medications"
-    ],
-    "articleId": "gid://shopify/Article/596817019135",
-    "articleHandle": "how-compounded-fip-treatment-for-cats-is-transforming-veterinary-practice",
     "hasImage": true,
     "status": "success"
   }
