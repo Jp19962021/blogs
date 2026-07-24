@@ -168,7 +168,7 @@ SOURCE MATERIAL:
 ${sourceMaterial}
 
 SEO REQUIREMENTS:
-1. TITLE: Include primary keyword, use em dash (—) as separator, max 60 chars
+1. TITLE: Include primary keyword, use em dash (—) as separator, max 70 chars, must be a complete compelling sentence — NEVER cut off mid-thought. Good examples: "GS-441524 for FIP — What Every Veterinarian Needs to Know", "3D Printing in Veterinary Compounding — What Clinics Need to Know in 2026"
 2. META: 150-160 chars exactly, include primary keyword, compel the click
 3. H1: Exactly one, matches or closely reflects the title
 4. H2s: 3-5 subheadings with secondary keywords
@@ -231,24 +231,7 @@ async function generateImagePrompt(blogTitle, blogBody) {
     max_tokens: 300,
     messages: [{
       role: 'user',
-      content: `You are a professional photography director creating image prompts for AI image generation.
-
-Based on this blog post, write ONE cinematic image prompt for a veterinary or pet lifestyle photograph.
-
-BLOG TITLE: ${blogTitle}
-BLOG EXCERPT: ${(blogBody || '').replace(/<[^>]*>/g, '').slice(0, 400)}
-
-STRICT RULES:
-- NEVER have any subject looking at the camera — always candid, caught in the moment
-- Describe the specific animal breed relevant to the topic
-- Describe exact lighting (direction, quality, warm/cool)
-- Describe the setting in detail (clinic, home, park, etc.)
-- Style: photorealistic lifestyle editorial — never clinical or sterile
-- NO pills, syringes, medicine bottles as the focus
-- NO text, logos, overlays
-- Max 100 words
-
-Return ONLY the image prompt, nothing else.`,
+      content: `Write a short AI image generation prompt (max 50 words) for a photorealistic pet lifestyle photo based on this blog title: "${blogTitle}". Rules: candid shot, no one looking at camera, warm natural lighting, specific animal breed relevant to topic, no pills/syringes/medicine visible, no text overlays. Return ONLY the prompt.`,
     }],
   });
   return response.content.find(b => b.type === 'text')?.text?.trim() || null;
@@ -407,18 +390,20 @@ async function main() {
     }
   }
 
-  // Fall back to web research if no sheet topic
-  let researchData;
-  if (rawTopic) {
-    console.log('✨ Prettifying topic title...');
-    const prettyTitle = await prettifyTopic(rawTopic);
-    console.log(`Pretty title: "${prettyTitle}"`);
-    console.log('\n🔍 Researching source articles for topic...');
-    researchData = await researchTopicAndArticles(prettyTitle);
-  } else {
-    console.log('\n🔍 No sheet topic — finding trending topic...');
-    researchData = await researchTopicAndArticles();
+  // If no topic found in sheet — stop. Never auto-pick topics.
+  if (!rawTopic) {
+    console.log('\n⚠️  No unused topics found in Google Sheet.');
+    console.log('Add topics to the Pharmacy or Direct tab in Google Sheets to continue.');
+    console.log('\nSheet: https://docs.google.com/spreadsheets/d/1zVsQKbnL9-95-tBXIyKwTtaWWj8KKI3an0i-a_6dY7Q');
+    process.exit(0);
   }
+
+  console.log('✨ Prettifying topic title...');
+  const prettyTitle = await prettifyTopic(rawTopic);
+  console.log(`Pretty title: "${prettyTitle}"`);
+
+  console.log('\n🔍 Researching source articles for topic...');
+  const researchData = await researchTopicAndArticles(prettyTitle);
 
   console.log('\n✍️  Writing blog post from source material...');
   const post = await generateBlogPost(researchData);
