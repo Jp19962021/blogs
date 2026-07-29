@@ -1,5 +1,31 @@
 [
   {
+    "date": "2026-07-29T14:11:29.757Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Where to Get DES Filled When Chewy Is Sold Out",
+    "angle": "Where to Get DES Filled When Chewy Is Sold Out",
+    "trending_reason": "Based on sources: Diethylstilbestrol (DES) 101: What You Need to Know if Your Pet is Prescribed Diethylstilbestrol, Diethylstilbestrol for Dogs | PetMD, Diethylstilbesterol | VCA Animal Hospitals",
+    "search_volume": "low",
+    "sources": [
+      "https://www.wedgewood.com/medications/diethylstilbestrol/",
+      "https://translate.google.com/translate?u=https%3A%2F%2Fwww.petmd.com%2Fpet-medication%2Fdiethylstilbestrol-dogs&hl=hi&sl=en&tl=hi&client=srp",
+      "https://vcahospitals.com/know-your-pet/diethylstilbesterol"
+    ],
+    "title": "Where to Get DES Filled When Chewy Is Sold Out — Your Guide",
+    "tags": [
+      "DES for dogs",
+      "diethylstilbestrol",
+      "urinary incontinence in dogs",
+      "veterinary compounding pharmacy",
+      "pet medication alternatives"
+    ],
+    "articleId": "gid://shopify/Article/582559825982",
+    "articleHandle": "where-to-get-des-filled-when-chewy-is-sold-out-your-guide",
+    "hasImage": true,
+    "status": "success"
+  },
+  {
     "date": "2026-07-29T14:09:16.574Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2275,31 +2301,6 @@
     ],
     "articleId": "gid://shopify/Article/596817150207",
     "articleHandle": "how-ncpdp-compliant-e-prescribing-is-eliminating-fax-machines-and-transforming-veterinary-workflow-in-2026",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T02:36:21.757Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "human medications toxic to pets",
-    "angle": "Common household medications that can poison or kill your pet - and how to keep them safe",
-    "trending_reason": "Based on sources: My Dog Ate My Pills! 10 Most Dangerous Human Medications for Pets, NSAID Toxicity in Dogs, Can You Give Human Pain Medication to Your Pet?",
-    "search_volume": "high",
-    "sources": [
-      "https://www.akc.org/expert-advice/health/the-10-human-medications-most-dangerous-to-dogs/",
-      "https://www.petmd.com/dog/poisoning/nsaid-toxicity-dogs",
-      "https://www.preventivevet.com/pets/can-you-give-human-pain-medication-to-your-pet"
-    ],
-    "title": "These Human Medications Toxic to Pets Could Be Hiding in Your Medicine Cabinet",
-    "tags": [
-      "pet safety",
-      "pet poisoning",
-      "medication safety",
-      "dog health"
-    ],
-    "articleId": "gid://shopify/Article/581468848190",
-    "articleHandle": "these-human-medications-toxic-to-pets-could-be-hiding-in-your-medicine-cabinet",
     "hasImage": true,
     "status": "success"
   }
