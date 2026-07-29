@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { postToWordPress } from './wordpress-integration.js';
+import { generateAndSavePodcastScript } from './podcast-generator.js';
 import { getNextTopic, markTopicUsed, prettifyTopic } from './google-sheets.js';
 import fetch from 'node-fetch';
 import fs from 'fs';
@@ -472,6 +473,10 @@ async function main() {
     console.log('\nℹ️  WordPress secrets not set — skipping WordPress post');
   }
 
+  // ── Generate podcast script → save to Google Docs ──────────
+  const podcastUrl = await generateAndSavePodcastScript(post.title, post.body, audience);
+  if (podcastUrl) console.log(`\n🎙️  Podcast script: ${podcastUrl}`);
+
   // ── Save and wrap up ──────────────────────────────────────
   markKeywordUsed(researchData.keyword);
   if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
@@ -484,7 +489,7 @@ async function main() {
     sources: researchData.sources?.map(s => s.url) || [],
     title: post.title, tags: post.tags,
     articleId: article.id, articleHandle: article.handle,
-    hasImage: !!image, status: 'success',
+    hasImage: !!image, status: 'success', podcastUrl: podcastUrl || '',
   });
 
   console.log('\n🎉 Done! Review in Shopify > Online Store > Blog Posts');
