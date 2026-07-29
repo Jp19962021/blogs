@@ -118,6 +118,17 @@ async function saveToGoogleDoc(title, script, audience, token) {
     const folderData = await folderRes.json();
     folderId = folderData.id;
     console.log(`📁 Created folder: ${folderName}`);
+
+    // Share folder with your personal Google account
+    const ownerEmail = process.env.GOOGLE_DRIVE_OWNER_EMAIL;
+    if (ownerEmail) {
+      await fetch(`https://www.googleapis.com/drive/v3/files/${folderId}/permissions`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'user', role: 'writer', emailAddress: ownerEmail }),
+      });
+      console.log(`✅ Folder shared with ${ownerEmail}`);
+    }
   }
 
   // Step 2: Create the Google Doc
@@ -158,6 +169,20 @@ async function saveToGoogleDoc(title, script, audience, token) {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ requests }),
   });
+
+  // Share folder and doc with Jp
+  const shareEmail = 'jp@petscript.net';
+  await fetch(`https://www.googleapis.com/drive/v3/files/${folderId}/permissions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: shareEmail }),
+  });
+  await fetch(`https://www.googleapis.com/drive/v3/files/${docId}/permissions`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'writer', type: 'user', emailAddress: shareEmail }),
+  });
+  console.log(`✅ Shared with ${shareEmail}`);
 
   const docUrl = `https://docs.google.com/document/d/${docId}/edit`;
   console.log(`✅ Podcast script saved to Google Docs: ${docUrl}`);
