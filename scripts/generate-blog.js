@@ -479,7 +479,7 @@ async function main() {
 
   // ── Save and wrap up ──────────────────────────────────────
   markKeywordUsed(researchData.keyword);
-  if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '');
+  if (topicRow) await markTopicUsed(audience, topicRow, image?.url || '', podcastUrl || '');
 
   saveRunLog({
     date: startTime.toISOString(), audience, store: CONFIG.storeDomain,
