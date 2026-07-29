@@ -232,7 +232,7 @@ async function generateImagePrompt(blogTitle, blogBody) {
     max_tokens: 300,
     messages: [{
       role: 'user',
-      content: `Write a short AI image generation prompt (max 50 words) for a photorealistic pet lifestyle photo based on this blog title: "${blogTitle}". Rules: candid shot, no one looking at camera, warm natural lighting, specific animal breed relevant to topic, no pills/syringes/medicine visible, no text overlays. Return ONLY the prompt.`,
+      content: `Write a short AI image generation prompt (max 50 words) for a warm photorealistic pet lifestyle photo based on this blog title: "${blogTitle}". Rules: healthy happy animal, candid shot, no one looking at camera, warm natural lighting, specific breed relevant to topic, no pills/syringes/medicine/sick animals visible, no text overlays. The animal must look healthy and content. Return ONLY the prompt.`,
     }],
   });
   return response.content.find(b => b.type === 'text')?.text?.trim() || null;
