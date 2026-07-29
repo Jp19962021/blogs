@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-29T16:16:25.858Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Online Pharmacy With DEA Licensing and Controlled Substances",
+    "angle": "Online Pharmacy With DEA Licensing and Controlled Substances",
+    "trending_reason": "Based on sources: Tips for Shopping for Pet Meds Online – Buying Pet Prescriptions Online | PetMD, Pain Meds for Dogs: What Can You Give a Dog for Pain? | PetMD, Cautions Associated with Internet Pharmacies | VCA Animal Hospitals",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/blogs/fullyvetted/2012/dec/safe-buying_pet_prescriptions-online-29546",
+      "https://www.petmd.com/dog/general-health/pain-meds-for-dogs",
+      "https://vcahospitals.com/know-your-pet/cautions-associated-with-internet-pharmacies"
+    ],
+    "title": "Online Pharmacy With DEA Licensing and Controlled Substances",
+    "tags": [
+      "online pet pharmacy",
+      "DEA licensed pharmacy",
+      "controlled substances for pets",
+      "pet prescriptions online",
+      "veterinary compounding pharmacy"
+    ],
+    "articleId": "gid://shopify/Article/582559957054",
+    "articleHandle": "online-pharmacy-with-dea-licensing-and-controlled-substances",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": "https://docs.google.com/document/d/undefined/edit"
+  },
+  {
     "date": "2026-07-29T15:08:36.176Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2273,31 +2300,6 @@
     ],
     "articleId": "gid://shopify/Article/596817215743",
     "articleHandle": "when-your-compounding-pharmacy-closes-protecting-patient-care-during-transitions",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T02:50:47.485Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "compounded pet medications",
-    "angle": "Custom medication solutions when standard pills won't work for your pet",
-    "trending_reason": "Based on sources: What Is a Veterinary Compounding Pharmacy?, Doxycycline for Dogs: Uses, Side Effects, and Alternatives, Maropitant (Cerenia) for Dogs",
-    "search_volume": "high",
-    "sources": [
-      "https://www.petmd.com/dog/general-health/what-veterinary-compounding-pharmacy",
-      "https://www.akc.org/expert-advice/health/doxycycline-for-dogs/",
-      "https://www.petmd.com/pet-medication/cerenia-maropitant-for-dogs"
-    ],
-    "title": "When Standard Pills Won't Work: Compounded Pet Medications to the Rescue",
-    "tags": [
-      "compounded pet medications",
-      "veterinary compounding",
-      "pet pharmacy",
-      "custom pet medicine"
-    ],
-    "articleId": "gid://shopify/Article/581468880958",
-    "articleHandle": "when-standard-pills-wont-work-compounded-pet-medications-to-the-rescue",
     "hasImage": true,
     "status": "success"
   }
