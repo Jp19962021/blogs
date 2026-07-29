@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-29T16:46:04.353Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: Why Is Dog Pee Killing Your Grass — And How to Stop It, How To Keep Dog Pee From Ruining Your Lawn | PetMD, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Answer",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "nitrogen in dog urine",
+      "pet care tips",
+      "dog health"
+    ],
+    "articleId": "gid://shopify/Article/582560088126",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-answer",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": "https://docs.google.com/document/d/undefined/edit"
+  },
+  {
     "date": "2026-07-29T16:42:44.083Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2281,31 +2308,6 @@
     ],
     "articleId": "gid://shopify/Article/581468979262",
     "articleHandle": "antibiotic-resistance-in-pets-what-every-pet-owner-needs-to-know-about-superbugs",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T03:11:37.648Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "AI veterinary pharmacy assistant",
-    "angle": "How AI Pharmacy Assistants Are Supporting Veterinarians and Pet Owners Through the Medication Journey",
-    "trending_reason": "Based on sources: Mixlab Unveils Maisy, an AI Health Partner, VetPawer adds prescription refill functionality to its AI virtual assistant, Integrating AI as a team 'member'",
-    "search_volume": "medium",
-    "sources": [
-      "https://mixlab.com/blog/mixlab-unveils-maisy-ai-health-partner-following-year-of-rapid-growth",
-      "https://www.dvm360.com/view/vetpawer-adds-prescription-refill-functionality-to-its-ai-virtual-assistant",
-      "https://www.veterinarypracticenews.com/integrating-ai-as-team-member-2/"
-    ],
-    "title": "How AI Veterinary Pharmacy Assistants Are Transforming Medication Management",
-    "tags": [
-      "AI veterinary pharmacy assistant",
-      "veterinary technology",
-      "pharmacy automation",
-      "veterinary practice management"
-    ],
-    "articleId": "gid://shopify/Article/596817281279",
-    "articleHandle": "how-ai-veterinary-pharmacy-assistants-are-transforming-medication-management",
     "hasImage": true,
     "status": "success"
   }
