@@ -135,7 +135,7 @@ async function saveToGoogleDoc(title, script, audience, token) {
   const date = new Date().toLocaleDateString('en-US', { timeZone: 'America/Chicago', month: '2-digit', day: '2-digit', year: 'numeric' });
   const docTitle = `${date} — ${title}`;
 
-  const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+  const createRes = await fetch('https://www.googleapis.com/drive/v3/files?fields=id,name,webViewLink', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -144,8 +144,11 @@ async function saveToGoogleDoc(title, script, audience, token) {
       parents: [folderId],
     }),
   });
-  const docData = await createRes.json();
+  const createText = await createRes.text();
+  console.log('Drive create response:', createText.slice(0, 300));
+  const docData = JSON.parse(createText);
   const docId = docData.id;
+  if (!docId) throw new Error(`No doc ID returned: ${createText.slice(0, 200)}`);
 
   // Step 3: Write content to the doc
   const requests = [
