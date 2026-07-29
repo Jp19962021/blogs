@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-29T16:29:25.563Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: Why Is Dog Pee Killing Your Grass — And How to Stop It, How To Keep Dog Pee From Ruining Your Lawn | PetMD, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Culprit",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "nitrogen in dog urine",
+      "pet lawn solutions",
+      "dog pee brown spots"
+    ],
+    "articleId": "gid://shopify/Article/582559989822",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-culprit",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": "https://docs.google.com/document/d/undefined/edit"
+  },
+  {
     "date": "2026-07-29T16:26:42.816Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2277,31 +2304,6 @@
     ],
     "articleId": "gid://shopify/Article/596817248511",
     "articleHandle": "how-3d-printed-compounded-veterinary-medications-are-solving-your-biggest-compliance-headaches",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T02:59:33.421Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "how to give a dog a pill",
-    "angle": "Practical tips and tricks for getting dogs to take medication successfully",
-    "trending_reason": "Based on sources: How to Give a Dog a Pill: 6 Tips for Pet Owners to Try, What to Do When It's Hard to Give a Dog Pills, 12 Tricks to Give Your Dog Pills",
-    "search_volume": "high",
-    "sources": [
-      "https://www.akc.org/expert-advice/health/how-to-give-a-dog-a-pill/",
-      "https://www.preventivevet.com/dogs/options-for-giving-your-dog-a-pill",
-      "https://pethelpful.com/dogs/tricks-to-give-dogs-pills"
-    ],
-    "title": "How to Give a Dog a Pill: Simple Tricks That Actually Work",
-    "tags": [
-      "dog medication tips",
-      "giving dogs pills",
-      "pet medication",
-      "dog health care"
-    ],
-    "articleId": "gid://shopify/Article/581468946494",
-    "articleHandle": "how-to-give-a-dog-a-pill-simple-tricks-that-actually-work",
     "hasImage": true,
     "status": "success"
   }
