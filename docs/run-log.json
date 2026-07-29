@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-29T16:50:30.093Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "What Is FIP?",
+    "angle": "What Is FIP?",
+    "trending_reason": "Based on sources: Feline infectious peritonitis: Strategies for diagnosing and treating this deadly disease in young cats, Feline Infectious Peritonitis (FIP) Medication - GS-441524 - Mixlab, What It Means If Your Cat Is Diagnosed with Feline Infectious Peritonitis (FIP)",
+    "search_volume": "high",
+    "sources": [
+      "https://www.dvm360.com/view/feline-infectious-peritonitis-strategies-diagnosing-and-treating-deadly-disease-young-cats",
+      "https://mixlab.com/pet-pharmacy/fip-medication",
+      "https://www.wedgewood.com/blog/what-it-means-if-your-cat-is-diagnosed-with-feline-infectious-peritonitis/"
+    ],
+    "title": "What Is FIP? — Understanding This Deadly Feline Disease",
+    "tags": [
+      "feline infectious peritonitis",
+      "FIP in cats",
+      "feline coronavirus",
+      "veterinary infectious disease",
+      "GS-441524"
+    ],
+    "articleId": "gid://shopify/Article/597917860095",
+    "articleHandle": "what-is-fip-understanding-this-deadly-feline-disease",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-07-29T16:46:04.353Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2283,31 +2310,6 @@
     ],
     "articleId": "gid://shopify/Article/596820754687",
     "articleHandle": "how-autorefill-programs-and-compounding-are-revolutionizing-veterinary-medication-adherence-for-chronic-conditions",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T03:13:16.596Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "antibiotic resistance in pets",
-    "angle": "how pet antibiotics contribute to drug-resistant superbugs and what owners should know",
-    "trending_reason": "Based on sources: Cefpodoxime for Dogs: Uses, Side Effects, and Alternatives, AKC Collaborates with AVMA on Antimicrobial Awareness, Antibiotic Resistance in Animals: What It Is, Why It Matters, and What Science Is Doing About It",
-    "search_volume": "high",
-    "sources": [
-      "https://www.akc.org/expert-advice/health/cefpodoxime-for-dogs/",
-      "https://www.akc.org/expert-advice/news/antimicrobial-awareness/",
-      "https://www.morrisanimalfoundation.org/article/antibiotic-resistance-animals"
-    ],
-    "title": "Antibiotic Resistance in Pets: What Every Pet Owner Needs to Know About Superbugs",
-    "tags": [
-      "antibiotic resistance",
-      "pet antibiotics",
-      "pet health",
-      "veterinary medicine"
-    ],
-    "articleId": "gid://shopify/Article/581468979262",
-    "articleHandle": "antibiotic-resistance-in-pets-what-every-pet-owner-needs-to-know-about-superbugs",
     "hasImage": true,
     "status": "success"
   }
