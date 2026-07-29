@@ -89,7 +89,7 @@ export async function getNextTopic(audience) {
 }
 
 // ── Mark topic as used with today's date ─────────────────────
-export async function markTopicUsed(audience, rowIndex) {
+export async function markTopicUsed(audience, rowIndex, imageUrl = '') {
   try {
     const token = await getGoogleToken();
     const sheetName = SHEET_NAMES[audience];
@@ -98,7 +98,7 @@ export async function markTopicUsed(audience, rowIndex) {
       month: '2-digit', day: '2-digit', year: 'numeric'
     });
 
-    const range = `${sheetName}!B${rowIndex}:C${rowIndex}`;
+    const range = `${sheetName}!B${rowIndex}:D${rowIndex}`;
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
 
     const res = await fetch(url, {
@@ -107,7 +107,7 @@ export async function markTopicUsed(audience, rowIndex) {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ values: [['used', today]] }),
+      body: JSON.stringify({ values: [['used', today, imageUrl || '']] }),
     });
 
     if (!res.ok) {
