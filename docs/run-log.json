@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-30T15:10:40.471Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "What Is FIP?",
+    "angle": "What Is FIP?",
+    "trending_reason": "Based on sources: Feline infectious peritonitis: Strategies for diagnosing and treating this deadly disease in young cats, Feline Infectious Peritonitis (FIP) Medication - GS-441524, What It Means If Your Cat Is Diagnosed with Feline Infectious Peritonitis (FIP)",
+    "search_volume": "high",
+    "sources": [
+      "https://www.dvm360.com/view/feline-infectious-peritonitis-strategies-diagnosing-and-treating-deadly-disease-young-cats",
+      "https://mixlab.com/pet-pharmacy/fip-medication",
+      "https://www.wedgewood.com/blog/what-it-means-if-your-cat-is-diagnosed-with-feline-infectious-peritonitis/"
+    ],
+    "title": "What Is FIP? — The Mutated Coronavirus Affecting Young Cats",
+    "tags": [
+      "feline infectious peritonitis",
+      "FIP in cats",
+      "feline coronavirus",
+      "FIP diagnosis",
+      "GS-441524"
+    ],
+    "articleId": "gid://shopify/Article/597950038271",
+    "articleHandle": "what-is-fip-the-mutated-coronavirus-affecting-young-cats",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-07-29T16:50:30.093Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2285,31 +2312,6 @@
     ],
     "articleId": "gid://shopify/Article/581470158910",
     "articleHandle": "should-you-worry-about-seizures-from-popular-flea-and-tick-pills",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T15:07:35.102Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "veterinary medication adherence chronic conditions",
-    "angle": "How Autorefill Programs and Compounded Medications Are Solving Pet Medication Adherence Challenges in Chronic Disease Management",
-    "trending_reason": "Based on sources: Veterinary Compounding Pharmacy 2025 Year in Review: Technology, Access & Growth, Improve Patient Compliance, Using social media listening to identify the real-world challenges faced by dog owners globally when administering oral medications",
-    "search_volume": "medium",
-    "sources": [
-      "https://mixlab.com/blog/2025-year-in-review",
-      "https://www.wedgewoodpharmacy.com/veterinary-practices/practice-tips/non-compliance-when-pets-won-t-cooperate.html",
-      "https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2025.1502236/full"
-    ],
-    "title": "How Autorefill Programs and Compounding Are Revolutionizing Veterinary Medication Adherence for Chronic Conditions",
-    "tags": [
-      "medication adherence",
-      "chronic disease management",
-      "veterinary compounding",
-      "autorefill programs"
-    ],
-    "articleId": "gid://shopify/Article/596820754687",
-    "articleHandle": "how-autorefill-programs-and-compounding-are-revolutionizing-veterinary-medication-adherence-for-chronic-conditions",
     "hasImage": true,
     "status": "success"
   }
