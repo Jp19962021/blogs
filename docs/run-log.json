@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-30T15:13:14.587Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: Why Does Dog Pee Kill Grass — And How To Stop It, How To Keep Dog Pee From Ruining Your Lawn | PetMD, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Answer",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "nitrogen in dog urine",
+      "pet-safe lawn solutions",
+      "dog pee brown spots"
+    ],
+    "articleId": "gid://shopify/Article/582597410878",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-answer-1",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-07-30T15:10:40.471Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2287,31 +2314,6 @@
     ],
     "articleId": "gid://shopify/Article/596852179199",
     "articleHandle": "how-veterinary-drug-shortage-compounding-solutions-keep-your-patients-protected",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-14T15:09:40.892Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "isoxazoline flea tick medications seizures dogs",
-    "angle": "Should Pet Owners Worry About Seizures From Popular Flea and Tick Pills?",
-    "trending_reason": "Based on sources: How To Choose the Best All-In-One Flea, Tick, and Heartworm Medication for Dogs, FDA Alerts Pet Owners and Veterinarians About Potential for Neurologic Adverse Events Associated with Certain Flea and Tick Products, Four flea, tick products linked to seizures, ataxia",
-    "search_volume": "high",
-    "sources": [
-      "https://www.petmd.com/dog/general-health/flea-tick-heartworm-pill-for-dogs",
-      "https://www.fda.gov/animal-veterinary/cvm-updates/animal-drug-safety-communication-fda-alerts-pet-owners-and-veterinarians-about-potential-neurologic",
-      "https://www.avma.org/javma-news/2018-11-15/four-flea-tick-products-linked-seizures-ataxia"
-    ],
-    "title": "Should You Worry About Seizures From Popular Flea and Tick Pills?",
-    "tags": [
-      "flea and tick medication",
-      "dog seizures",
-      "isoxazoline safety",
-      "pet medication safety"
-    ],
-    "articleId": "gid://shopify/Article/581470158910",
-    "articleHandle": "should-you-worry-about-seizures-from-popular-flea-and-tick-pills",
     "hasImage": true,
     "status": "success"
   }
