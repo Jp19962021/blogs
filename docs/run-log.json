@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-31T15:20:07.068Z",
+    "audience": "vet",
+    "store": "pet-script-texas.myshopify.com",
+    "keyword": "What Is FIP?",
+    "angle": "What Is FIP?",
+    "trending_reason": "Based on sources: AAFP, EveryCat release guidelines on diagnosis of feline infectious peritonitis, An update on feline infectious peritonitis, Brighter Tomorrows for Cats and Caregivers: Personalized Care Options for FIP",
+    "search_volume": "high",
+    "sources": [
+      "https://www.avma.org/news/aafp-everycat-release-guidelines-diagnosis-feline-infectious-peritonitis",
+      "https://www.dvm360.com/view/update-feline-infectious-peritonitis",
+      "https://www.wedgewood.com/fip/"
+    ],
+    "title": "What Is FIP? — Understanding Feline Infectious Peritonitis",
+    "tags": [
+      "feline infectious peritonitis",
+      "FIP in cats",
+      "feline coronavirus",
+      "cat health",
+      "veterinary medicine"
+    ],
+    "articleId": "gid://shopify/Article/597969371391",
+    "articleHandle": "what-is-fip-understanding-feline-infectious-peritonitis",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-07-30T15:13:14.587Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2289,31 +2316,6 @@
     ],
     "articleId": "gid://shopify/Article/581509578814",
     "articleHandle": "nsaids-for-dogs-with-arthritis-what-pet-parents-need-to-know-about-prescription-pain-relief",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-15T17:58:16.665Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "veterinary drug shortage compounding solutions",
-    "angle": "How Compounding Pharmacies Are Solving Critical Veterinary Drug Shortages and Ensuring Continuity of Care",
-    "trending_reason": "Based on sources: Vetr Announces Availability of Albendamax Amid National Shortage of Albendazole-Based Livestock Treatments, Animal Drug Compounding Market Industry Report, 2033, Drug shortages: The new norm for veterinary medicine?",
-    "search_volume": "high",
-    "sources": [
-      "https://finance.yahoo.com/sectors/healthcare/articles/vetr-announces-availability-albendamax-amid-220100046.html",
-      "https://www.grandviewresearch.com/industry-analysis/animal-drug-compounding-market-report",
-      "https://www.dvm360.com/view/drug-shortages-new-norm-veterinary-medicine"
-    ],
-    "title": "How Veterinary Drug Shortage Compounding Solutions Keep Your Patients Protected",
-    "tags": [
-      "veterinary drug shortages",
-      "compounding pharmacy",
-      "veterinary medicine",
-      "medication alternatives"
-    ],
-    "articleId": "gid://shopify/Article/596852179199",
-    "articleHandle": "how-veterinary-drug-shortage-compounding-solutions-keep-your-patients-protected",
     "hasImage": true,
     "status": "success"
   }
