@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-07-31T15:22:46.665Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: How To Keep Dog Pee From Ruining Your Lawn | PetMD, Why Is Dog Pee Killing Your Grass — And How to Stop It, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Answer",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "nitrogen burn grass",
+      "dog pee spots",
+      "pet lawn maintenance"
+    ],
+    "articleId": "gid://shopify/Article/582636896318",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-answer-2",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-07-31T15:20:07.068Z",
     "audience": "vet",
     "store": "pet-script-texas.myshopify.com",
@@ -2291,31 +2318,6 @@
     ],
     "articleId": "gid://shopify/Article/596890419455",
     "articleHandle": "what-every-veterinarian-should-ask-a-pcab-accredited-veterinary-compounding-pharmacy",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-15T18:00:14.449Z",
-    "audience": "petowner",
-    "store": "d5gnxm-7v.myshopify.com",
-    "keyword": "NSAIDs for dogs with arthritis",
-    "angle": "Understanding prescription pain relievers for aging dogs with joint disease",
-    "trending_reason": "Based on sources: NSAIDs for Dogs: Uses, Side Effects, and Alternatives, New Hope for Treating Dog Arthritis Pain: A Breakthrough OA Treatment, Arthritis in Dogs: How to Treat and Manage Pain",
-    "search_volume": "high",
-    "sources": [
-      "https://www.akc.org/expert-advice/health/nsaids-for-dogs/",
-      "https://www.akc.org/expert-advice/health/dog-arthritis-pain/",
-      "https://www.akc.org/expert-advice/health/dealing-with-canine-arthritis/"
-    ],
-    "title": "NSAIDs for Dogs with Arthritis: What Pet Parents Need to Know About Prescription Pain Relief",
-    "tags": [
-      "dog arthritis",
-      "canine NSAIDs",
-      "dog joint pain",
-      "senior dog care"
-    ],
-    "articleId": "gid://shopify/Article/581509578814",
-    "articleHandle": "nsaids-for-dogs-with-arthritis-what-pet-parents-need-to-know-about-prescription-pain-relief",
     "hasImage": true,
     "status": "success"
   }
