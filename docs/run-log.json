@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-08-04T15:25:11.209Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: Why Is Dog Pee Killing Your Grass — And How to Stop It, How To Keep Dog Pee From Ruining Your Lawn, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Answer",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "dog pee brown spots",
+      "pet-friendly lawn care",
+      "dog urine nitrogen"
+    ],
+    "articleId": "gid://shopify/Article/582707937342",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-answer-4",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-08-02T14:37:09.517Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2297,31 +2324,6 @@
     ],
     "articleId": "gid://shopify/Article/581551128638",
     "articleHandle": "fda-approves-first-dual-purpose-separation-anxiety-medication-for-dogs",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-16T15:21:03.475Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "veterinary office stock compounding regulations",
-    "angle": "How State Pharmacy Board Office Stock Compounding Restrictions Are Reshaping Veterinary Practice Workflows",
-    "trending_reason": "Based on sources: Ark. pharmacy board bars office stock compounding | dvm360, FVMA Veterinary News: Legislative Update - FVMA, New Flexibility for Compounded Medications and Veterinary Practice in HB26-1198 - CVMA",
-    "search_volume": "medium",
-    "sources": [
-      "https://www.dvm360.com/view/ark-pharmacy-board-bars-office-stock-compounding",
-      "https://fvma.org/legislative-update/",
-      "https://colovma.org/new-flexibility-for-compounded-medications-and-veterinary-practice-in-hb26-1198/"
-    ],
-    "title": "How State Pharmacy Board Office Stock Compounding Restrictions Are Reshaping Veterinary Practice Workflows",
-    "tags": [
-      "veterinary compounding",
-      "office stock regulations",
-      "veterinary pharmacy",
-      "practice management"
-    ],
-    "articleId": "gid://shopify/Article/596890517759",
-    "articleHandle": "how-state-pharmacy-board-office-stock-compounding-restrictions-are-reshaping-veterinary-practice-workflows",
     "hasImage": true,
     "status": "success"
   }
