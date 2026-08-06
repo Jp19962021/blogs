@@ -1,5 +1,32 @@
 [
   {
+    "date": "2026-08-06T15:14:32.452Z",
+    "audience": "petowner",
+    "store": "d5gnxm-7v.myshopify.com",
+    "keyword": "Why Does My Grass Die Where My Dog Pees?",
+    "angle": "Why Does My Grass Die Where My Dog Pees?",
+    "trending_reason": "Based on sources: How To Keep Dog Pee From Ruining Your Lawn | PetMD, Why Is Dog Pee Killing Your Grass — And How to Stop It, What to Safely Do If Your Dog's Urine Is Burning Your Grass",
+    "search_volume": "high",
+    "sources": [
+      "https://www.petmd.com/dog/general-health/how-to-keep-dog-pee-from-ruining-lawn",
+      "https://www.akc.org/expert-advice/home-living/dog-pee-killing-grass/",
+      "https://www.preventivevet.com/dogs/what-to-do-if-your-dogs-urine-is-burning-the-lawn"
+    ],
+    "title": "Why Does My Grass Die Where My Dog Pees? — The Real Reason",
+    "tags": [
+      "dog urine grass damage",
+      "lawn care for dog owners",
+      "nitrogen in dog urine",
+      "pet lawn maintenance",
+      "dog health"
+    ],
+    "articleId": "gid://shopify/Article/582714916926",
+    "articleHandle": "why-does-my-grass-die-where-my-dog-pees-the-real-reason",
+    "hasImage": true,
+    "status": "success",
+    "podcastUrl": ""
+  },
+  {
     "date": "2026-08-05T15:14:13.322Z",
     "audience": "petowner",
     "store": "d5gnxm-7v.myshopify.com",
@@ -2301,31 +2328,6 @@
     ],
     "articleId": "gid://shopify/Article/581572329534",
     "articleHandle": "acepromazine-vs-trazodone-for-dogs-why-vets-are-making-the-switch",
-    "hasImage": true,
-    "status": "success"
-  },
-  {
-    "date": "2026-06-17T16:39:53.606Z",
-    "audience": "vet",
-    "store": "pet-script-texas.myshopify.com",
-    "keyword": "native PIMS pharmacy integration",
-    "angle": "How Native PIMS-Pharmacy Integration Is Eliminating Toggle Fatigue and Streamlining Veterinary Prescription Workflows",
-    "trending_reason": "Based on sources: Mixlab and Instinct Partner to Transform Prescription Workflows for Veterinary Hospitals, Must-Have Integrations for Veterinary Software in 2026, Staying in Front of the Client via PIMS",
-    "search_volume": "medium",
-    "sources": [
-      "https://www.globenewswire.com/news-release/2026/04/22/3278938/0/en/mixlab-and-instinct-partner-to-transform-prescription-workflows-for-veterinary-hospitals.html",
-      "https://digitail.com/blog/must-have-integrations-for-veterinary-software-in-2026/",
-      "https://vet-advantage.com/vet-advantage/staying-in-front-of-the-client-via-pims/"
-    ],
-    "title": "How Native PIMS Pharmacy Integration Is Eliminating Toggle Fatigue and Streamlining Veterinary Prescription Workflows",
-    "tags": [
-      "PIMS integration",
-      "veterinary workflow",
-      "practice efficiency",
-      "veterinary technology"
-    ],
-    "articleId": "gid://shopify/Article/596929642751",
-    "articleHandle": "how-native-pims-pharmacy-integration-is-eliminating-toggle-fatigue-and-streamlining-veterinary-prescription-workflows",
     "hasImage": true,
     "status": "success"
   }
